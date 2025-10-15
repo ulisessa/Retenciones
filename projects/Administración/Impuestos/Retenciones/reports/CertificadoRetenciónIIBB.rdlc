@@ -1,0 +1,335 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="DataSource">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString />
+      </ConnectionProperties>
+      <rd:SecurityType>None</rd:SecurityType>
+    </DataSource>
+  </DataSources>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <Height>2in</Height>
+        <Style />
+      </Body>
+      <Width>6.5in</Width>
+      <Page>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <Code>Public Function BlankZero(ByVal Value As Decimal)
+    if Value = 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankPos(ByVal Value As Decimal)
+    if Value &gt; 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankZeroAndPos(ByVal Value As Decimal)
+    if Value &gt;= 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankNeg(ByVal Value As Decimal)
+    if Value &lt; 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankNegAndZero(ByVal Value As Decimal)
+    if Value &lt;= 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+</Code>
+  <Language>=User!Language</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Fields>
+        <Field Name="Logo">
+          <DataField>Logo</DataField>
+        </Field>
+        <Field Name="GLRegister_Documento">
+          <DataField>GLRegister_Documento</DataField>
+        </Field>
+        <Field Name="Firma">
+          <DataField>Firma</DataField>
+        </Field>
+        <Field Name="FORMAT__Factura_RT_Base_Buffer___Fecha_pago__">
+          <DataField>FORMAT__Factura_RT_Base_Buffer___Fecha_pago__</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer__Factura_RT_Base_Buffer___Serie_retención_">
+          <DataField>Factura_RT_Base_Buffer__Factura_RT_Base_Buffer___Serie_retención_</DataField>
+        </Field>
+        <Field Name="rstProveedor_Name">
+          <DataField>rstProveedor_Name</DataField>
+        </Field>
+        <Field Name="Regimen">
+          <DataField>Regimen</DataField>
+        </Field>
+        <Field Name="Reg__General_Ret__RG__830_">
+          <DataField>Reg__General_Ret__RG__830_</DataField>
+        </Field>
+        <Field Name="Agente">
+          <DataField>Agente</DataField>
+        </Field>
+        <Field Name="rstInfoEmpresa_Picture">
+          <DataField>rstInfoEmpresa_Picture</DataField>
+        </Field>
+        <Field Name="rstInfoEmpresa__VAT_Registration_No__">
+          <DataField>rstInfoEmpresa__VAT_Registration_No__</DataField>
+        </Field>
+        <Field Name="rstProveedor__VAT_Registration_No__">
+          <DataField>rstProveedor__VAT_Registration_No__</DataField>
+        </Field>
+        <Field Name="NroIIBBProveedor">
+          <DataField>NroIIBBProveedor</DataField>
+        </Field>
+        <Field Name="rstInfoEmpresa_Address_rstInfoEmpresa__Address_2_____">
+          <DataField>rstInfoEmpresa_Address_rstInfoEmpresa__Address_2_____</DataField>
+        </Field>
+        <Field Name="rstProveedor_Address_rstProveedor__Address_2_____">
+          <DataField>rstProveedor_Address_rstProveedor__Address_2_____</DataField>
+        </Field>
+        <Field Name="Provincia_de___rstInfoEmpresa_County____C_P____rstInfoEmpresa__Post_Code_">
+          <DataField>Provincia_de___rstInfoEmpresa_County____C_P____rstInfoEmpresa__Post_Code_</DataField>
+        </Field>
+        <Field Name="Provincia_de___rstProveedor_County____C_P____rstProveedor__Post_Code_">
+          <DataField>Provincia_de___rstProveedor_County____C_P____rstProveedor__Post_Code_</DataField>
+        </Field>
+        <Field Name="COMPANYNAME">
+          <DataField>COMPANYNAME</DataField>
+        </Field>
+        <Field Name="Código___rstRetDesc__Código_SICORE________rstRetDesc_Descripción">
+          <DataField>Código___rstRetDesc__Código_SICORE________rstRetDesc_Descripción</DataField>
+        </Field>
+        <Field Name="Hoy">
+          <DataField>Hoy</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer__No__documento_">
+          <DataField>Factura_RT_Base_Buffer__No__documento_</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer__Base_pago_retención_">
+          <DataField>Factura_RT_Base_Buffer__Base_pago_retención_</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer__Base_pago_retención_Format">
+          <DataField>Factura_RT_Base_Buffer__Base_pago_retención_Format</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer__Importe_retención__Control32">
+          <DataField>Factura_RT_Base_Buffer__Importe_retención__Control32</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer__Importe_retención__Control32Format">
+          <DataField>Factura_RT_Base_Buffer__Importe_retención__Control32Format</DataField>
+        </Field>
+        <Field Name="FechaDocumento">
+          <DataField>FechaDocumento</DataField>
+        </Field>
+        <Field Name="rstConfCont__Persona_habilitada_certificado_______rstConfCont__Carácter_persona_habilitada_">
+          <DataField>rstConfCont__Persona_habilitada_certificado_______rstConfCont__Carácter_persona_habilitada_</DataField>
+        </Field>
+        <Field Name="Empresa_Agente_ret">
+          <DataField>Empresa_Agente_ret</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer_Tipo_registro">
+          <DataField>Factura_RT_Base_Buffer_Tipo_registro</DataField>
+        </Field>
+        <Field Name="Tiporegistro_FacturaRTBaseBuffer">
+          <DataField>Tiporegistro_FacturaRTBaseBuffer</DataField>
+        </Field>
+        <Field Name="ClienteProveedor_FacturaRTBaseBuffer">
+          <DataField>ClienteProveedor_FacturaRTBaseBuffer</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer__Tipo_factura_">
+          <DataField>Factura_RT_Base_Buffer__Tipo_factura_</DataField>
+        </Field>
+        <Field Name="NFactura_FacturaRTBaseBuffer">
+          <DataField>NFactura_FacturaRTBaseBuffer</DataField>
+        </Field>
+        <Field Name="Tiporetención_FacturaRTBaseBuffer">
+          <DataField>Tiporetención_FacturaRTBaseBuffer</DataField>
+        </Field>
+        <Field Name="Códretención_FacturaRTBaseBuffer">
+          <DataField>Códretención_FacturaRTBaseBuffer</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer__Importe_retención_">
+          <DataField>Factura_RT_Base_Buffer__Importe_retención_</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer__Importe_retención_Format">
+          <DataField>Factura_RT_Base_Buffer__Importe_retención_Format</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer_Cliente_Proveedor">
+          <DataField>Factura_RT_Base_Buffer_Cliente_Proveedor</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer__Importe_neto_factura_">
+          <DataField>Factura_RT_Base_Buffer__Importe_neto_factura_</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer__Importe_neto_factura_Format">
+          <DataField>Factura_RT_Base_Buffer__Importe_neto_factura_Format</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer_N__Factura">
+          <DataField>Factura_RT_Base_Buffer_N__Factura</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer_Tipo_retención">
+          <DataField>Factura_RT_Base_Buffer_Tipo_retención</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer_Cód__retención">
+          <DataField>Factura_RT_Base_Buffer_Cód__retención</DataField>
+        </Field>
+        <Field Name="AlicuotaRetencion">
+          <DataField>AlicuotaRetencion</DataField>
+        </Field>
+        <Field Name="AlicuotaRetencionFormat">
+          <DataField>AlicuotaRetencionFormat</DataField>
+        </Field>
+        <Field Name="SituacionIVA">
+          <DataField>SituacionIVA</DataField>
+        </Field>
+        <Field Name="NoIngBrutos">
+          <DataField>NoIngBrutos</DataField>
+        </Field>
+        <Field Name="TipoAgenteIIBB">
+          <DataField>TipoAgenteIIBB</DataField>
+        </Field>
+        <Field Name="NroAgenteIIBB">
+          <DataField>NroAgenteIIBB</DataField>
+        </Field>
+        <Field Name="Firmante">
+          <DataField>Firmante</DataField>
+        </Field>
+        <Field Name="Fecha_pago">
+          <DataField>Fecha_pago</DataField>
+        </Field>
+        <Field Name="Fecha_de_emisón____Control1000000029">
+          <DataField>Fecha_de_emisón____Control1000000029</DataField>
+        </Field>
+        <Field Name="N_____Control1000000030">
+          <DataField>N_____Control1000000030</DataField>
+        </Field>
+        <Field Name="Factura_RT_Base_Buffer___Serie_retención_">
+          <DataField>Factura_RT_Base_Buffer___Serie_retención_</DataField>
+        </Field>
+        <Field Name="FORMAT__Factura_RT_Base_Buffer___Fecha_pago___Control1000000032">
+          <DataField>FORMAT__Factura_RT_Base_Buffer___Fecha_pago___Control1000000032</DataField>
+        </Field>
+        <Field Name="rstInfoEmpresa_Picture_Control1000000033">
+          <DataField>rstInfoEmpresa_Picture_Control1000000033</DataField>
+        </Field>
+        <Field Name="Detalle_de_documentos_liquidados_">
+          <DataField>Detalle_de_documentos_liquidados_</DataField>
+        </Field>
+        <Field Name="optTD">
+          <DataField>optTD</DataField>
+        </Field>
+        <Field Name="strDocumento">
+          <DataField>strDocumento</DataField>
+        </Field>
+        <Field Name="decImporte">
+          <DataField>decImporte</DataField>
+        </Field>
+        <Field Name="decImporteFormat">
+          <DataField>decImporteFormat</DataField>
+        </Field>
+        <Field Name="Total_Documentos_liquidados_">
+          <DataField>Total_Documentos_liquidados_</DataField>
+        </Field>
+        <Field Name="Pagos_anteriores_">
+          <DataField>Pagos_anteriores_</DataField>
+        </Field>
+        <Field Name="Mínimo_no_imponible_">
+          <DataField>Mínimo_no_imponible_</DataField>
+        </Field>
+        <Field Name="Retenciones_calculada_">
+          <DataField>Retenciones_calculada_</DataField>
+        </Field>
+        <Field Name="Retenciones_anteriores_">
+          <DataField>Retenciones_anteriores_</DataField>
+        </Field>
+        <Field Name="Total_retención_">
+          <DataField>Total_retención_</DataField>
+        </Field>
+        <Field Name="FechaEmision">
+          <DataField>FechaEmision</DataField>
+        </Field>
+        <Field Name="decTotal">
+          <DataField>decTotal</DataField>
+        </Field>
+        <Field Name="decTotalFormat">
+          <DataField>decTotalFormat</DataField>
+        </Field>
+        <Field Name="decPagAnt">
+          <DataField>decPagAnt</DataField>
+        </Field>
+        <Field Name="decPagAntFormat">
+          <DataField>decPagAntFormat</DataField>
+        </Field>
+        <Field Name="decIVA">
+          <DataField>decIVA</DataField>
+        </Field>
+        <Field Name="decIVAFormat">
+          <DataField>decIVAFormat</DataField>
+        </Field>
+        <Field Name="decMinImpo">
+          <DataField>decMinImpo</DataField>
+        </Field>
+        <Field Name="decMinImpoFormat">
+          <DataField>decMinImpoFormat</DataField>
+        </Field>
+        <Field Name="decRetenido__Factura_RT_Base_Buffer___Importe_retención_">
+          <DataField>decRetenido__Factura_RT_Base_Buffer___Importe_retención_</DataField>
+        </Field>
+        <Field Name="decRetenido__Factura_RT_Base_Buffer___Importe_retención_Format">
+          <DataField>decRetenido__Factura_RT_Base_Buffer___Importe_retención_Format</DataField>
+        </Field>
+        <Field Name="decRetenido">
+          <DataField>decRetenido</DataField>
+        </Field>
+        <Field Name="decRetenidoFormat">
+          <DataField>decRetenidoFormat</DataField>
+        </Field>
+        <Field Name="decTotRetenido">
+          <DataField>decTotRetenido</DataField>
+        </Field>
+        <Field Name="decTotRetenidoFormat">
+          <DataField>decTotRetenidoFormat</DataField>
+        </Field>
+        <Field Name="decRetenidoAnterior">
+          <DataField>decRetenidoAnterior</DataField>
+        </Field>
+        <Field Name="decRetenidoAnteriorFormat">
+          <DataField>decRetenidoAnteriorFormat</DataField>
+        </Field>
+        <Field Name="Detailed_Vendor_Ledg__Entry_Entry_No_">
+          <DataField>Detailed_Vendor_Ledg__Entry_Entry_No_</DataField>
+        </Field>
+        <Field Name="Detailed_Vendor_Ledg__Entry_Vendor_No_">
+          <DataField>Detailed_Vendor_Ledg__Entry_Vendor_No_</DataField>
+        </Field>
+        <Field Name="Detailed_Vendor_Ledg__Entry_Document_No_">
+          <DataField>Detailed_Vendor_Ledg__Entry_Document_No_</DataField>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+    </DataSet>
+  </DataSets>
+</Report>

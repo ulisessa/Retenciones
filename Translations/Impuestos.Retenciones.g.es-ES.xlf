@@ -1,0 +1,950 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="es-ES" original="Impuestos.Retenciones.g.xlf">
+    <body>
+      <group id="body">
+        <trans-unit id="Codeunit 2726172154 - NamedType 2943140252" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The file %1 does not exist.</source>
+          <target>No existe el archivo %1.</target>
+          <note from="Developer" annotates="general" priority="2">%1 File Path</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit GestionArchivos - NamedType FileDoesNotExistErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2726172154 - NamedType 2840366879" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Files outside of the current user's folder cannot be accessed. Access is denied to file %1.</source>
+          <target>No se puede acceder a archivos fuera de la carpeta del usuario actual. Se deniega el acceso al archivo %1.</target>
+          <note from="Developer" annotates="general" priority="2">%1=the full path to a file. ex: C:\Windows\TextFile.txt </note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit GestionArchivos - NamedType NotAllowedPathErr</note>
+        </trans-unit>
+        <trans-unit id="Page 1871871322 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Calculated Withholdings</source>
+          <target>Retenciones Calculadas</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Calculated Withholdings - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 225145119 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Ganancias Withholding Setup</source>
+          <target>Configuración de Retenciones de Ganancias</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Ganancias Withholding Setup - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 902406843 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Ganancias Withholding Types</source>
+          <target>Tipos de Retenciones de Ganancias</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Ganancias Withholding Types - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 1796061443 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>IB Withholding Setup</source>
+          <target>Configuración de Retenciones de Ingresos Brutos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IB Withholding Setup - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3522122227 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Ingreso Brutos Withh. Types</source>
+          <target>Tipos de Retención de Ingresos Brutos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Ingreso Brutos Withh. Types - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 541200512 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Invoices WT Base Buffer</source>
+          <target>Buffer Base de Retenciones</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Invoices WT Base Buffer - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 541200512 - Control 1938113485 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Withholding amount per document.</source>
+          <target>Importe de retención por documento.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Invoices WT Base Buffer - Control Importe retencion - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 449173208 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>IVA Withholding Setup</source>
+          <target>Configuración de Retenciones de IVA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IVA Withholding Setup - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 1617608612 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>IVA Withholding Types</source>
+          <target>Tipos de Retención de IVA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IVA Withholding Types - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 715861300 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Lista actividad proveedor</source>
+          <target>Lista Actividad Proveedor</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Lista actividad proveedor - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2448481633 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Lista Estados situación fiscal</source>
+          <target>Lista Estados situación fiscal</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Lista Estados situación fiscal - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 1467833850 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Lista Retenciones</source>
+          <target>Lista Retenciones</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Lista Retenciones - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3788380587 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Posted CM Purchase Lines</source>
+          <target>Líneas de Nota de Crédito Registrada</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Posted CM Purchase Lines - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2336077530 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Posted Invoice Purchase Lines</source>
+          <target>Líneas de Factura Registrada</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Posted Invoice Purchase Lines - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 1067410690 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Record Links</source>
+          <target>Registro de Enlaces</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Record Links - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Retenciones</source>
+          <target>Retenciones</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - NamedType 3548723355" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Por favor, seleccione primero el tipo de archivo a importar</source>
+          <target>Por favor, seleccione primero el tipo de archivo a importar.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - NamedType Error1</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - NamedType 1166845910" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Please, first enter the date filter for the withholdings to export</source>
+          <target>Por favor, ingrese primero el filtro de fechas para las retenciones a exportar</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - NamedType Error2</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - NamedType 3913670494" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Acción finalizada. Se han procesado %1 registros.</source>
+          <target>Acción finalizada. Se han procesado %1 registros.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - NamedType Message1</note>
+        </trans-unit>
+        <trans-unit id="Page 2696501254 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>SS Withholding Setup</source>
+          <target>Configuración de Retenciones Seguridad Social</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SS Withholding Setup - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2234408474 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>SS Withholding Types</source>
+          <target>Tipos de Retención de Seguridad Social</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SS Withholding Types - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 1885883782 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Withholding Setup</source>
+          <target>Configuración de Retenciones</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Withholding Setup - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3464081222 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Withholding Tax Excemption</source>
+          <target>Exenciones de Retenciones Fiscales</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Withholding Tax Excemption - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2300571119 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Withholding type</source>
+          <target>Tipos de Retención</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Withholding type - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Report 1858257624 - NamedType 2621596835" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Firma responsable:</source>
+          <target>Firma responsable:</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención Ganancia - NamedType Firma_responsable_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1858257624 - NamedType 2509036037" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe neto</source>
+          <target>Importe neto</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención Ganancia - NamedType Importe_netoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1858257624 - NamedType 3812501099" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe retenido</source>
+          <target>Importe retenido</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención Ganancia - NamedType Importe_retenidoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1858257624 - NamedType 1042555935" size-unit="char" translate="yes" xml:space="preserve">
+          <source>N°</source>
+          <target>No.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención Ganancia - NamedType N_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1858257624 - NamedType 3054722579" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Declaro que los datos consignados en este Formulario son correctos y completos y que he confeccionado la presente según normativas establecidas por la AFIP sin omitir ni falsear dato alguno que deba contener, siendo fiel expresión de la verdad.</source>
+          <target>Declaro que los datos consignados en este Formulario son correctos y completos y que he confeccionado la presente según normativas establecidas por la AFIP sin omitir ni falsear dato alguno que deba contener, siendo fiel expresión de la verdad.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención Ganancia - NamedType strPie</note>
+        </trans-unit>
+        <trans-unit id="Report 1858257624 - NamedType 4152027883" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tipo documento</source>
+          <target>Tipo documento</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención Ganancia - NamedType Tipo_documentoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1858257624 - NamedType 4022000242" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tipo retención</source>
+          <target>Tipo retención</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención Ganancia - NamedType Tipo_retenciónCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1858257624 - NamedType 711619904" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Total retenido:</source>
+          <target>Total retenido:</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención Ganancia - NamedType Total_retenido_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 767223372 - NamedType 2621596835" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Firma responsable:</source>
+          <target>Firma responsable:</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IIBB - NamedType Firma_responsable_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 767223372 - NamedType 2509036037" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe neto</source>
+          <target>Importe neto</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IIBB - NamedType Importe_netoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 767223372 - NamedType 3812501099" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe retenido</source>
+          <target>Importe retenido</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IIBB - NamedType Importe_retenidoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 767223372 - NamedType 1042555935" size-unit="char" translate="yes" xml:space="preserve">
+          <source>N°</source>
+          <target>No.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IIBB - NamedType N_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 767223372 - NamedType 3054722579" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Declaro que los datos consignados en este Formulario son correctos y completos y que he confeccionado la presente según normativas establecidas por la AFIP sin omitir ni falsear dato alguno que deba contener, siendo fiel expresión de la verdad.</source>
+          <target>Declaro que los datos consignados en este Formulario son correctos y completos y que he confeccionado la presente según normativas establecidas por la AFIP sin omitir ni falsear dato alguno que deba contener, siendo fiel expresión de la verdad.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IIBB - NamedType strPie</note>
+        </trans-unit>
+        <trans-unit id="Report 767223372 - NamedType 4152027883" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tipo documento</source>
+          <target>Tipo documento</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IIBB - NamedType Tipo_documentoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 767223372 - NamedType 4022000242" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tipo retención</source>
+          <target>Tipo retención</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IIBB - NamedType Tipo_retenciónCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 767223372 - NamedType 711619904" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Total retenido:</source>
+          <target>Total retenido:</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IIBB - NamedType Total_retenido_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1608852866 - NamedType 2621596835" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Firma responsable:</source>
+          <target>Firma responsable:</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IVA - NamedType Firma_responsable_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1608852866 - NamedType 2509036037" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe neto</source>
+          <target>Importe neto</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IVA - NamedType Importe_netoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1608852866 - NamedType 3812501099" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe retenido</source>
+          <target>Importe retenido</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IVA - NamedType Importe_retenidoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1608852866 - NamedType 1206930846" size-unit="char" translate="yes" xml:space="preserve">
+          <source>IVA</source>
+          <target>IVA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IVA - NamedType IVACaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1608852866 - NamedType 1042555935" size-unit="char" translate="yes" xml:space="preserve">
+          <source>N°</source>
+          <target>No.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IVA - NamedType N_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1608852866 - NamedType 3054722579" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Declaro que los datos consignados en este Formulario son correctos y completos y que he confeccionado la presente según normativas establecidas por la AFIP sin omitir ni falsear dato alguno que deba contener, siendo fiel expresión de la verdad.</source>
+          <target>Declaro que los datos consignados en este Formulario son correctos y completos y que he confeccionado la presente según normativas establecidas por la AFIP sin omitir ni falsear dato alguno que deba contener, siendo fiel expresión de la verdad.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IVA - NamedType strPie</note>
+        </trans-unit>
+        <trans-unit id="Report 1608852866 - NamedType 4152027883" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tipo documento</source>
+          <target>Tipo documento</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IVA - NamedType Tipo_documentoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1608852866 - NamedType 4022000242" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tipo retención</source>
+          <target>Tipo retención</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IVA - NamedType Tipo_retenciónCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1608852866 - NamedType 711619904" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Total retenido:</source>
+          <target>Total retenido:</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención IVA - NamedType Total_retenido_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 2224722140 - NamedType 2621596835" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Firma responsable:</source>
+          <target>Firma responsable:</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención SS - NamedType Firma_responsable_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 2224722140 - NamedType 2509036037" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe neto</source>
+          <target>Importe neto</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención SS - NamedType Importe_netoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 2224722140 - NamedType 3812501099" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe retenido</source>
+          <target>Importe retenido</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención SS - NamedType Importe_retenidoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 2224722140 - NamedType 1042555935" size-unit="char" translate="yes" xml:space="preserve">
+          <source>N°</source>
+          <target>No.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención SS - NamedType N_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 2224722140 - NamedType 3054722579" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Declaro que los datos consignados en este Formulario son correctos y completos y que he confeccionado la presente según normativas establecidas por la AFIP sin omitir ni falsear dato alguno que deba contener, siendo fiel expresión de la verdad.</source>
+          <target>Declaro que los datos consignados en este Formulario son correctos y completos y que he confeccionado la presente según normativas establecidas por la AFIP sin omitir ni falsear dato alguno que deba contener, siendo fiel expresión de la verdad.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención SS - NamedType strPie</note>
+        </trans-unit>
+        <trans-unit id="Report 2224722140 - NamedType 4152027883" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tipo documento</source>
+          <target>Tipo documento</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención SS - NamedType Tipo_documentoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 2224722140 - NamedType 711619904" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Total retenido:</source>
+          <target>Total retenido:</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención SS - NamedType Total_retenido_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Action 1439459919 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Recurrent Activities</source>
+          <target>Actividades Recurrentes</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Action Category_Recurrent_Activities - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Action 2944358414 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Recurrent Activities</source>
+          <target>Actividades Recurrentes</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Action Recurrent_Activities - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Action 1446170042 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Consultar apócrifos</source>
+          <target>Consultar apócrifos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Action Get apochryphals - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Action 2757764263 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Certificados de Exclusión Ret/Percep del IVA</source>
+          <target>Certificados de Exclusión Ret/Percep del IVA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Action Get RG17 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Action 2120067646 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Actualizar Agentes de Retención</source>
+          <target>Actualizar Agentes de Retención</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Action Get RG18 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Action 2461154668 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Certificados exlusión Ganancias - RG830</source>
+          <target>Certificados exlusión Ganancias - RG830</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Action Get RG830 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 4232383974 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Fiscal type</source>
+          <target>Tipo fiscal</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control Fiscal Type - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 2308462143 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Global Dimension 3 Code</source>
+          <target>Código de Dimensión Global 3</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control Global Dimension 3 Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 1098789766 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Global Dimension 4 Code</source>
+          <target>Código de Dimensión Global 4</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control Global Dimension 4 Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 3684128069 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Global Dimension 5 Code</source>
+          <target>Código de Dimensión Global 5</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control Global Dimension 5 Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 3717993988 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Global Dimension 6 Code</source>
+          <target>Código de Dimensión Global 6</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control Global Dimension 6 Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 1836559811 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Global Dimension 7 Code</source>
+          <target>Código de Dimensión Global 7</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control Global Dimension 7 Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 4288911632 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Withholding serial numbers</source>
+          <target>Números de serie de retención</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control Serie de retenciones - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 3762906545 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>AFIP - WS</source>
+          <target>AFIP - WS</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control AFIP - WS - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 1530236865 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Ajuste de inflación</source>
+          <target>Ajuste de inflación</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control Inflation adjustment - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 3503051281 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Recupero IVA</source>
+          <target>Recupero IVA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control Recupero IVA - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 4182531079 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Withholdings</source>
+          <target>Retenciones</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control Retenciones - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 2892306370 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>GI no withholding code</source>
+          <target>Código de no retención de IIBB</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control GI no retention code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 3795378758 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>GI perception account</source>
+          <target>Cuenta percepción IIBB</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control GI perception account - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 2256128907 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>GI perception resource</source>
+          <target>Recurso percepción IIBB</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control GI perception resource - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 2661890553 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>GI withholding code</source>
+          <target>Código de retención IIBB</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control GI retention code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 2836093934 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>GI withholding account</source>
+          <target>Cuenta retención IIBB</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control GI withholding account - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 437275104 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>SS withholding account</source>
+          <target>Cuenta retención Seguridad Social</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control SS withholding account - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 3454119537 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>VAT perception account</source>
+          <target>Cuenta percepción IVA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control VAT perception account - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 3604186513 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>VAT withholding account</source>
+          <target>Cuenta retención IVA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control VAT withholding account - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 1547535139 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Winnings withholding account</source>
+          <target>Cuenta retención Ganancias</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control Winnings withholding account - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 2353371117 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Taxes</source>
+          <target>Impuestos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Taxes - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 2858840664 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Controls</source>
+          <target>Controles</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Controls - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 2987764787 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Indicates whether to skip the direct invoice control.</source>
+          <target>Indica si se debe omitir el control de factura directa.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Omitir control factura directa - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 2987764787 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Omitir control factura directa</source>
+          <target>Omitir control factura directa</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Omitir control factura directa - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 2259087077 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Indicates whether to skip tax controls.</source>
+          <target>Indica si se debe omitir el control de impuestos.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Omitir controles impositivos - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 2259087077 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Omitir controles impositivos</source>
+          <target>Omitir controles impositivos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Omitir controles impositivos - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1552511275 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Specifies the company's tax area code.</source>
+          <target>Especifica el código de área impositiva de la empresa.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Cód. área impuesto - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1552511275 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Cód. área impuesto</source>
+          <target>Cód. área impuesto</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Cód. área impuesto - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 2818839966 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Is Agent</source>
+          <target>Es Agente</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Es Agente - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1953965760 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Indicates whether the company is a Ganancias withholding agent.</source>
+          <target>Indica si la empresa es un agente de retención de Ganancias.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ag. Retencion Ganancias - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1953965760 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Agente de Retención de Ganancias</source>
+          <target>Agente de Retención de Ganancias</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ag. Retencion Ganancias - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1464756015 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Indicates whether the company is an Ingresos Brutos withholding agent.</source>
+          <target>Indica si la empresa es un agente de retención de Ingresos Brutos.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ag. Retencion Ingreso Brutos - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1464756015 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Agente de Retención de Ingresos Brutos</source>
+          <target>Agente de Retención de Ingresos Brutos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ag. Retencion Ingreso Brutos - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1214469415 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Indicates whether the company is an IVA withholding agent.</source>
+          <target>Indica si la empresa es un agente de retención de IVA.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ag. Retencion IVA - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1214469415 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Agente de Retención de IVA</source>
+          <target>Agente de Retención de IVA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ag. Retencion IVA - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 3793575892 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Specifies the company's Gross Income withholding agent number.</source>
+          <target>Especifica el número de agente de retención de Ingresos Brutos de la empresa.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control GI agent no. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 3793575892 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>GI Agent No.</source>
+          <target>No. de Agente de Retención de Ingresos Brutos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control GI agent no. - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1387268769 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Specifies the type of Gross Income withholding agent.</source>
+          <target>Especifica el tipo de agente de retención de Ingresos Brutos.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control GI agent type - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1387268769 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Gross Income agent type</source>
+          <target>Tipo de Agente de Retención de Ingresos Brutos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control GI agent type - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 4288509160 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Specifies the company's withholding agent number.</source>
+          <target>Especifica el número de agente de retención de la empresa.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control No. agente retención - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 4288509160 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Nº agente retención</source>
+          <target>No. de Agente de Retención</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control No. agente retención - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1718524382 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Specifies the company's Gross Income number as a withholding agent.</source>
+          <target>Especifica el número de ingresos brutos de la empresa como agente de retención.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control No. ingresos brutos - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1718524382 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>No. ingresos brutos</source>
+          <target>No. ingresos brutos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control No. ingresos brutos - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1933824441 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Indicates whether the company is subject to tax.</source>
+          <target>Indica si la empresa está sujeta a impuestos.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Sujeto a impuesto - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1933824441 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Sujeto a impuesto</source>
+          <target>Sujeto a impuesto</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Sujeto a impuesto - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1591751449 - Control 3718489353 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 896930563">
+          <source>Actividad AFIP</source>
+          <target>Actividad AFIP</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Inv. Subpage Ext. - Control Actividad AFIP - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1591751449 - Control 3094869170 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 896930563">
+          <source>Concepto proyecto</source>
+          <target>Concepto proyecto</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Inv. Subpage Ext. - Control Concepto proyecto - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1591751449 - Control 1602441803 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 896930563">
+          <source>Consumir automáticamente</source>
+          <target>Consumir automáticamente</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Inv. Subpage Ext. - Control Consumir automáticamente - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1591751449 - Control 3120983554 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 896930563">
+          <source>Gross winnings with. code</source>
+          <target>Código de retención de Ingresos Brutos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Inv. Subpage Ext. - Control Gross winnings with. code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1591751449 - Control 930950756 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 896930563">
+          <source>SS withholding code</source>
+          <target>Código de retención de SS</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Inv. Subpage Ext. - Control SS withholding code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1591751449 - Control 1970612509 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 896930563">
+          <source>VAT withholding code</source>
+          <target>Código de retención de IVA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Inv. Subpage Ext. - Control VAT withholding code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1591751449 - Control 2306495863 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 896930563">
+          <source>Winnings withholding code</source>
+          <target>Código de retención de Ganancias</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Inv. Subpage Ext. - Control Winnings withholding code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Action 950885997 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Taxes</source>
+          <target>Impuestos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Action Taxes_Group - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Action 1349912141 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Exenciones impositivas</source>
+          <target>Exenciones impositivas</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Action Exenciones impositivas - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Action 3940840118 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Padrón IIBB</source>
+          <target>Padrón IIBB</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Action Padrón IIBB - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Action 1374183877 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Relación con recursos</source>
+          <target>Relación con recursos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Action Relación con recursos - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Action 1713085676 - Method 1377591017 - NamedType 3302617566" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>¿Desea sincronizar los datos de este proveedor incorporando lo provisto por la AFIP?</source>
+          <target>¿Desea sincronizar los datos de este proveedor incorporando lo provisto por la AFIP?</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Action Sincronizar con AFIP - Method OnAction - NamedType Message001</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Action 489339800 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Taxes</source>
+          <target>Impuestos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Action Category_Taxes - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Control 3094869170 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Concepto Proyecto</source>
+          <target>Concepto Proyecto</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control Concepto proyecto - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Control 1303377601 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Global Dimension 1 Code</source>
+          <target>Código de Dimensión Global 1</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control Global Dimension 1 Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Control 1337243520 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Global Dimension 2 Code</source>
+          <target>Código de Dimensión Global 2</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control Global Dimension 2 Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Control 2308462143 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Global Dimension 3 Code</source>
+          <target>Código de Dimensión Global 3</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control Global Dimension 3 Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Control 1098789766 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Global Dimension 4 Code</source>
+          <target>Código de Dimensión Global 4</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control Global Dimension 4 Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Control 3684128069 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Global Dimension 5 Code</source>
+          <target>Código de Dimensión Global 5</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control Global Dimension 5 Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Control 3717993988 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Global Dimension 6 Code</source>
+          <target>Código de Dimensión Global 6</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control Global Dimension 6 Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Control 1836559811 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Global Dimension 7 Code</source>
+          <target>Código de Dimensión Global 7</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control Global Dimension 7 Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Control 2353371117 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Taxes</source>
+          <target>Impuestos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control Taxes - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Control 2415745904 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>Fecha consulta constancia</source>
+          <target>Fecha consulta constancia</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control Fecha Consulta - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 52473185 - Action 1333700088 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4194195770">
+          <source>Impuestos</source>
+          <target>Impuestos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Vendor List Extension - Action Category4 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 52473185 - Action 1349912141 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4194195770">
+          <source>Exenciones impositivas</source>
+          <target>Exenciones impositivas</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Vendor List Extension - Action Exenciones impositivas - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 52473185 - Action 3940840118 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4194195770">
+          <source>Padrón IIBB</source>
+          <target>Padrón IIBB</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Vendor List Extension - Action Padrón IIBB - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 52473185 - Action 1713085676 - Method 1377591017 - NamedType 3302617566" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 52473185">
+          <source>¿Desea sincronizar los datos de este proveedor incorporando lo provisto por la AFIP?</source>
+          <target>¿Desea sincronizar los datos de este proveedor incorporando lo provisto por la AFIP?</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Vendor List Extension - Action Sincronizar con AFIP - Method OnAction - NamedType Message001</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Action 1333700088 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Actions over withholdings to perform on this payment. </source>
+          <target>Acciones sobre retenciones a realizar en este pago.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Action Category4 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Action 1333700088 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Withholdings</source>
+          <target>Retenciones</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Action Category4 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Action 1592581304 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Calculate the withholdings for this payment. </source>
+          <target>Calcular las retenciones para este pago.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Action Calculate - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Action 1592581304 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Calculate</source>
+          <target>Calcular</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Action Calculate - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Change 1587086413 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Withholdings</source>
+          <target>Retenciones</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Change Category_Category4 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Change 278110413 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>New</source>
+          <target>Nuevo</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Change Category_New - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Change 3383493608 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Process</source>
+          <target>Procesar</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Change Category_Process - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Change 2234406979 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Report</source>
+          <target>Informes</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Change Category_Report - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1551535165 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Filing</source>
+          <target>Archivado</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Filing - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1215808928 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Almacén general información</source>
+          <target>Almacén general información</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Almacen general informacion - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1215808928 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Specifies the drive for information.</source>
+          <target>Especifica la unidad para la información.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Almacen general informacion - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 3541619748 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Ruta de digitalización</source>
+          <target>Ruta de digitalización</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ruta de digitalizacion - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 3541619748 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Specifies the path for digitization.</source>
+          <target>Especifica la ruta para la digitalización.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ruta de digitalizacion - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 857022927 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Ruta Intranet</source>
+          <target>Ruta Intranet</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ruta Intranet - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 857022927 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Specifies the intranet path.</source>
+          <target>Especifica la ruta de la intranet.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ruta Intranet - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 3856838355 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Ruta cabecera digitalización</source>
+          <target>Ruta cabecera digitalización</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ruta cabecera digitalizacion - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 3856838355 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Specifies the header path for digitization.</source>
+          <target>Especifica la ruta de cabecera para la digitalización.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ruta cabecera digitalizacion - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1476784085 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Ruta ejecutable digitalización</source>
+          <target>Ruta ejecutable digitalización</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ruta ejecutable digitalizacion - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 396235278 - Control 1476784085 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
+          <source>Specifies the executable path for digitization.</source>
+          <target>Especifica la ruta al ejecutable de digitalización.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Company Info Taxes - Control Ruta ejecutable digitalizacion - Property ToolTip</note>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>
