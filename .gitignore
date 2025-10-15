@@ -1,0 +1,75 @@
+# ============================
+# Business Central AL Project
+# ============================
+
+# 🔹 Paquetes descargados automáticamente (símbolos, dependencias)
+.alpackages/
+.netpackages/
+
+# 🔹 Archivos temporales y backups
+.snapshots/
+*.app.publishsettings
+*.appsymbols
+*.code-workspace
+*.zip
+*.bak
+*.tmp
+*.log
+*.vsix
+*.vsixmanifest
+
+# 🔹 Archivos de usuario de Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# 🔹 Carpetas de sistema
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# 🔹 Archivos de control de VS / otros IDEs
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# 🔹 Archivos de configuración locales
+.env
+.env.*
+local.settings.json
+
+# 🔹 Compilación y cache
+out/
+bin/
+obj/
+package-cache/
+node_modules/
+
+# 🔹 Archivos de test temporales
+TestResults/
+test-output/
+coverage/
+*.coverage
+*.coveragexml
+
+# 🔹 Archivos de seguridad
+*.pfx
+*.snk
+*.key
+*.cer
+*.pem
+*.crt
+
+# 🔹 Publicaciones o builds locales
+publish/
+dist/
+release/
+
+# 🔹 Mantener carpetas necesarias vacías
+!.gitkeep
