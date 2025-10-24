@@ -1,7 +1,7 @@
 report 50611 "Certificado Retención SS"
 {
     DefaultLayout = RDLC;
-    RDLCLayout = 'projects/Administración/Impuestos/Retenciones/reports/CertificadoRetenciónSS.rdlc';
+    RDLCLayout = 'reports/CertificadoRetenciónSS.rdl';
     EnableExternalImages = true;
     UsageCategory = ReportsAndAnalysis;
     ApplicationArea = Basic, Suite;

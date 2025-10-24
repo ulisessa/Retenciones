@@ -2,21 +2,42 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Impuestos.Retenciones",
-            "request": "launch",
+            "name": "Your own server",
+            "request": "attach",
             "type": "al",
             "environmentType": "OnPrem",
             "server": "https://mimir.arbumasa.com/BC252",
             "serverInstance": "BC252",
             "authentication": "Windows",
-            "startupObjectId": 22,
-            "startupObjectType": "Page",
             "breakOnError": "All",
-            "launchBrowser": true,
             "enableLongRunningSqlStatements": true,
             "enableSqlInformationDebugger": true,
             "tenant": "default",
-            "usePublicURLFromServer": true
+            "breakOnNext": "WebClient"
+        },
+        {
+            "name": "Lanzar página de OCR",
+            "request": "launch",
+            "type": "al",
+            "server": "https://mimir.arbumasa.com/BC252",
+            "serverInstance": "BC252",
+            "authentication": "Windows",
+            "port": 7049,
+            "startupObjectId": 190
+            //"startupObjectId": 50111
+        },
+        {
+            "name": "AL: Generated Attach request",
+            "request": "attach",
+            "type": "al",
+            "server": "https://mimir.arbumasa.com/BC252",
+            "serverInstance": "BC252",
+            "authentication": "Windows",
+            "port": 7049,
+            "sessionId": 2551,
+            "breakOnNext": "WebClient"
+            //,"breakOnRecordWrite": "All"
+            //"breakOnError": "ExcludeTry"
         }
     ]
 }

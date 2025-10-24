@@ -70,7 +70,13 @@
       "name": "Generalistas.Varios",
       "publisher": "Grupo Arbumasa",
       "version": "25.0.23364.25445"
-    }
+    },
+    {
+      "id": "b533ff64-12ed-45ee-bd0c-651686a91013",
+      "name": "Impuestos.IVA",
+      "publisher": "Grupo Arbumasa",
+      "version": "25.0.23364.25445"  
+    }    
 
   ],
   "screenshots": [],

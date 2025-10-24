@@ -1,7 +1,7 @@
 report 50614 "Certificado Retención IVA"
 {
     DefaultLayout = RDLC;
-    RDLCLayout = 'projects/Administración/Impuestos/Retenciones/reports/CertificadoRetenciónIVA.rdlc';
+    RDLCLayout = 'reports/CertificadoRetenciónIVA.rdl';
     EnableExternalImages = true;
     UsageCategory = ReportsAndAnalysis;
     ApplicationArea = Basic, Suite;

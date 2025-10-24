@@ -7,6 +7,7 @@ pageextension 26 "Taxes Vendor Card" extends "Vendor Card"
             group(ARCA_Invoicing)
             {
                 //CaptionML = ENU = 'ARCA Invoicing', ESP = 'ARCA Facturación';
+                Caption = 'AFIP Facturación';
                 field("Tipo autorizacion"; "Tipo autorizacion")
                 {
                 }
@@ -109,7 +110,7 @@ pageextension 26 "Taxes Vendor Card" extends "Vendor Card"
                 field("Agente retención IVA"; "Agente retención IVA")
                 {
                 }
-                field("Tipo Fiscal"; "Tipo Fiscal")
+                field("Tipo Fiscal"; "VAT Bus. Posting Group")
                 {
                 }
                 field("Fecha Consulta"; "Fecha Consulta")

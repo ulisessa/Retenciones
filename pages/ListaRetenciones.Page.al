@@ -1,11 +1,11 @@
 page 50598 "Lista Retenciones"
 {
-    PageType = List;
+    PageType = ListPart;
+    CAption = 'Calculated Withholdings';
     SourceTable = "Invoice Withholding Buffer";
     SourceTableView = SORTING("No. documento", "Cod. retencion");
     ApplicationArea = All;
     UsageCategory = Administration;
-    Caption = 'Lista Retenciones';
     layout
     {
         area(content)

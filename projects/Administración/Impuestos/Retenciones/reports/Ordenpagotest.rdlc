@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="DataSource">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString />
+      </ConnectionProperties>
+      <rd:SecurityType>None</rd:SecurityType>
+    </DataSource>
+  </DataSources>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <Height>2in</Height>
+        <Style />
+      </Body>
+      <Width>6.5in</Width>
+      <Page>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <Code>Public Function BlankZero(ByVal Value As Decimal)
+    if Value = 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankPos(ByVal Value As Decimal)
+    if Value &gt; 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankZeroAndPos(ByVal Value As Decimal)
+    if Value &gt;= 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankNeg(ByVal Value As Decimal)
+    if Value &lt; 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankNegAndZero(ByVal Value As Decimal)
+    if Value &lt;= 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+</Code>
+  <Language>=User!Language</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Fields>
+        <Field Name="Logo">
+          <DataField>Logo</DataField>
+        </Field>
+        <Field Name="GLEntry_JournTemplate">
+          <DataField>GLEntry_JournTemplate</DataField>
+        </Field>
+        <Field Name="GLEntry_JournBatch">
+          <DataField>GLEntry_JournBatch</DataField>
+        </Field>
+        <Field Name="GLEntry_Document_No">
+          <DataField>GLEntry_Document_No</DataField>
+        </Field>
+        <Field Name="Movimientos_G_L_Account_No__">
+          <DataField>Movimientos_G_L_Account_No__</DataField>
+        </Field>
+        <Field Name="Movimientos_Name">
+          <DataField>Movimientos_Name</DataField>
+        </Field>
+        <Field Name="Movimientos_AccountType">
+          <DataField>Movimientos_AccountType</DataField>
+        </Field>
+        <Field Name="Movimientos_Description">
+          <DataField>Movimientos_Description</DataField>
+        </Field>
+        <Field Name="Movimientos_Amount">
+          <DataField>Movimientos_Amount</DataField>
+        </Field>
+        <Field Name="Movimientos_AmountFormat">
+          <DataField>Movimientos_AmountFormat</DataField>
+        </Field>
+        <Field Name="Movimientos_DebitAmount">
+          <DataField>Movimientos_DebitAmount</DataField>
+        </Field>
+        <Field Name="Movimientos_DebitAmountFormat">
+          <DataField>Movimientos_DebitAmountFormat</DataField>
+        </Field>
+        <Field Name="Movimientos_CreditAmount">
+          <DataField>Movimientos_CreditAmount</DataField>
+        </Field>
+        <Field Name="Movimientos_CreditAmountFormat">
+          <DataField>Movimientos_CreditAmountFormat</DataField>
+        </Field>
+        <Field Name="Movimientos__Bal__Account_Type_">
+          <DataField>Movimientos__Bal__Account_Type_</DataField>
+        </Field>
+        <Field Name="Movimientos_Transaction_No_">
+          <DataField>Movimientos_Transaction_No_</DataField>
+        </Field>
+        <Field Name="Movimientos_Cheque">
+          <DataField>Movimientos_Cheque</DataField>
+        </Field>
+        <Field Name="Movimientos_RecipientBankAccount">
+          <DataField>Movimientos_RecipientBankAccount</DataField>
+        </Field>
+        <Field Name="Movimientos_BankPaymentType">
+          <DataField>Movimientos_BankPaymentType</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_G_L_Account_No__">
+          <DataField>MovimientosContrapartida_G_L_Account_No__</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_Name">
+          <DataField>MovimientosContrapartida_Name</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_AccountType">
+          <DataField>MovimientosContrapartida_AccountType</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_Description">
+          <DataField>MovimientosContrapartida_Description</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_Amount">
+          <DataField>MovimientosContrapartida_Amount</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_AmountFormat">
+          <DataField>MovimientosContrapartida_AmountFormat</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_DebitAmount">
+          <DataField>MovimientosContrapartida_DebitAmount</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_DebitAmountFormat">
+          <DataField>MovimientosContrapartida_DebitAmountFormat</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_CreditAmount">
+          <DataField>MovimientosContrapartida_CreditAmount</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_CreditAmountFormat">
+          <DataField>MovimientosContrapartida_CreditAmountFormat</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida__Bal__Account_Type_">
+          <DataField>MovimientosContrapartida__Bal__Account_Type_</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_Transaction_No_">
+          <DataField>MovimientosContrapartida_Transaction_No_</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_Cheque">
+          <DataField>MovimientosContrapartida_Cheque</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_RecipientBankAccount">
+          <DataField>MovimientosContrapartida_RecipientBankAccount</DataField>
+        </Field>
+        <Field Name="MovimientosContrapartida_BankPaymentType">
+          <DataField>MovimientosContrapartida_BankPaymentType</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_G_L_Account_No__">
+          <DataField>MovimientosBanco_G_L_Account_No__</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_Name">
+          <DataField>MovimientosBanco_Name</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_AccountType">
+          <DataField>MovimientosBanco_AccountType</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_Description">
+          <DataField>MovimientosBanco_Description</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_Amount">
+          <DataField>MovimientosBanco_Amount</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_AmountFormat">
+          <DataField>MovimientosBanco_AmountFormat</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_DebitAmount">
+          <DataField>MovimientosBanco_DebitAmount</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_DebitAmountFormat">
+          <DataField>MovimientosBanco_DebitAmountFormat</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_CreditAmount">
+          <DataField>MovimientosBanco_CreditAmount</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_CreditAmountFormat">
+          <DataField>MovimientosBanco_CreditAmountFormat</DataField>
+        </Field>
+        <Field Name="MovimientosBanco__Bal__Account_Type_">
+          <DataField>MovimientosBanco__Bal__Account_Type_</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_Transaction_No_">
+          <DataField>MovimientosBanco_Transaction_No_</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_Cheque">
+          <DataField>MovimientosBanco_Cheque</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_RecipientBankAccount">
+          <DataField>MovimientosBanco_RecipientBankAccount</DataField>
+        </Field>
+        <Field Name="MovimientosBanco_BankPaymentType">
+          <DataField>MovimientosBanco_BankPaymentType</DataField>
+        </Field>
+        <Field Name="VLE_VendorNo">
+          <DataField>VLE_VendorNo</DataField>
+        </Field>
+        <Field Name="VLE_ApplDocType">
+          <DataField>VLE_ApplDocType</DataField>
+        </Field>
+        <Field Name="VLE_ApplDocNo">
+          <DataField>VLE_ApplDocNo</DataField>
+        </Field>
+        <Field Name="VLE_ExtDocNo">
+          <DataField>VLE_ExtDocNo</DataField>
+        </Field>
+        <Field Name="VLE_DueDate">
+          <DataField>VLE_DueDate</DataField>
+        </Field>
+        <Field Name="VLE_Name">
+          <DataField>VLE_Name</DataField>
+        </Field>
+        <Field Name="VLE_CurrCode">
+          <DataField>VLE_CurrCode</DataField>
+        </Field>
+        <Field Name="VLE_Amount">
+          <DataField>VLE_Amount</DataField>
+        </Field>
+        <Field Name="VLE_AmountFormat">
+          <DataField>VLE_AmountFormat</DataField>
+        </Field>
+        <Field Name="VLE_ClosedByAmountLCY">
+          <DataField>VLE_ClosedByAmountLCY</DataField>
+        </Field>
+        <Field Name="VLE_ClosedByAmountLCYFormat">
+          <DataField>VLE_ClosedByAmountLCYFormat</DataField>
+        </Field>
+        <Field Name="VLE_AmountLCY">
+          <DataField>VLE_AmountLCY</DataField>
+        </Field>
+        <Field Name="VLE_AmountLCYFormat">
+          <DataField>VLE_AmountLCYFormat</DataField>
+        </Field>
+        <Field Name="VLE_AmountLCYDoc">
+          <DataField>VLE_AmountLCYDoc</DataField>
+        </Field>
+        <Field Name="VLE_AmountLCYDocFormat">
+          <DataField>VLE_AmountLCYDocFormat</DataField>
+        </Field>
+        <Field Name="VLE_DocumentDate">
+          <DataField>VLE_DocumentDate</DataField>
+        </Field>
+        <Field Name="CLE_Name">
+          <DataField>CLE_Name</DataField>
+        </Field>
+        <Field Name="CLE_CustomerNo">
+          <DataField>CLE_CustomerNo</DataField>
+        </Field>
+        <Field Name="CLE_CurrCode">
+          <DataField>CLE_CurrCode</DataField>
+        </Field>
+        <Field Name="CLE_Amount">
+          <DataField>CLE_Amount</DataField>
+        </Field>
+        <Field Name="CLE_AmountFormat">
+          <DataField>CLE_AmountFormat</DataField>
+        </Field>
+        <Field Name="CLE_AmountLCY">
+          <DataField>CLE_AmountLCY</DataField>
+        </Field>
+        <Field Name="CLE_AmountLCYFormat">
+          <DataField>CLE_AmountLCYFormat</DataField>
+        </Field>
+        <Field Name="CLE_ApplDocType">
+          <DataField>CLE_ApplDocType</DataField>
+        </Field>
+        <Field Name="CLE_AppliestoExtDocNo">
+          <DataField>CLE_AppliestoExtDocNo</DataField>
+        </Field>
+        <Field Name="CLE_DueDate">
+          <DataField>CLE_DueDate</DataField>
+        </Field>
+        <Field Name="CLE_ExternalDocumentNo">
+          <DataField>CLE_ExternalDocumentNo</DataField>
+        </Field>
+        <Field Name="IWB_Documento">
+          <DataField>IWB_Documento</DataField>
+        </Field>
+        <Field Name="IWB_ClienteProveedor">
+          <DataField>IWB_ClienteProveedor</DataField>
+        </Field>
+        <Field Name="IWB_Tiporetención">
+          <DataField>IWB_Tiporetención</DataField>
+        </Field>
+        <Field Name="IWB_Códretención">
+          <DataField>IWB_Códretención</DataField>
+        </Field>
+        <Field Name="IWB_Importeretención">
+          <DataField>IWB_Importeretención</DataField>
+        </Field>
+        <Field Name="IWB_ImporteretenciónFormat">
+          <DataField>IWB_ImporteretenciónFormat</DataField>
+        </Field>
+        <Field Name="IWB_Nombre">
+          <DataField>IWB_Nombre</DataField>
+        </Field>
+        <Field Name="IWB_FacturaProv">
+          <DataField>IWB_FacturaProv</DataField>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+    </DataSet>
+  </DataSets>
+</Report>

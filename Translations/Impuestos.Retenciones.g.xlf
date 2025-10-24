@@ -69,7 +69,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page Lista Estados situación fiscal - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 1467833850 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Lista Retenciones</source>
+          <source>Calculated Withholdings</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Lista Retenciones - Property Caption</note>
         </trans-unit>
@@ -77,11 +77,6 @@
           <source>Posted CM Purchase Lines</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Posted CM Purchase Lines - Property Caption</note>
-        </trans-unit>
-        <trans-unit id="Page 2336077530 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Posted Invoice Purchase Lines</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page Posted Invoice Purchase Lines - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 1067410690 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Record Links</source>
@@ -293,6 +288,306 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Report Certificado Retención SS - NamedType Total_retenido_CaptionLbl</note>
         </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 367839654" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Banco/Cuenta</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType Banco_CuentaCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 3818939917" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Cheque a la orden de:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType Cheque_a_la_orden_de_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 3301214120" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Cheque a la orden de:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType Cheque_a_la_orden_de_Caption_Control7Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 3188252415" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Cheque Número</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType Cheque_NúmeroCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 1629632469" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Emisor</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType EmisorCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 689524896" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Proveedor:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType EmptyStringCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 3787521361" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType EmptyStringCaption_Control113Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 1536680747" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Comprobante</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType EmptyStringCaption_Control14Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 3022260316" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType EmptyStringCaption_Control37Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 772794604" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Comprobante</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType EmptyStringCaption_Control84Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 485837312" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Proveedor:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType EmptyStringCaption_Control91Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 3309069702" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tipo</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType EmptyStringCaption_Control97Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 2873730599" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Espacio para adherir cheque</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType Espacio_para_adherir_chequeCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 4036847566" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Fecha:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType Fecha_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 1697023197" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Fecha:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType Fecha_Caption_Control9Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 2559793599" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Firmas Cheques</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType Firmas_ChequesCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 2078519000" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType ImporteCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 35871924" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType ImporteCaption_Control1000000005Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 2533031435" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType ImporteCaption_Control27Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 3472500700" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Moneda</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType MonedaCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 620298302" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Numero</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType NumeroCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 1576807901" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Numero</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType NumeroCaption_Control18Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 2664223731" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Orden de Pago:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType Orden_de_Pago_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 4168208668" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Orden de Pago:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType Orden_de_Pago_Caption_Control10Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 2348459195" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Proveedor:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType Proveedor_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 3809554183" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Proveedor:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType Proveedor_Caption_Control4Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 778531578" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tipo</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType TipoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 456459208" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tipo</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType TipoCaption_Control20Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 4171850057" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vencimiento</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType VencimientoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 1367864021 - NamedType 3795244409" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vº Bº</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago - NamedType V__B_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 367839654" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Banco/Cuenta</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType Banco_CuentaCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 3818939917" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Cheque a la orden de:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType Cheque_a_la_orden_de_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 3301214120" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Cheque a la orden de:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType Cheque_a_la_orden_de_Caption_Control7Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 3188252415" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Cheque Número</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType Cheque_NúmeroCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 1629632469" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Emisor</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType EmisorCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 689524896" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Proveedor:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType EmptyStringCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 3787521361" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType EmptyStringCaption_Control113Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 1536680747" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Comprobante</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType EmptyStringCaption_Control14Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 3022260316" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType EmptyStringCaption_Control37Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 772794604" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Comprobante</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType EmptyStringCaption_Control84Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 485837312" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Proveedor:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType EmptyStringCaption_Control91Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 3309069702" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tipo</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType EmptyStringCaption_Control97Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 2873730599" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Espacio para adherir cheque</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType Espacio_para_adherir_chequeCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 4036847566" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Fecha:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType Fecha_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 1697023197" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Fecha:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType Fecha_Caption_Control9Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 2559793599" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Firmas Cheques</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType Firmas_ChequesCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 2078519000" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType ImporteCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 35871924" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType ImporteCaption_Control1000000005Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 2533031435" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Importe</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType ImporteCaption_Control27Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 3472500700" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Moneda</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType MonedaCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 620298302" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Numero</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType NumeroCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 1576807901" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Numero</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType NumeroCaption_Control18Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 2664223731" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Orden de Pago:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType Orden_de_Pago_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 4168208668" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Orden de Pago:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType Orden_de_Pago_Caption_Control10Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 2348459195" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Proveedor:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType Proveedor_CaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 3809554183" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Proveedor:</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType Proveedor_Caption_Control4Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 778531578" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tipo</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType TipoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 456459208" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tipo</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType TipoCaption_Control20Lbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 4171850057" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vencimiento</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType VencimientoCaptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Report 4052111671 - NamedType 3795244409" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vº Bº</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType V__B_CaptionLbl</note>
+        </trans-unit>
         <trans-unit id="PageExtension 1341528549 - Action 1439459919 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
           <source>Recurrent Activities</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -422,6 +717,81 @@
           <source>Winnings withholding account</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control Winnings withholding account - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3749473636 - Method 456263778 - NamedType 3569704734" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 3749473636">
+          <source>Se eliminarán todas las líneas preexistentes en el diario y sección especificados. ¿Desea continuar?</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Apply Entries In Journal - Method TraerSeleccionados - NamedType l_txtConfirmar</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3749473636 - Action 1349709381 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3292376582">
+          <source>Payment block</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Apply Entries In Journal - Action PaymentBLock - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3749473636 - Action 456263778 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3292376582">
+          <source>Llevar a diario</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Apply Entries In Journal - Action TraerSeleccionados - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3749473636 - Control 3869190086 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3292376582">
+          <source>Libro diario</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Apply Entries In Journal - Control codLibro - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3749473636 - Control 3521373778 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3292376582">
+          <source>Sección diario</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Apply Entries In Journal - Control codSeccion - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2296492898 - Control 1844012642 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1670609200">
+          <source>Specifies the VAT Business Posting Group for the activity.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ARCAActExt - Control VAT Bus. Posting Group - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2296492898 - Control 1844012642 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1670609200">
+          <source>VAT Bus. Posting Group</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ARCAActExt - Control VAT Bus. Posting Group - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2296492898 - Control 1844012642 - Method 2126772001 - NamedType 2026798726" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 2296492898">
+          <source>Only activities of type "Tax" can have a VAT Business Posting Group.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ARCAActExt - Control VAT Bus. Posting Group - Method OnValidate - NamedType lblError</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 3718489353 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Actividad AFIP</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control Actividad AFIP - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 3094869170 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Concepto proyecto</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control Concepto proyecto - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 1602441803 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Consumir automáticamente</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control Consumir automáticamente - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 3120983554 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Código de retención de Ganancias Brutas</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control Gross winnings with. code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 930950756 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Código de retención de Seguridad Social</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control SS withholding code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 1970612509 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Código de retención de IVA</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control VAT withholding code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 2306495863 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Código de retención de Ganancias</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control Winnings withholding code - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 396235278 - Control 1551535165 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
           <source>Filing</source>
@@ -668,6 +1038,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Action Category_Taxes - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Control 81782646 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>AFIP Facturación</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control ARCA_Invoicing - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 4148164589 - Control 3094869170 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
           <source>Concepto Proyecto</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -718,6 +1093,21 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control Fecha Consulta - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 1199507388 - Control 3626579016 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2797067059">
+          <source>Importar Reproweb</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension VATBusGroup - Control Importar Reproweb - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1199507388 - Control 4137661924 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2797067059">
+          <source>Tipo cálculo acumulado</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension VATBusGroup - Control Tipo cálculo acumulado - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1199507388 - Control 232638949 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2797067059">
+          <source>Withhold Even if Agent</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension VATBusGroup - Control Withhold Even if Agent - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 52473185 - Action 1333700088 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4194195770">
           <source>Impuestos</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -737,6 +1127,21 @@
           <source>¿Desea sincronizar los datos de este proveedor incorporando lo provisto por la AFIP?</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Vendor List Extension - Action Sincronizar con AFIP - Method OnAction - NamedType Message001</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Action 835666431 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Finalize and prepare to print the document or journal. The values and quantities are posted to the related accounts. A report request window where you can specify what to include on the print-out.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Action Registrar e &amp;imprimir - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Action 835666431 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Post and &amp;Print</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Action Registrar e &amp;imprimir - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Action 3778955717 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>P&amp;ost</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Action PostCustom - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 3467584252 - Action 1333700088 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
           <source>Actions over withholdings to perform on this payment. </source>
@@ -758,25 +1163,60 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Action Calculate - Property Caption</note>
         </trans-unit>
-        <trans-unit id="PageExtension 3467584252 - Change 1587086413 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
-          <source>Withholdings</source>
+        <trans-unit id="PageExtension 3467584252 - Action 4193345010 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Print Transaction</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Change Category_Category4 - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Action Imprimir Transacción - Property Caption</note>
         </trans-unit>
-        <trans-unit id="PageExtension 3467584252 - Change 278110413 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
-          <source>New</source>
+        <trans-unit id="PageExtension 3467584252 - Control 4085196015 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source></source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Change Category_New - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Control DocLines - Property Caption</note>
         </trans-unit>
-        <trans-unit id="PageExtension 3467584252 - Change 3383493608 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
-          <source>Process</source>
+        <trans-unit id="PageExtension 3467584252 - Control 3674855401 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Posted CM Purchase Lines</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Change Category_Process - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Control PurchCMLines - Property Caption</note>
         </trans-unit>
-        <trans-unit id="PageExtension 3467584252 - Change 2234406979 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
-          <source>Report</source>
+        <trans-unit id="PageExtension 3467584252 - Control 1684148228 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Posted Invoice Purchase Lines</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Change Category_Report - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Control PurchInvLines - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Control 3646847905 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source></source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Control WithLines - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 935717825 - Field 4137661924 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2430374758">
+          <source>Tipo cálculo acumulado</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension VAT Bus. Posting Group Ext - Field Tipo cálculo acumulado - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 935717825 - Field 232638949 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2430374758">
+          <source>Withhold Even if Agent</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension VAT Bus. Posting Group Ext - Field Withhold Even if Agent - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1531525649 - Field 1844012642 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 1537394854">
+          <source>VAT Bus. Posting Group</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension Withholding Setup changes - Field VAT Bus. Posting Group - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Enum 4137661924 - EnumValue 1371923692 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source> </source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum Tipo cálculo acumulado - EnumValue   - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Enum 4137661924 - EnumValue 3953003303 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>11 meses</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum Tipo cálculo acumulado - EnumValue 11 meses - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Enum 4137661924 - EnumValue 323671343 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Mensual</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum Tipo cálculo acumulado - EnumValue Mensual - Property Caption</note>
         </trans-unit>
       </group>
     </body>

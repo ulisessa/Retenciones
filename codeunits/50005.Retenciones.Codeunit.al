@@ -10,9 +10,13 @@ codeunit 50005 Retenciones
         decTotalRetenido: Decimal;
         decPorcentajeIVA: Code[10];
         strFiltro: array[250, 3] of Text[250];
-        rstTFiscal: Record "Dimension Value";
+        rstTFiscal: Record "VAT Business Posting Group";
         rstProveedor: Record Vendor;
         blnConfirmar: Boolean;
+        // Variables para el manejo de códigos de libro y sección en aplicación de movimientos
+        GlobalCodLibro: Code[20];
+        GlobalCodSeccion: Code[20];
+        GlobalDocumentNo: Code[20];
 
 
     [Scope('OnPrem')]
@@ -35,10 +39,6 @@ codeunit 50005 Retenciones
         rstLinFactura: Record "Purch. Inv. Line";
         rstCabNC: Record "Purch. Cr. Memo Hdr.";
         rstLinNC: Record "Purch. Cr. Memo Line";
-        rstAreaImpuesto: Record "Tax Area";
-        rstLinAreaImpuesto: Record "Tax Area Line";
-        rstJurisdicciones: Record "Tax Jurisdiction";
-        rstDetalleImpuesto: Record "Tax Detail";
         rstAccionEstFis: Record "Acción estado sit. fiscal";
         rstLinDiaGen2: Record "Gen. Journal Line";
         rstTipoCambio: Record "Currency Exchange Rate";
@@ -124,35 +124,35 @@ codeunit 50005 Retenciones
         
         
         */
-        if (rstProveedor."Tax Area Code" = 'PRV-RI')
+        //if (rstProveedor."VAT Bus. Posting Group" = 'PRV-RI')
         /*AND
           ((rstProveedor."Registrado RG3594" <> rstProveedor."Registrado RG3594"::" " ) AND
           (ActividadRG3594(rstLinDiaGen)))
           */
-        then begin
-
+        //then begin
+        IF (not rstProveedor."Exento retención IVA") then
             CalcularRetencionIVA(rstLinDiaGen, rstProveedor);
-            /*
-          END
-          ELSE
-          BEGIN
-        
-            //Si el proveedor no es exento de retención de IVA, sigo con el cálculo general de la retención
-            {
-            IF NOT rstProveedor."Exento retención IVA" THEN
-            BEGIN
-            }
-                CalcularRetencionIVA(rstLinDiaGen,rstProveedor);
-        
-            END;
-            */
-        end;
+        /*
+      END
+      ELSE
+      BEGIN
+
+        //Si el proveedor no es exento de retención de IVA, sigo con el cálculo general de la retención
+        {
+        IF NOT rstProveedor."Exento retención IVA" THEN
+        BEGIN
+        }
+            CalcularRetencionIVA(rstLinDiaGen,rstProveedor);
+
+        END;
+        */
+        //end;
         //Si el proveedor no está excluído de Seguridad Social, le calculamos la retención
 
         if (rstCompInfo."Ag. Retencion Ganancias") and (not rstProveedor."Exento ganancias") then
             CalcularRetencionGanancias(rstLinDiaGen, rstProveedor);
 
-        if (not rstProveedor."Exento retención SS") and ((rstProveedor."Tipo Fiscal" in ['I', 'I - FACM']) and (rstProveedor.Empleador)) and rstCompInfo."Ag. Retencion IVA" then
+        if (not rstProveedor."Exento retención SS") and rstProveedor.Empleador and rstCompInfo."Ag. Retencion IVA" then
             CalcularRetencionSS(rstLinDiaGen, rstProveedor);
 
         //Si el proveedor no está excluído de Ingresos Brutos, le calculamos la retención
@@ -225,7 +225,7 @@ codeunit 50005 Retenciones
                     Clear(rstLinFactura);
                     rstLinFactura.SetRange("Document No.", rstLinDiaGenTemp."Applies-to Doc. No.");
 
-                    if (rstProveedor."Tax Area Code" = 'PRV-RI') then
+                    if (rstProveedor."VAT Bus. Posting Group" = 'PRV-RI') then
                         rstLinFactura.SetFilter("VAT %", '<>0');
 
                     rstLinFactura.SetFilter("No.", '<>%1', '');
@@ -243,7 +243,7 @@ codeunit 50005 Retenciones
                                 Clear(rstCabFactura);
                                 rstCabFactura.Get(rstLinFactura."Document No.");
 
-                                if (rstProveedor."Tax Area Code" = 'PRV-RI') then
+                                if (rstProveedor."VAT Bus. Posting Group" = 'PRV-RI') then
                                     rstLinFactura.TestField("Actividad AFIP");
 
                                 Clear(rstFacturaBufferRT);
@@ -253,7 +253,7 @@ codeunit 50005 Retenciones
                                 rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::IVA);
                                 rstFacturaBufferRT.SetRange("Cod. retencion", rstLinFactura."Cód. retención IVA");
                                 rstFacturaBufferRT.SetRange("No. documento", rstLinDiaGen."Document No.");
-                                rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabFactura."Tipo fiscal");
+                                rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabFactura."VAT Bus. Posting Group");
 
                                 //Si esta es la primera vez que se inserta la factura en la tabla, entonces limpio el resto de los campos
 
@@ -266,7 +266,7 @@ codeunit 50005 Retenciones
                                     rstFacturaBufferRT."Tipo retencion" := rstFacturaBufferRT."Tipo retencion"::IVA;
                                     rstFacturaBufferRT."Cod. retencion" := rstLinFactura."Cód. retención IVA";
                                     rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                    rstFacturaBufferRT."Tipo fiscal" := rstCabFactura."Tipo fiscal";
+                                    rstFacturaBufferRT."Tipo fiscal" := rstCabFactura."VAT Bus. Posting Group";
                                     rstFacturaBufferRT."Fecha pago" := 0D;
                                     rstFacturaBufferRT."Base pago retencion" := 0;
                                     rstFacturaBufferRT."Pagos anteriores" := 0;
@@ -366,7 +366,7 @@ codeunit 50005 Retenciones
                                 rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::IVA);
                                 rstFacturaBufferRT.SetRange("Cod. retencion", rstLinNC."Cód. retención IVA");
                                 rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
-                                rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."Tipo Fiscal");
+                                rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."VAT Bus. Posting Group");
                                 //Si esta es la primera vez que se inserta la factura en la tabla, entonces limpio el resto de los campos
 
                                 if not rstFacturaBufferRT.FindFirst then begin
@@ -378,7 +378,7 @@ codeunit 50005 Retenciones
                                     rstFacturaBufferRT."Tipo retencion" := rstFacturaBufferRT."Tipo retencion"::IVA;
                                     rstFacturaBufferRT."Cod. retencion" := rstLinNC."Cód. retención IVA";
                                     rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                    rstFacturaBufferRT."Tipo fiscal" := rstCabNC."Tipo Fiscal";
+                                    rstFacturaBufferRT."Tipo fiscal" := rstCabNC."VAT Bus. Posting Group";
                                     rstFacturaBufferRT."Fecha pago" := 0D;
                                     rstFacturaBufferRT."Base pago retencion" := 0;
                                     rstFacturaBufferRT."Pagos anteriores" := 0;
@@ -504,13 +504,13 @@ codeunit 50005 Retenciones
         rstProveedor: Record Vendor;
         rstAccionEstFis: Record "Acción estado sit. fiscal";
         int80or100: Integer;
-        rstTFiscal: Record "Dimension Value";
+        rstTFiscal: Record "VAT Business Posting Group";
         rst13810: RecordRef;
         cduValidaciones: Codeunit Validaciones;
         rstConfCont: Record "General Ledger Setup";
         rstActiv: Record "Actividad AFIP";
-        rstLAI: Record "Tax Area Line";
-        rstJD: Record "Tax Detail";
+    //rstLAI: Record "Tax Area Line";
+    //rstJD: Record "Tax Detail";
     begin
         /*
         CÓDIGO  Descripción
@@ -531,7 +531,7 @@ codeunit 50005 Retenciones
         rstConfCont.Get();
 
         Clear(rstTFiscal);
-        rstTFiscal.Get(rstConfCont."Fiscal Type", rstFacturaBufferRTL."Tipo fiscal");
+        rstTFiscal.Get(rstFacturaBufferRTL."Tipo fiscal");
 
         Clear(rstCodigosRetencion);
         rstCodigosRetencion.SetRange("Tipo impuesto retencion", rstCodigosRetencion."Tipo impuesto retencion"::IVA);
@@ -701,8 +701,10 @@ codeunit 50005 Retenciones
                                     rstConfiguracionRetencion.SetRange("Importe minimo Stepwise", 0, rstFacturaBufferRTL."Importe total comprobante");
                             end;
 
+                            /*Parece ser innecesario!
+                            
                             Clear(rstLAI);
-                            rstLAI.SetRange(rstLAI."Tax Area", rstLinFacturaL."Tax Area Code");
+                            rstLAI.SetRange(rstLAI."Tax Area", rstLinFacturaL."VAT Bus. Posting Group");
                             if rstLAI.FindLast then begin
 
                                 Clear(rstJD);
@@ -711,7 +713,7 @@ codeunit 50005 Retenciones
                             end;
 
                             rstConfiguracionRetencion.SetRange("% retencion", rstJD."Tax Below Maximum");
-
+                            */
                             if decPorcentajeIVA <> '' then
                                 rstConfiguracionRetencion.SetFilter("Porcentaje de IVA", decPorcentajeIVA);
                             if rstConfiguracionRetencion.FindLast then begin
@@ -814,7 +816,7 @@ codeunit 50005 Retenciones
                                     //rstExencion.SETFILTER("Fecha efectividad retencion",'<%1|%2',rstLinDiaGenL."Posting Date",0D);
                                     rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                                     rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                                    if (rstExencion.FindLast) and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                                    if (rstExencion.FindLast) and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                                     //Se agrega la excepción en caso de actividades de la RG3594
                                     /*(NOT rstCodigosRetencion."Verificar registro RG3594") THEN*/
                                     begin
@@ -868,7 +870,7 @@ codeunit 50005 Retenciones
                                     //rstExencion.SETFILTER("Fecha efectividad retencion",'<%1|%2',rstLinDiaGenL."Posting Date",0D);
                                     rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                                     rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                                    if (not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente") then begin
+                                    if (not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent") then begin
                                         rstFacturaBufferRTL."Importe retencion" := 0;
                                         rstFacturaBufferRTL.Excluido := 6;
                                         rstFacturaBufferRTL."% Exclusion" := 100;
@@ -907,7 +909,7 @@ codeunit 50005 Retenciones
                                 rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
                                 rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                                 rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                                if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                                if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                                 /*
                                 IF rstExencion.FINDLAST AND (rstExencion."Fecha documento" <= rstLinDiaGenL."Posting Date") AND
                                 (rstExencion."Fecha efectividad retencion" >= rstLinDiaGenL."Posting Date") THEN
@@ -994,7 +996,7 @@ codeunit 50005 Retenciones
                                     //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1|%2',rstLinDiaGenL."Posting Date",0D);
                                     rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                                     rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                                     //IF rstExencion.FINDLAST AND (rstExencion."Fecha efectividad retencion" < rstLinDiaGenL."Posting Date") THEN
                                     /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
                                     'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
@@ -1065,7 +1067,7 @@ codeunit 50005 Retenciones
                     rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
                     rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                     rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                     //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1',rstLinDiaGenL."Posting Date");
                     //IF rstExencion.FINDLAST THEN
                     begin
@@ -1146,7 +1148,7 @@ codeunit 50005 Retenciones
                         rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                         rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
 
-                        if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                        if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                             //IF rstExencion.FINDLAST AND (rstExencion."Fecha efectividad retencion" < rstLinDiaGenL."Posting Date") THEN
                             /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
                             'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
@@ -1275,7 +1277,7 @@ codeunit 50005 Retenciones
                                 rstConfCont.Get();
 
                                 Clear(rstTFiscal);
-                                rstTFiscal.Get(rstConfCont."Fiscal Type", rstFacturaBufferRT."Tipo fiscal");
+                                rstTFiscal.Get(rstFacturaBufferRT."Tipo fiscal");
 
                                 case rstTFiscal."Tipo cálculo acumulado" of
 
@@ -1737,7 +1739,7 @@ codeunit 50005 Retenciones
         rstMovProveedorNC: Record "Vendor Ledger Entry";
         rstLinFactura2: Record "Purch. Inv. Line";
         rstLinNC2: Record "Purch. Cr. Memo Line";
-        rstTFiscal: Record "Dimension Value";
+        //rstTFiscal: Record "Dimension Value";
         rstConfCont: Record "General Ledger Setup";
         intFactor: Integer;
         decPorcentajePagado: Decimal;
@@ -1772,7 +1774,7 @@ codeunit 50005 Retenciones
                                     Clear(rstCabFactura);
                                     rstCabFactura.Get(rstLinFactura."Document No.");
                                     rstCabFactura.CalcFields(Amount, rstCabFactura."Amount Including VAT");
-                                    if (rstProveedor."Tax Area Code" = 'PRV-RI') then
+                                    if (rstProveedor."VAT Bus. Posting Group" = 'PRV-RI') then
                                         if blnConfirmar then
                                             rstLinFactura.TestField("Actividad AFIP");
                                     Clear(rstFacturaBufferRT);
@@ -1782,7 +1784,7 @@ codeunit 50005 Retenciones
                                     rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::Ganancias);
                                     rstFacturaBufferRT.SetRange("Cod. retencion", rstLinFactura."Cód. retención ganancias");
                                     rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
-                                    rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabFactura."Tipo fiscal");
+                                    rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabFactura."VAT Bus. Posting Group");
                                     if not rstFacturaBufferRT.FindFirst then begin
                                         rstFacturaBufferRT."Tipo registro" := rstFacturaBufferRT."Tipo registro"::Compra;
                                         rstFacturaBufferRT."Cliente/Proveedor" := rstProveedor."No.";
@@ -1790,7 +1792,7 @@ codeunit 50005 Retenciones
                                         rstFacturaBufferRT."Tipo retencion" := rstFacturaBufferRT."Tipo retencion"::Ganancias;
                                         rstFacturaBufferRT."Cod. retencion" := rstLinFactura."Cód. retención ganancias";
                                         rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                        rstFacturaBufferRT."Tipo fiscal" := rstCabFactura."Tipo fiscal";
+                                        rstFacturaBufferRT."Tipo fiscal" := rstCabFactura."VAT Bus. Posting Group";
                                         rstFacturaBufferRT."Fecha pago" := 0D;
                                         rstFacturaBufferRT."Base pago retencion" := 0;
                                         rstFacturaBufferRT."Pagos anteriores" := 0;
@@ -1841,7 +1843,7 @@ codeunit 50005 Retenciones
                                     Clear(rstCabNC);
                                     rstCabNC.Get(rstLinNC."Document No.");
                                     rstCabNC.CalcFields(Amount, rstCabNC."Amount Including VAT");
-                                    if (rstProveedor."Tax Area Code" = 'PRV-RI') then
+                                    if (rstProveedor."VAT Bus. Posting Group" = 'PRV-RI') then
                                         if blnConfirmar then
                                             rstLinNC.TestField("Actividad AFIP");
                                     Clear(rstFacturaBufferRT);
@@ -1851,7 +1853,7 @@ codeunit 50005 Retenciones
                                     rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::Ganancias);
                                     rstFacturaBufferRT.SetRange("Cod. retencion", rstLinNC."Cód. retención ganancias");
                                     rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
-                                    rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."Tipo Fiscal");
+                                    rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."VAT Bus. Posting Group");
                                     if not rstFacturaBufferRT.FindFirst then begin
                                         rstFacturaBufferRT."Tipo registro" := rstFacturaBufferRT."Tipo registro"::Compra;
                                         rstFacturaBufferRT."Cliente/Proveedor" := rstProveedor."No.";
@@ -1859,7 +1861,7 @@ codeunit 50005 Retenciones
                                         rstFacturaBufferRT."Tipo retencion" := rstFacturaBufferRT."Tipo retencion"::Ganancias;
                                         rstFacturaBufferRT."Cod. retencion" := rstLinNC."Cód. retención ganancias";
                                         rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                        rstFacturaBufferRT."Tipo fiscal" := rstCabNC."Tipo Fiscal";
+                                        rstFacturaBufferRT."Tipo fiscal" := rstCabNC."VAT Bus. Posting Group";
                                         rstFacturaBufferRT."Fecha pago" := 0D;
                                         rstFacturaBufferRT."Base pago retencion" := 0;
                                         rstFacturaBufferRT."Pagos anteriores" := 0;
@@ -1937,7 +1939,7 @@ codeunit 50005 Retenciones
                         rstConfCont.Get();
 
                         Clear(rstTFiscal);
-                        rstTFiscal.Get(rstConfCont."Fiscal Type", rstFacturaBufferRT2."Tipo fiscal");
+                        rstTFiscal.Get(rstFacturaBufferRT2."Tipo fiscal");
 
                         case rstTFiscal."Tipo cálculo acumulado" of
 
@@ -2195,7 +2197,7 @@ codeunit 50005 Retenciones
                         rstConfCont.Get();
 
                         Clear(rstTFiscal);
-                        rstTFiscal.Get(rstConfCont."Fiscal Type", rstFacturaBufferRT2."Tipo fiscal");
+                        rstTFiscal.Get(rstFacturaBufferRT2."Tipo fiscal");
 
                         case rstTFiscal."Tipo cálculo acumulado" of
 
@@ -3183,7 +3185,7 @@ codeunit 50005 Retenciones
                     rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
                     rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                     rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                     //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1',rstLinDiaGenL."Posting Date");
 
                     //Se agrega la excepción en caso de actividades de la RG3594
@@ -3265,7 +3267,7 @@ codeunit 50005 Retenciones
                         //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1|%2',rstLinDiaGenL."Posting Date",0D);
                         rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                         rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                        if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) and
+                        if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) and
                         //IF rstExencion.FINDLAST AND (rstExencion."Fecha efectividad retencion" < rstLinDiaGenL."Posting Date") AND
                         //Se agrega la excepción en caso de actividades de la RG3594
                         (not rstCodigosRetencion."Verificar registro RG3594")
@@ -3301,7 +3303,7 @@ codeunit 50005 Retenciones
                     rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
                     rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::"Agente de retención IVA");
                     rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                    if (not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente") then begin
+                    if (not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent") then begin
                         rstFacturaBufferRTL."Importe retencion" := 0;
                         rstFacturaBufferRTL.Excluido := 6;
                         rstFacturaBufferRTL."% Exclusion" := 100;
@@ -3334,7 +3336,7 @@ codeunit 50005 Retenciones
                     rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
                     rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                     rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                     //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1',rstLinDiaGenL."Posting Date");
                     //IF rstExencion.FINDLAST THEN
                     begin
@@ -3412,7 +3414,7 @@ codeunit 50005 Retenciones
                         //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1|%2',rstLinDiaGenL."Posting Date",0D);
                         rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                         rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                        if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                        if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                             //IF rstExencion.FINDLAST AND (rstExencion."Fecha efectividad retencion" < rstLinDiaGenL."Posting Date") THEN
                             /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
                             'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
@@ -3747,7 +3749,7 @@ codeunit 50005 Retenciones
                             rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::"Seguridad Social");
                             rstFacturaBufferRT.SetRange("Cod. retencion", rstLinFactura."Cód. retención SS");
                             rstFacturaBufferRT.SetRange("No. documento", rstLinDiaGen."Document No.");
-                            rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabFactura."Tipo fiscal");
+                            rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabFactura."VAT Bus. Posting Group");
                             //Si esta es la primera vez que se inserta la factura en la tabla, entonces limpio el resto de los campos
 
                             if not rstFacturaBufferRT.FindFirst then begin
@@ -3758,7 +3760,7 @@ codeunit 50005 Retenciones
                                 rstFacturaBufferRT."Tipo retencion" := rstFacturaBufferRT."Tipo retencion"::"Seguridad Social";
                                 rstFacturaBufferRT."Cod. retencion" := rstLinFactura."Cód. retención SS";
                                 rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                rstFacturaBufferRT."Tipo fiscal" := rstCabFactura."Tipo fiscal";
+                                rstFacturaBufferRT."Tipo fiscal" := rstCabFactura."VAT Bus. Posting Group";
                                 rstFacturaBufferRT."Serie retención" := '';
                                 rstFacturaBufferRT."Fecha pago" := 0D;
                                 rstFacturaBufferRT."Base pago retencion" := 0;
@@ -3876,7 +3878,7 @@ codeunit 50005 Retenciones
                                                 //rstFacturaBufferRT.SETRANGE("Cód. retención",rstCodRetencion."Cód. retención");
                                                 rstFacturaBufferRT.SetRange("Cod. retencion", rstLinNC."Cód. retención SS");
                                                 rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
-                                                rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."Tipo Fiscal");
+                                                rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."VAT Bus. Posting Group");
                                                 if not rstFacturaBufferRT.FindFirst then begin
 
                                                     rstFacturaBufferRT."Tipo registro" := rstFacturaBufferRT."Tipo registro"::Compra;
@@ -3892,7 +3894,7 @@ codeunit 50005 Retenciones
                                                     rstFacturaBufferRT."Cod. retencion" := rstLinNC."Cód. retención SS";
                                                     //rstFacturaBufferRT."Cód. retención" := rstCodRetencion."Cód. retención";
                                                     rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                                    rstFacturaBufferRT."Tipo fiscal" := rstCabNC."Tipo Fiscal";
+                                                    rstFacturaBufferRT."Tipo fiscal" := rstCabNC."VAT Bus. Posting Group";
                                                     rstFacturaBufferRT."Serie retención" := '';
                                                     rstFacturaBufferRT."Fecha pago" := 0D;
                                                     rstFacturaBufferRT."Base pago retencion" := 0;
@@ -3986,7 +3988,7 @@ codeunit 50005 Retenciones
                                                 //rstFacturaBufferRT.SETRANGE("Cód. retención",rstCodRetencion."Cód. retención");
                                                 rstFacturaBufferRT.SetRange("Cod. retencion", rstLinNC."Cód. retención SS");
                                                 rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
-                                                rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."Tipo Fiscal");
+                                                rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."VAT Bus. Posting Group");
                                                 if not rstFacturaBufferRT.FindFirst then begin
 
                                                     rstFacturaBufferRT."Tipo registro" := rstFacturaBufferRT."Tipo registro"::Compra;
@@ -4001,7 +4003,7 @@ codeunit 50005 Retenciones
                                                     rstFacturaBufferRT."Tipo retencion" := rstFacturaBufferRT."Tipo retencion"::"Seguridad Social";
                                                     rstFacturaBufferRT."Cod. retencion" := rstLinNC."Cód. retención SS";
                                                     rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                                    rstFacturaBufferRT."Tipo fiscal" := rstCabNC."Tipo Fiscal";
+                                                    rstFacturaBufferRT."Tipo fiscal" := rstCabNC."VAT Bus. Posting Group";
                                                     rstFacturaBufferRT."Serie retención" := '';
                                                     rstFacturaBufferRT."Fecha pago" := 0D;
                                                     rstFacturaBufferRT."Base pago retencion" := 0;
@@ -4090,7 +4092,7 @@ codeunit 50005 Retenciones
                                         //rstFacturaBufferRT.SETRANGE("Cód. retención",rstCodRetencion."Cód. retención");
                                         rstFacturaBufferRT.SetRange("Cod. retencion", rstLinNC."Cód. retención SS");
                                         rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
-                                        rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."Tipo Fiscal");
+                                        rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."VAT Bus. Posting Group");
                                         if not rstFacturaBufferRT.FindFirst then begin
 
                                             rstFacturaBufferRT."Tipo registro" := rstFacturaBufferRT."Tipo registro"::Compra;
@@ -4106,7 +4108,7 @@ codeunit 50005 Retenciones
                                             rstFacturaBufferRT."Cod. retencion" := rstLinNC."Cód. retención SS";
                                             //rstFacturaBufferRT."Cód. retención" := rstCodRetencion."Cód. retención";
                                             rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                            rstFacturaBufferRT."Tipo fiscal" := rstCabNC."Tipo Fiscal";
+                                            rstFacturaBufferRT."Tipo fiscal" := rstCabNC."VAT Bus. Posting Group";
                                             rstFacturaBufferRT."Serie retención" := '';
                                             rstFacturaBufferRT."Fecha pago" := 0D;
                                             rstFacturaBufferRT."Base pago retencion" := 0;
@@ -4265,7 +4267,7 @@ codeunit 50005 Retenciones
                     rstExencion.SetFilter("Tipo retención", '%1|%2', rstExencion."Tipo retención"::"Seguridad Social", rstExencion."Tipo retención"::"Agente de retención IVA");
                     rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                     rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                     //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1',rstLinDiaGenL."Posting Date");
                     //IF rstExencion.FINDLAST THEN
                     begin
@@ -4342,7 +4344,7 @@ codeunit 50005 Retenciones
                         //rstExencion.SETRANGE("Tipo retención",rstExencion."Tipo retención"::"Seguridad Social");
                         rstExencion.SetFilter("Tipo retención", '%1|%2', rstExencion."Tipo retención"::"Seguridad Social", rstExencion."Tipo retención"::"Agente de retención IVA");
                         rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                        if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                        if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                             //IF rstExencion.FINDLAST AND (rstExencion."Fecha efectividad retencion" < rstLinDiaGenL."Posting Date") THEN
                             /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
                             'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
@@ -4420,7 +4422,7 @@ codeunit 50005 Retenciones
                     rstExencion.SetFilter("Tipo retención", '%1|%2', rstExencion."Tipo retención"::"Seguridad Social", rstExencion."Tipo retención"::"Agente de retención IVA");
                     rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                     rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                     //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1',rstLinDiaGenL."Posting Date");
                     //IF rstExencion.FINDLAST THEN
                     begin
@@ -4495,7 +4497,7 @@ codeunit 50005 Retenciones
                         //rstExencion.SETRANGE("Tipo retención",rstExencion."Tipo retención"::"Seguridad Social");
                         rstExencion.SetFilter("Tipo retención", '%1|%2', rstExencion."Tipo retención"::"Seguridad Social", rstExencion."Tipo retención"::"Agente de retención IVA");
                         rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                        if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                        if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                             //IF rstExencion.FINDLAST AND (rstExencion."Fecha efectividad retencion" < rstLinDiaGenL."Posting Date") THEN
                             /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
                             'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
@@ -4865,7 +4867,7 @@ codeunit 50005 Retenciones
                             rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos");
                             rstFacturaBufferRT.SetRange("Cod. retencion", rstLinFactura."Cód. retención IIBB");
                             rstFacturaBufferRT.SetRange("No. documento", rstLinDiaGen."Document No.");
-                            rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabFactura."Tipo fiscal");
+                            rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabFactura."VAT Bus. Posting Group");
                             //Si esta es la primera vez que se inserta la factura en la tabla, entonces limpio el resto de los campos
 
                             if not rstFacturaBufferRT.FindFirst then begin
@@ -4876,7 +4878,7 @@ codeunit 50005 Retenciones
                                 rstFacturaBufferRT."Tipo retencion" := rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos";
                                 rstFacturaBufferRT."Cod. retencion" := rstLinFactura."Cód. retención IIBB";
                                 rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                rstFacturaBufferRT."Tipo fiscal" := rstCabFactura."Tipo fiscal";
+                                rstFacturaBufferRT."Tipo fiscal" := rstCabFactura."VAT Bus. Posting Group";
                                 rstFacturaBufferRT."Serie retención" := '';
                                 rstFacturaBufferRT."Fecha pago" := 0D;
                                 rstFacturaBufferRT."Base pago retencion" := 0;
@@ -4996,7 +4998,7 @@ codeunit 50005 Retenciones
                                                 //rstFacturaBufferRT.SETRANGE("Cód. retención",rstCodRetencion."Cód. retención");
                                                 rstFacturaBufferRT.SetRange("Cod. retencion", rstLinNC."Cód. retención IIBB");
                                                 rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
-                                                rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."Tipo Fiscal");
+                                                rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."VAT Bus. Posting Group");
                                                 if not rstFacturaBufferRT.FindFirst then begin
 
                                                     rstFacturaBufferRT."Tipo registro" := rstFacturaBufferRT."Tipo registro"::Compra;
@@ -5012,7 +5014,7 @@ codeunit 50005 Retenciones
                                                     rstFacturaBufferRT."Cod. retencion" := rstLinNC."Cód. retención IIBB";
                                                     //rstFacturaBufferRT."Cód. retención" := rstCodRetencion."Cód. retención";
                                                     rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                                    rstFacturaBufferRT."Tipo fiscal" := rstCabNC."Tipo Fiscal";
+                                                    rstFacturaBufferRT."Tipo fiscal" := rstCabNC."VAT Bus. Posting Group";
                                                     rstFacturaBufferRT."Serie retención" := '';
                                                     rstFacturaBufferRT."Fecha pago" := 0D;
                                                     rstFacturaBufferRT."Base pago retencion" := 0;
@@ -5329,7 +5331,7 @@ codeunit 50005 Retenciones
                                         //rstFacturaBufferRT.SETRANGE("Cód. retención",rstCodRetencion."Cód. retención");
                                         rstFacturaBufferRT.SetRange("Cod. retencion", rstLinNC."Cód. retención IIBB");
                                         rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
-                                        rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."Tipo Fiscal");
+                                        rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."VAT Bus. Posting Group");
                                         if not rstFacturaBufferRT.FindFirst then begin
 
                                             rstFacturaBufferRT."Tipo registro" := rstFacturaBufferRT."Tipo registro"::Compra;
@@ -5345,7 +5347,7 @@ codeunit 50005 Retenciones
                                             rstFacturaBufferRT."Cod. retencion" := rstLinNC."Cód. retención IIBB";
                                             //rstFacturaBufferRT."Cód. retención" := rstCodRetencion."Cód. retención";
                                             rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                            rstFacturaBufferRT."Tipo fiscal" := rstCabNC."Tipo Fiscal";
+                                            rstFacturaBufferRT."Tipo fiscal" := rstCabNC."VAT Bus. Posting Group";
                                             rstFacturaBufferRT."Serie retención" := '';
                                             rstFacturaBufferRT."Fecha pago" := 0D;
                                             rstFacturaBufferRT."Base pago retencion" := 0;
@@ -5502,7 +5504,7 @@ codeunit 50005 Retenciones
                     rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                     //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1',rstLinDiaGenL."Posting Date");
                     rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                     /*IF rstExencion.FINDLAST AND {(rstExencion."Fecha documento" <= rstLinDiaGenL."Posting Date") AND}
                     (rstExencion."Fecha efectividad retencion" >= rstLinDiaGenL."Posting Date") THEN
                     */
@@ -5632,7 +5634,7 @@ codeunit 50005 Retenciones
                     rstExencion.SetRange("Cód. retención", rstLinFacturaL."Cód. retención IIBB");
                     rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                     rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) and (rstFC.Amount <> rstNC.Amount) then
+                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) and (rstFC.Amount <> rstNC.Amount) then
                     //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1',rstLinDiaGenL."Posting Date");
                     //IF rstExencion.FINDLAST AND (rstFC.Amount <> rstNC.Amount) THEN
                     begin
@@ -6039,7 +6041,7 @@ codeunit 50005 Retenciones
                             rstFacturaBufferRT."No. documento" := rstLinFactura."Document No.";
                             rstFacturaBufferRT."Serie retención" := '';
                             rstFacturaBufferRT."Fecha pago" := rstCabVenta."Posting Date";
-                            rstFacturaBufferRT."Tipo fiscal" := rstCliente."Tipo Fiscal";
+                            rstFacturaBufferRT."Tipo fiscal" := rstCliente."VAT Bus. Posting Group";
                             rstFacturaBufferRT."Base pago retencion" := 0;
                             rstFacturaBufferRT."Pagos anteriores" := 0;
                             rstFacturaBufferRT."Importe retencion" := 0;
@@ -6125,7 +6127,7 @@ codeunit 50005 Retenciones
                 rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::"Ingresos Brutos");
                 rstExencion.SetFilter("Fecha documento", '<=%1', rstCabFacturaL."Posting Date");
                 rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstCabFacturaL."Posting Date", 0D);
-                if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                 //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1',rstCabFacturaL."Posting Date");
                 //IF rstExencion.FINDLAST THEN
                 begin
@@ -6370,7 +6372,7 @@ codeunit 50005 Retenciones
                             rstFacturaBufferRT."No. documento" := rstLinFactura."Document No.";
                             rstFacturaBufferRT."Serie retención" := '';
                             rstFacturaBufferRT."Fecha pago" := rstCabVenta."Posting Date";
-                            rstFacturaBufferRT."Tipo fiscal" := rstCliente."Tipo Fiscal";
+                            rstFacturaBufferRT."Tipo fiscal" := rstCliente."VAT Bus. Posting Group";
                             rstFacturaBufferRT."Base pago retencion" := 0;
                             rstFacturaBufferRT."Pagos anteriores" := 0;
                             rstFacturaBufferRT."Importe retencion" := 0;
@@ -6455,7 +6457,7 @@ codeunit 50005 Retenciones
                 rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::"Ingresos Brutos");
                 rstExencion.SetFilter("Fecha documento", '<=%1', rstCabFacturaL."Posting Date");
                 rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstCabFacturaL."Posting Date", 0D);
-                if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Retener aunque sea Agente")) then
+                if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
                 //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1',rstCabFacturaL."Posting Date");
                 //IF rstExencion.FINDLAST THEN
                 begin
@@ -6613,7 +6615,7 @@ codeunit 50005 Retenciones
     begin
         Clear(rstProveedor);
         rstProveedor.Get(l_rstLinDiaGen."Account No.");
-        if rstProveedor."Tax Area Code" <> 'PRV-RI' then
+        if rstProveedor."VAT Bus. Posting Group" <> 'PRV-RI' then
             exit;
 
         Clear(l_rstLinDiaGenTemp);
@@ -6900,6 +6902,41 @@ codeunit 50005 Retenciones
     procedure fntNoSolicitarConfirmaciones(l_blnConfirmar: Boolean)
     begin
         blnConfirmar := l_blnConfirmar;
+    end;
+
+    procedure SetLibroAndSeccionForApply(codLibro: Code[20]; codSeccion: Code[20]; documentNo: Code[20])
+    begin
+        // Procedimiento público para establecer los códigos antes de la aplicación
+        GlobalCodLibro := codLibro;
+        GlobalCodSeccion := codSeccion;
+        GlobalDocumentNo := documentNo;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Apply", 'OnBeforeRun', '', false, false)]
+    local procedure OnBeforeGenJnlApplyRun()
+    begin
+        // Este evento se ejecuta antes de que se complete la aplicación de movimientos
+        // Usar las variables globales establecidas previamente
+
+        if (GlobalCodLibro <> '') and (GlobalCodSeccion <> '') then begin
+            ProcessLibroAndSeccionAfterApply(GlobalCodLibro, GlobalCodSeccion);
+
+            // Limpiar las variables globales después de usar
+            ClearGlobalVariables();
+        end;
+    end;
+
+    local procedure ProcessLibroAndSeccionAfterApply(codLibro: Code[20]; codSeccion: Code[20])
+    begin
+
+    end;
+
+    local procedure ClearGlobalVariables()
+    begin
+        // Limpiar las variables globales después de usar
+        Clear(GlobalCodLibro);
+        Clear(GlobalCodSeccion);
+        Clear(GlobalDocumentNo);
     end;
 
 

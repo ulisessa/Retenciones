@@ -6,7 +6,8 @@ page 50009 "Posted Invoice Purchase Lines"
     SourceTable = "Purch. Inv. Line";
     DeleteAllowed = false;
     InsertAllowed = false;
-    Caption = 'Posted Invoice Purchase Lines';
+    //Caption = 'Posted Invoice Purchase Lines';
+
 
     layout
     {

@@ -1,7 +1,7 @@
 report 50616 "Certificado Retención IIBB"
 {
     DefaultLayout = RDLC;
-    RDLCLayout = 'projects/Administración/Impuestos/Retenciones/reports/CertificadoRetenciónIIBB.rdlc';
+    RDLCLayout = 'reports/CertificadoRetenciónIIBB.rdl';
     EnableExternalImages = true;
     UsageCategory = ReportsAndAnalysis;
     ApplicationArea = Basic, Suite;

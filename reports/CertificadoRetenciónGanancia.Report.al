@@ -1,7 +1,7 @@
 report 50615 "Certificado Retención Ganancia"
 {
     DefaultLayout = RDLC;
-    RDLCLayout = 'projects/Administración/Impuestos/Retenciones/reports/CertificadoRetenciónGanancia.rdlc';
+    RDLCLayout = 'reports/CertificadoRetenciónGanancia.rdl';
     EnableExternalImages = true;
     UsageCategory = ReportsAndAnalysis;
     ApplicationArea = Basic, Suite;
