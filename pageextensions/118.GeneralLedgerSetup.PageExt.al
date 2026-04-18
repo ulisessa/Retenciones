@@ -28,6 +28,10 @@ pageextension 50119 "Add functions to GLS" extends "General Ledger Setup"
             {
                 Caption = 'Fiscal type';
             }
+            field("AFIP Doc Type Dimension"; "AFIP Doc Type Dimension")
+            {
+                Caption = 'AFIP Document Type Dimension';
+            }
         }
         addafter("Autocredit Memo Nos.")
         {

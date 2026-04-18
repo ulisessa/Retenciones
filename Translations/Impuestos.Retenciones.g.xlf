@@ -618,6 +618,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Action Get RG830 - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 3141329066 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>AFIP Document Type Dimension</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control AFIP Doc Type Dimension - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 1341528549 - Control 4232383974 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
           <source>Fiscal type</source>
           <note from="Developer" annotates="general" priority="2"></note>

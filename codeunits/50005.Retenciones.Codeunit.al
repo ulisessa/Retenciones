@@ -40,6 +40,10 @@ codeunit 50005 Retenciones
         rstCabNC: Record "Purch. Cr. Memo Hdr.";
         rstLinNC: Record "Purch. Cr. Memo Line";
         rstAccionEstFis: Record "Acción estado sit. fiscal";
+        rstAreaImpuesto: Record 318;
+        rstLinAreaImpuesto: Record 319;
+        rstJurisdicciones: Record 320;
+        rstDetalleImpuesto: Record 322;
         rstLinDiaGen2: Record "Gen. Journal Line";
         rstTipoCambio: Record "Currency Exchange Rate";
         rstHisCFacComp: Record "Purch. Inv. Header";
@@ -116,38 +120,9 @@ codeunit 50005 Retenciones
 
         Clear(rstCompInfo);
         rstCompInfo.Get();
-        /*
-        Arbu 2019 - Voy a chequear si es agente desde el código de retención
-        
-        IF rstCompInfo."Ag. Retencion IVA" THEN
-        BEGIN
-        
-        
-        */
-        //if (rstProveedor."VAT Bus. Posting Group" = 'PRV-RI')
-        /*AND
-          ((rstProveedor."Registrado RG3594" <> rstProveedor."Registrado RG3594"::" " ) AND
-          (ActividadRG3594(rstLinDiaGen)))
-          */
-        //then begin
+
         IF (not rstProveedor."Exento retención IVA") then
             CalcularRetencionIVA(rstLinDiaGen, rstProveedor);
-        /*
-      END
-      ELSE
-      BEGIN
-
-        //Si el proveedor no es exento de retención de IVA, sigo con el cálculo general de la retención
-        {
-        IF NOT rstProveedor."Exento retención IVA" THEN
-        BEGIN
-        }
-            CalcularRetencionIVA(rstLinDiaGen,rstProveedor);
-
-        END;
-        */
-        //end;
-        //Si el proveedor no está excluído de Seguridad Social, le calculamos la retención
 
         if (rstCompInfo."Ag. Retencion Ganancias") and (not rstProveedor."Exento ganancias") then
             CalcularRetencionGanancias(rstLinDiaGen, rstProveedor);
@@ -219,8 +194,12 @@ codeunit 50005 Retenciones
             repeat
 
                 //Si el documento es una factura, voy a la línea de la factura, y comienzo a rellenar el buffer de retenciones
-
-                if rstLinDiaGenTemp."Applies-to Doc. Type" = rstLinDiaGenTemp."Applies-to Doc. Type"::Invoice then begin
+                Clear(rstCabFactura);
+                Clear(rstCabNC);
+                Clear(rstLinFactura);
+                Clear(rstLinNC);
+                decTCambioPago := 0;
+                IF rstLinDiaGenTemp."Applies-to Doc. Type" = rstLinDiaGenTemp."Applies-to Doc. Type"::Invoice THEN begin
 
                     Clear(rstLinFactura);
                     rstLinFactura.SetRange("Document No.", rstLinDiaGenTemp."Applies-to Doc. No.");
@@ -246,58 +225,66 @@ codeunit 50005 Retenciones
                                 if (rstProveedor."VAT Bus. Posting Group" = 'PRV-RI') then
                                     rstLinFactura.TestField("Actividad AFIP");
 
-                                Clear(rstFacturaBufferRT);
-                                rstFacturaBufferRT.SetRange("Tipo registro", rstFacturaBufferRT."Tipo registro"::Compra);
-                                rstFacturaBufferRT.SetRange("Cliente/Proveedor", rstProveedor."No.");
-                                rstFacturaBufferRT.SetRange("No. Factura", rstLinFactura."Document No.");
-                                rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::IVA);
-                                rstFacturaBufferRT.SetRange("Cod. retencion", rstLinFactura."Cód. retención IVA");
-                                rstFacturaBufferRT.SetRange("No. documento", rstLinDiaGen."Document No.");
-                                rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabFactura."VAT Bus. Posting Group");
+                                TraerConfRet(rstWithholdingCodes, rstWithholdingCodes."Tipo impuesto retencion"::IVA, rstLinFactura."Cód. retención IVA", FALSE);
+                                InsertarFacturaIVABuffer(rstFacturaBufferRT, rstLinDiaGen, rstLinDiaGenTemp, rstWithholdingCodes, rstCabFactura, rstLinFactura, rstCabNC, rstLinNC, decImportePagosAnterioresIVA);
 
-                                //Si esta es la primera vez que se inserta la factura en la tabla, entonces limpio el resto de los campos
-
-                                if not rstFacturaBufferRT.FindFirst then begin
-
-                                    rstFacturaBufferRT."Tipo registro" := rstFacturaBufferRT."Tipo registro"::Compra;
-                                    rstFacturaBufferRT."Cliente/Proveedor" := rstProveedor."No.";
-                                    rstFacturaBufferRT."Estado de situación fiscal" := rstProveedor."Estado de situación fiscal";
-                                    rstFacturaBufferRT."No. Factura" := rstLinFactura."Document No.";
-                                    rstFacturaBufferRT."Tipo retencion" := rstFacturaBufferRT."Tipo retencion"::IVA;
-                                    rstFacturaBufferRT."Cod. retencion" := rstLinFactura."Cód. retención IVA";
-                                    rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                    rstFacturaBufferRT."Tipo fiscal" := rstCabFactura."VAT Bus. Posting Group";
-                                    rstFacturaBufferRT."Fecha pago" := 0D;
-                                    rstFacturaBufferRT."Base pago retencion" := 0;
-                                    rstFacturaBufferRT."Pagos anteriores" := 0;
-                                    rstFacturaBufferRT."Importe retencion" := 0;
-                                    rstFacturaBufferRT."Importe total comprobante" := 0;
-                                    rstFacturaBufferRT."% retencion" := 0;
-                                    rstFacturaBufferRT.Provincia := '';
-                                    rstFacturaBufferRT."No. serie ganancias" := '';
-                                    rstFacturaBufferRT."No. serie IVA" := '';
-                                    rstFacturaBufferRT."No. serie Ingresos Brutos" := '';
-                                    rstFacturaBufferRT."Fecha factura" := 0D;
-                                    rstFacturaBufferRT.Nombre := '';
-                                    rstFacturaBufferRT."Importe neto factura" := 0;
-                                    rstFacturaBufferRT."Tipo factura" := rstFacturaBufferRT."Tipo factura"::Factura;
-                                    rstFacturaBufferRT.Insert;
-
-                                end;
-
-                                rstFacturaBufferRT."Fecha pago" := rstLinDiaGen."Posting Date";
-
-                                //Si la divisa de la factura es diferente a la divisa local, calculo el importe base a retener utilizando el factor
-                                //de divisa de la cabecera de compra.
-                                //Cambio de lógica. Siempre se paga la factura en pesos, así que utilizo el tipo de cambio por el que se cargó la
-                                //factura para el cálculo de las retenciones.
-                                //++Arbu 2022 -- El tipo de cambio a utilizar debería ser el del pago
-                                decTCambioPago := fntTipoCambioPago(rstLinDiaGenTemp, rstFacturaBufferRT."No. Factura");
-                                //--Arbu 2022 -- El tipo de cambio a utilizar debería ser el del pago
+                                IF rstWithholdingCodes."Cód. alterno superior" <> '' THEN begin
+                                    TraerConfRet(rstWithholdingCodes, rstWithholdingCodes."Tipo impuesto retencion"::IVA, rstLinFactura."Cód. retención IVA", TRUE);
+                                    InsertarFacturaIVABuffer(rstFacturaBufferRT, rstLinDiaGen, rstLinDiaGenTemp, rstWithholdingCodes, rstCabFactura, rstLinFactura, rstCabNC, rstLinNC, decImportePagosAnterioresIVA);
+                                END;
                                 /*
-                                IF rstCabFactura."Currency Code" <> '' THEN
-                                BEGIN
-                                */
+                                                Clear(rstFacturaBufferRT);
+                                                rstFacturaBufferRT.SetRange("Tipo registro", rstFacturaBufferRT."Tipo registro"::Compra);
+                                                rstFacturaBufferRT.SetRange("Cliente/Proveedor", rstProveedor."No.");
+                                                rstFacturaBufferRT.SetRange("No. Factura", rstLinFactura."Document No.");
+                                                rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::IVA);
+                                                rstFacturaBufferRT.SetRange("Cod. retencion", rstLinFactura."Cód. retención IVA");
+                                                rstFacturaBufferRT.SetRange("No. documento", rstLinDiaGen."Document No.");
+                                                rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabFactura."VAT Bus. Posting Group");
+
+                                                //Si esta es la primera vez que se inserta la factura en la tabla, entonces limpio el resto de los campos
+
+                                                if not rstFacturaBufferRT.FindFirst then begin
+
+                                                    rstFacturaBufferRT."Tipo registro" := rstFacturaBufferRT."Tipo registro"::Compra;
+                                                    rstFacturaBufferRT."Cliente/Proveedor" := rstProveedor."No.";
+                                                    rstFacturaBufferRT."Estado de situación fiscal" := rstProveedor."Estado de situación fiscal";
+                                                    rstFacturaBufferRT."No. Factura" := rstLinFactura."Document No.";
+                                                    rstFacturaBufferRT."Tipo retencion" := rstFacturaBufferRT."Tipo retencion"::IVA;
+                                                    rstFacturaBufferRT."Cod. retencion" := rstLinFactura."Cód. retención IVA";
+                                                    rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
+                                                    rstFacturaBufferRT."Tipo fiscal" := rstCabFactura."VAT Bus. Posting Group";
+                                                    rstFacturaBufferRT."Fecha pago" := 0D;
+                                                    rstFacturaBufferRT."Base pago retencion" := 0;
+                                                    rstFacturaBufferRT."Pagos anteriores" := 0;
+                                                    rstFacturaBufferRT."Importe retencion" := 0;
+                                                    rstFacturaBufferRT."Importe total comprobante" := 0;
+                                                    rstFacturaBufferRT."% retencion" := 0;
+                                                    rstFacturaBufferRT.Provincia := '';
+                                                    rstFacturaBufferRT."No. serie ganancias" := '';
+                                                    rstFacturaBufferRT."No. serie IVA" := '';
+                                                    rstFacturaBufferRT."No. serie Ingresos Brutos" := '';
+                                                    rstFacturaBufferRT."Fecha factura" := 0D;
+                                                    rstFacturaBufferRT.Nombre := '';
+                                                    rstFacturaBufferRT."Importe neto factura" := 0;
+                                                    rstFacturaBufferRT."Tipo factura" := rstFacturaBufferRT."Tipo factura"::Factura;
+                                                    rstFacturaBufferRT.Insert;
+
+                                                end;
+
+                                                rstFacturaBufferRT."Fecha pago" := rstLinDiaGen."Posting Date";
+
+                                                //Si la divisa de la factura es diferente a la divisa local, calculo el importe base a retener utilizando el factor
+                                                //de divisa de la cabecera de compra.
+                                                //Cambio de lógica. Siempre se paga la factura en pesos, así que utilizo el tipo de cambio por el que se cargó la
+                                                //factura para el cálculo de las retenciones.
+                                                //++Arbu 2022 -- El tipo de cambio a utilizar debería ser el del pago
+                                                decTCambioPago := fntTipoCambioPago(rstLinDiaGenTemp, rstFacturaBufferRT."No. Factura");
+                                                //--Arbu 2022 -- El tipo de cambio a utilizar debería ser el del pago
+                                                /*
+                                                IF rstCabFactura."Currency Code" <> '' THEN
+                                                BEGIN
+                                                */
                                 //decTCambioPago := 0;
                                 //decTCambioPago := 1/rstCabFactura."Currency Factor";
                                 //decTCambioPago := 1/rstLinDiaGenTemp."Currency Factor";
@@ -306,7 +293,7 @@ codeunit 50005 Retenciones
                                   rstFacturaBufferRT."Importe neto factura"  += (rstLinFactura.Amount)/rstCabFactura."Currency Factor"
                                 ELSE
                                   rstFacturaBufferRT."Importe neto factura"  += (rstLinFactura.Amount);
-                                  */
+                                  
                                 //CalcularTotalComprobante
                                 //rstFacturaBufferRT."Importe total comprobante" += (rstLinFactura."Amount Including VAT")*decTCambioPago;
                                 rstFacturaBufferRT."Importe neto factura" += (rstLinFactura.Amount) * decTCambioPago;
@@ -323,10 +310,11 @@ codeunit 50005 Retenciones
                               rstFacturaBufferRT."Base pago retencion" += (rstLinFactura."Amount Including VAT"-rstLinFactura."VAT Base Amount");
 
                             END;
-                              */
+                              
                                 //Calculo los pagos realizados anteriormente sobre ésta factura
                                 decImportePagosAnterioresIVA := 0;
                                 decImportePagosAnterioresIVA := CalcularPagosAnterioresIVA(rstFacturaBufferRT);
+                */
 
                                 //Calculo el importe a retener. Para eso, busco la configuración de retenciones correcta
                                 CalcularImporteARetener(rstLinFactura, rstLinDiaGen, decImportePagosAnterioresIVA, rstFacturaBufferRT, rstCabFactura);
@@ -379,7 +367,7 @@ codeunit 50005 Retenciones
                                     rstFacturaBufferRT."Cod. retencion" := rstLinNC."Cód. retención IVA";
                                     rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
                                     rstFacturaBufferRT."Tipo fiscal" := rstCabNC."VAT Bus. Posting Group";
-                                    rstFacturaBufferRT."Fecha pago" := 0D;
+                                    rstFacturaBufferRT."Fecha pago" := rstLinDiaGen."Posting Date";
                                     rstFacturaBufferRT."Base pago retencion" := 0;
                                     rstFacturaBufferRT."Pagos anteriores" := 0;
                                     rstFacturaBufferRT."Importe retencion" := 0;
@@ -459,6 +447,67 @@ codeunit 50005 Retenciones
         CrearDiarioPagosIVA(rstLinDiaGen);
 
     end;
+
+    LOCAL PROCEDURE InsertarFacturaIVABuffer(VAR rstFacturaBufferRT: Record "Invoice Withholding Buffer"; rstLinDiaGen: Record "Gen. Journal Line"; rstLinDiaGenTemp: Record "Gen. Journal Line"; rstCodigosRetencion: Record "Withholding codes"; rstCabFactura: Record "Purch. Inv. Header"; rstLinFactura: Record "Purch. Inv. Line"; rstCabNC: Record "Purch. Cr. Memo Hdr."; rstLinNC: Record "Purch. Cr. Memo Line"; decImportePagosAnterioresIVA: Decimal);
+    VAR
+        rstConfCont: Record "General Ledger Setup";
+        decPorcentajePagado: Decimal;
+    BEGIN
+        if decTCambioPago = 0 then
+            decTCambioPago := 1;
+        Clear(rstFacturaBufferRT);
+        rstFacturaBufferRT.SetRange("Tipo registro", rstFacturaBufferRT."Tipo registro"::Compra);
+        rstFacturaBufferRT.SetRange("Cliente/Proveedor", rstProveedor."No.");
+        rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::IVA);
+        if rstCabFactura."No." <> '' then begin
+            rstFacturaBufferRT.SetRange("Cod. retencion", rstCodigosRetencion."Cod. retencion");
+            rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabFactura."Tipo fiscal");
+            rstFacturaBufferRT.SetRange("No. Factura", rstCabFactura."No.");
+        end;
+        if rstCabNC."No." <> '' then begin
+            rstFacturaBufferRT.SetRange("Cod. retencion", rstCodigosRetencion."Cod. retencion");
+            rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."Tipo Fiscal");
+            rstFacturaBufferRT.SetRange("No. Factura", rstCabNC."No.");
+        end;
+        rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
+
+        if not rstFacturaBufferRT.FindFirst then begin
+            rstFacturaBufferRT."Tipo registro" := rstFacturaBufferRT."Tipo registro"::Compra;
+            rstFacturaBufferRT."Cliente/Proveedor" := rstProveedor."No.";
+            rstFacturaBufferRT."No. Factura" := rstLinFactura."Document No.";
+            rstFacturaBufferRT."Tipo retencion" := rstFacturaBufferRT."Tipo retencion"::IVA;
+            rstFacturaBufferRT."Cod. retencion" := rstCodigosRetencion."Cod. retencion";
+            rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
+            if rstCabFactura."No." <> '' then
+                rstFacturaBufferRT."Tipo fiscal" := rstCabFactura."Tipo fiscal";
+            if rstCabNC."No." <> '' then
+                rstFacturaBufferRT."Tipo fiscal" := rstCabNC."Tipo Fiscal";
+            rstFacturaBufferRT."Fecha pago" := rstLinDiaGen."Posting Date";
+            rstFacturaBufferRT."Base pago retencion" := 0;
+            rstFacturaBufferRT."Pagos anteriores" := 0;
+            rstFacturaBufferRT."Importe retencion" := 0;
+            rstFacturaBufferRT."Importe total comprobante" := 0;
+            rstFacturaBufferRT."% retencion" := 0;
+            rstFacturaBufferRT.Provincia := '';
+            rstFacturaBufferRT."No. serie ganancias" := '';
+            rstFacturaBufferRT."No. serie IVA" := '';
+            rstFacturaBufferRT."No. serie Ingresos Brutos" := '';
+            rstFacturaBufferRT."Fecha factura" := 0D;
+            rstFacturaBufferRT.Nombre := '';
+            rstFacturaBufferRT."Importe neto factura" := 0;
+            if rstCabFactura."No." <> '' then
+                rstFacturaBufferRT."Tipo factura" := rstFacturaBufferRT."Tipo factura"::Factura;
+            if rstCabNC."No." <> '' then
+                rstFacturaBufferRT."Tipo factura" := rstFacturaBufferRT."Tipo factura"::"Nota d/c";
+            decTCambioPago := fntTipoCambioPago(rstLinDiaGenTemp, rstFacturaBufferRT."No. Factura");
+            rstFacturaBufferRT.Insert;
+        end;
+        rstFacturaBufferRT."Importe neto factura" += (rstLinFactura.Amount) * decTCambioPago;
+        rstFacturaBufferRT."Importe total comprobante" := CalcularTotalComprobante(rstLinDiaGen."Document No.", rstFacturaBufferRT."No. Factura", decTCambioPago);
+        rstFacturaBufferRT."Base pago retencion" += (rstLinFactura."Amount Including VAT" - rstLinFactura."VAT Base Amount") * decTCambioPago;
+        decImportePagosAnterioresIVA := CalcularPagosAnterioresIVA(rstFacturaBufferRT);
+    END;
+
 
     [Scope('OnPrem')]
     procedure CalcularPagosAnterioresIVA(rstFacturaBuffer: Record "Invoice Withholding Buffer"): Decimal
@@ -660,303 +709,74 @@ codeunit 50005 Retenciones
                             end;
 
                         end
-                        else begin
+                        else
+                            Error('El código de retención ' + rstCodigosRetencion."Cod. retencion" + ', tipo de impuesto ' + Format(rstCodigosRetencion."Tipo impuesto retencion") + ', del documento ' + rstLinDiaGenL."Applies-to Doc. No." + ', no está activo a esta fecha.')
 
-                            if rstProveedor."Registrado RG3594" = rstProveedor."Registrado RG3594"::Activo then
-                                decPorcentajeIVA := '50';
-                            if rstProveedor."Registrado RG3594" = rstProveedor."Registrado RG3594"::" " then
-                                decPorcentajeIVA := '100';
-                            if rstProveedor."Registrado RG3594" in [rstProveedor."Registrado RG3594"::Suspendido,
-                                                                   rstProveedor."Registrado RG3594"::Excluido,
-                                                                   rstProveedor."Registrado RG3594"::"Inscripción cancelada"] then begin
+                    end;
 
-                                decPorcentajeIVA := '100';
+                    Clear(rstConfiguracionRetencion);
+                    rstConfiguracionRetencion.SetRange(rstConfiguracionRetencion."Tipo retenciones",
+                    rstConfiguracionRetencion."Tipo retenciones"::IVA);
+                    rstConfiguracionRetencion.SetRange(rstConfiguracionRetencion."Cod. retencion", rstLinFacturaL."Cód. retención IVA");
+                    rstConfiguracionRetencion.SetRange("Tipo fiscal", rstFacturaBufferRTL."Tipo fiscal");
 
-                            end;
+                    case rstTFiscal."Tipo cálculo acumulado" of
 
-                        end;
+                        rstTFiscal."Tipo cálculo acumulado"::" ",
+                        rstTFiscal."Tipo cálculo acumulado"::Mensual:
+                            begin
 
-                    end
-                    else
-                        Error('El código de retención ' + rstCodigosRetencion."Cod. retencion" + ', tipo de impuesto ' + Format(rstCodigosRetencion."Tipo impuesto retencion") + ', del documento ' + rstLinDiaGenL."Applies-to Doc. No." + ', no está activo a esta fecha.')
+                                case rstCodigosRetencion."Base cálculo stepwise" of
+                                    rstCodigosRetencion."Base cálculo stepwise"::"Neto factura":
+                                        rstConfiguracionRetencion.SetRange("Importe minimo Stepwise", 0, rstFacturaBufferRTL."Importe neto factura");
+                                    rstCodigosRetencion."Base cálculo stepwise"::"Total factura":
+                                        rstConfiguracionRetencion.SetRange("Importe minimo Stepwise", 0, rstFacturaBufferRTL."Importe total comprobante");
+                                end;
 
-                end;
+                                /*Parece ser innecesario!
 
-                Clear(rstConfiguracionRetencion);
-                rstConfiguracionRetencion.SetRange(rstConfiguracionRetencion."Tipo retenciones",
-                rstConfiguracionRetencion."Tipo retenciones"::IVA);
-                rstConfiguracionRetencion.SetRange(rstConfiguracionRetencion."Cod. retencion", rstLinFacturaL."Cód. retención IVA");
-                rstConfiguracionRetencion.SetRange("Tipo fiscal", rstFacturaBufferRTL."Tipo fiscal");
+                                Clear(rstLAI);
+                                rstLAI.SetRange(rstLAI."Tax Area", rstLinFacturaL."VAT Bus. Posting Group");
+                                if rstLAI.FindLast then begin
 
-                case rstTFiscal."Tipo cálculo acumulado" of
+                                    Clear(rstJD);
+                                    rstJD.Get(rstLAI."Tax Jurisdiction Code", rstLinFacturaL."Tax Group Code");
 
-                    rstTFiscal."Tipo cálculo acumulado"::" ",
-                    rstTFiscal."Tipo cálculo acumulado"::Mensual:
-                        begin
+                                end;
 
-                            case rstCodigosRetencion."Base cálculo stepwise" of
-                                rstCodigosRetencion."Base cálculo stepwise"::"Neto factura":
-                                    rstConfiguracionRetencion.SetRange("Importe minimo Stepwise", 0, rstFacturaBufferRTL."Importe neto factura");
-                                rstCodigosRetencion."Base cálculo stepwise"::"Total factura":
-                                    rstConfiguracionRetencion.SetRange("Importe minimo Stepwise", 0, rstFacturaBufferRTL."Importe total comprobante");
-                            end;
-
-                            /*Parece ser innecesario!
-                            
-                            Clear(rstLAI);
-                            rstLAI.SetRange(rstLAI."Tax Area", rstLinFacturaL."VAT Bus. Posting Group");
-                            if rstLAI.FindLast then begin
-
-                                Clear(rstJD);
-                                rstJD.Get(rstLAI."Tax Jurisdiction Code", rstLinFacturaL."Tax Group Code");
-
-                            end;
-
-                            rstConfiguracionRetencion.SetRange("% retencion", rstJD."Tax Below Maximum");
-                            */
-                            if decPorcentajeIVA <> '' then
-                                rstConfiguracionRetencion.SetFilter("Porcentaje de IVA", decPorcentajeIVA);
-                            if rstConfiguracionRetencion.FindLast then begin
-                                //Si el proveedor tiene algún certificado de exclusión vigente
-
-                                Clear(rstExencion);
-                                rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
-                                rstExencion.SetFilter("Tipo retención", '%1', rstExencion."Tipo retención"::IVA);
-                                rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                                rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                                //Si la configuración de exclusiones obliga a retener más allá del certificado de exclusión
-                                if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") then
-                                /*
-                                Este código no funciona cuando tenemos dos exclusiones activas, una en el mes actual y otra en el próximo mes,
-                                porque la fecha del documento de exención es superior a la fecha del documento que estoy registrando (encuentra siempre el último!)
-
-                                IF rstExencion.FINDLAST AND (rstExencion."Fecha documento" <= rstLinDiaGenL."Posting Date") AND
-                                (rstExencion."Fecha efectividad retencion" >= rstLinDiaGenL."Posting Date") AND
-                                //Se agrega la excepción en caso de actividades de la RG3594
-                                (NOT rstCodigosRetencion."Verificar registro RG3594") THEN
+                                rstConfiguracionRetencion.SetRange("% retencion", rstJD."Tax Below Maximum");
                                 */
-                                begin
-                                    //Si el proveedor tiene un certificado de exclusión vigente, evalúo el Estado de Situación fiscal del proveedor
-                                    //antes de aplicar el porcentaje de exclusión
+                                if decPorcentajeIVA <> '' then
+                                    rstConfiguracionRetencion.SetFilter("Porcentaje de IVA", decPorcentajeIVA);
+                                if rstConfiguracionRetencion.FindLast then begin
+                                    //Si el proveedor tiene algún certificado de exclusión vigente
 
-                                    Clear(rstAccionEstFis);
-                                    rstAccionEstFis.Get(rstProveedor."Estado de situación fiscal");
-                                    case rstAccionEstFis."Acción exclusión" of
-
-                                        rstAccionEstFis."Acción exclusión"::"Aplicar exención":
-                                            begin
-
-                                                rstFacturaBufferRTL."Importe retencion" := (((rstFacturaBufferRTL."Importe neto factura" *
-                                                //rstConfiguracionRetencion."% retención")/100)*((-rstExencion."% exención"+100)/100))-
-                                                fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                                ) / 100) * ((-rstExencion."% exención" + 100) / 100)) -
-                                                decImportePagosAnterioresIVAL;
-                                                rstFacturaBufferRTL.Excluido := 2;
-                                                rstFacturaBufferRTL."% Exclusion" := rstExencion."% exención";
-                                                rstFacturaBufferRTL."Fecha documento exclusion" := rstExencion."Fecha documento";
-                                                rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
-
-                                            end;
-
-                                        rstAccionEstFis."Acción exclusión"::"No aplicar exención":
-                                            begin
-
-                                                rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
-                                                //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
-
-                                                fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                                ) / 100) - decImportePagosAnterioresIVAL;
-                                                rstFacturaBufferRTL.Excluido := 0;
-                                                rstFacturaBufferRTL."% Exclusion" := 0;
-                                                rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
-                                                rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
-
-                                            end;
-
-                                        rstAccionEstFis."Acción exclusión"::"Consultar al usuario":
-                                            begin
-
-                                                if Confirm('El proveedor %1 posee un Certificado de Exclusión de situación %2 por un %3 por ciento.\' +
-                                                '¿Desea aplicarlo en este pago?', false, rstProveedor.Name,
-                                                rstProveedor."Estado de situación fiscal", rstExencion."% exención") then begin
-
-                                                    rstFacturaBufferRTL."Importe retencion" := (((rstFacturaBufferRTL."Importe neto factura" *
-                                                    //rstConfiguracionRetencion."% retención")/100)*((-rstExencion."% exención"+100)/100))-
-                                                    fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                                    ) / 100) * ((-rstExencion."% exención" + 100) / 100)) -
-                                                    decImportePagosAnterioresIVAL;
-                                                    rstFacturaBufferRTL.Excluido := 2;
-                                                    rstFacturaBufferRTL."% Exclusion" := rstExencion."% exención";
-                                                    rstFacturaBufferRTL."Fecha documento exclusion" := rstExencion."Fecha documento";
-                                                    rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
-
-                                                end
-                                                else begin
-
-                                                    rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
-                                                    //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
-                                                    fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                                    ) / 100) - decImportePagosAnterioresIVAL;
-                                                    rstFacturaBufferRTL.Excluido := 0;
-                                                    rstFacturaBufferRTL."% Exclusion" := 0;
-                                                    rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
-                                                    rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
-
-                                                end;
-
-                                            end;
-
-                                    end;
-                                end
-                                else begin
-                                    //Si la fecha del certificado de exclusión es anterior a la fecha del pago
                                     Clear(rstExencion);
                                     rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
-                                    rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
-                                    //rstExencion.SETFILTER("Fecha efectividad retencion",'<%1|%2',rstLinDiaGenL."Posting Date",0D);
+                                    rstExencion.SetFilter("Tipo retención", '%1', rstExencion."Tipo retención"::IVA);
                                     rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
                                     rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                                    if (rstExencion.FindLast) and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
+                                    //Si la configuración de exclusiones obliga a retener más allá del certificado de exclusión
+                                    if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") then
+                                    /*
+                                    Este código no funciona cuando tenemos dos exclusiones activas, una en el mes actual y otra en el próximo mes,
+                                    porque la fecha del documento de exención es superior a la fecha del documento que estoy registrando (encuentra siempre el último!)
+
+                                    IF rstExencion.FINDLAST AND (rstExencion."Fecha documento" <= rstLinDiaGenL."Posting Date") AND
+                                    (rstExencion."Fecha efectividad retencion" >= rstLinDiaGenL."Posting Date") AND
                                     //Se agrega la excepción en caso de actividades de la RG3594
-                                    /*(NOT rstCodigosRetencion."Verificar registro RG3594") THEN*/
+                                    (NOT rstCodigosRetencion."Verificar registro RG3594") THEN
+                                    */
                                     begin
-                                        fntConfirmaExencionAntigua(rstExencion, rstProveedor);
-                                        rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
-                                        fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                        ) / 100) - decImportePagosAnterioresIVAL;
+                                        //Si el proveedor tiene un certificado de exclusión vigente, evalúo el Estado de Situación fiscal del proveedor
+                                        //antes de aplicar el porcentaje de exclusión
 
-                                        if rstCodigosRetencion."Verificar registro RG3594" then begin
-                                            case rstConfiguracionRetencion."Porcentaje de IVA" of
-                                                50:
-                                                    rstFacturaBufferRTL."Cod. sicore" := 826;
-                                                100:
-                                                    rstFacturaBufferRTL."Cod. sicore" := 827;
-                                            end;
-                                        end
-                                        else
-                                            Evaluate(rstFacturaBufferRTL."Cod. sicore", rstCodigosRetencion."Codigo SICORE");
+                                        Clear(rstAccionEstFis);
+                                        rstAccionEstFis.Get(rstProveedor."Estado de situación fiscal");
+                                        case rstAccionEstFis."Acción exclusión" of
 
-                                        rstFacturaBufferRTL.Excluido := 0;
-                                        rstFacturaBufferRTL."% Exclusion" := 0;
-                                        rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
-
-                                    end
-                                    else begin
-
-                                        rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
-                                        //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
-                                        fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                        ) / 100) - decImportePagosAnterioresIVAL;
-
-                                        if rstCodigosRetencion."Verificar registro RG3594" then begin
-                                            case rstConfiguracionRetencion."Porcentaje de IVA" of
-                                                50:
-                                                    rstFacturaBufferRTL."Cod. sicore" := 826;
-                                                100:
-                                                    rstFacturaBufferRTL."Cod. sicore" := 827;
-                                            end;
-                                        end
-                                        else
-                                            Evaluate(rstFacturaBufferRTL."Cod. sicore", rstCodigosRetencion."Codigo SICORE");
-
-                                        rstFacturaBufferRTL.Excluido := 0;
-                                        rstFacturaBufferRTL."% Exclusion" := 0;
-                                        rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
-
-                                    end;
-                                    Clear(rstExencion);
-                                    rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
-                                    rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::"Agente de retención IVA");
-                                    //rstExencion.SETFILTER("Fecha efectividad retencion",'<%1|%2',rstLinDiaGenL."Posting Date",0D);
-                                    rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                                    rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                                    if (not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent") then begin
-                                        rstFacturaBufferRTL."Importe retencion" := 0;
-                                        rstFacturaBufferRTL.Excluido := 6;
-                                        rstFacturaBufferRTL."% Exclusion" := 100;
-                                        rstFacturaBufferRTL."Fecha documento exclusion" := rstExencion."Fecha documento";
-                                    end;
-
-                                end;
-
-                                if rstFacturaBufferRTL.Excluido = 0 then
-                                    fntTestExentoRetencionIVA(rstFacturaBufferRTL."Cliente/Proveedor", rstFacturaBufferRTL."Importe retencion", rstFacturaBufferRTL.Excluido);
-
-                            end
-                            else begin
-
-                                //Almaceno en el buffer de retenciones el motivo de la exclusión para esta factura
-
-                                rstFacturaBufferRTL.Excluido := 3;
-                                rstFacturaBufferRTL.Modify;
-
-                            end;
-
-                        end;
-
-                    rstTFiscal."Tipo cálculo acumulado"::"11 meses":
-                        begin
-
-                            rstConfiguracionRetencion.SetRange("Importe minimo Stepwise", 0, rstFacturaBufferRTL."Facturacion anterior 12M");
-                            if decPorcentajeIVA <> '' then
-                                rstConfiguracionRetencion.SetFilter("Porcentaje de IVA", decPorcentajeIVA);
-                            if rstConfiguracionRetencion.FindLast then begin
-
-                                //Si el proveedor tiene algún certificado de exclusión vigente
-
-                                Clear(rstExencion);
-                                rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
-                                rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
-                                rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                                rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                                if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
-                                /*
-                                IF rstExencion.FINDLAST AND (rstExencion."Fecha documento" <= rstLinDiaGenL."Posting Date") AND
-                                (rstExencion."Fecha efectividad retencion" >= rstLinDiaGenL."Posting Date") THEN
-                                */
-                                begin
-
-                                    //Si el proveedor tiene un certificado de exclusión vigente, evalúo el Estado de Situación fiscal del proveedor
-                                    //antes de aplicar el porcentaje de exclusión
-
-                                    Clear(rstAccionEstFis);
-                                    rstAccionEstFis.Get(rstProveedor."Estado de situación fiscal");
-                                    case rstAccionEstFis."Acción exclusión" of
-
-                                        rstAccionEstFis."Acción exclusión"::"Aplicar exención":
-                                            begin
-
-                                                rstFacturaBufferRTL."Importe retencion" := (((rstFacturaBufferRTL."Importe neto factura" *
-                                                //rstConfiguracionRetencion."% retención")/100)*((-rstExencion."% exención"+100)/100))-
-                                                fntCalcularPorcentajeRetencion(rstConfiguracionRetencion))
-                                                / 100) * ((-rstExencion."% exención" + 100) / 100)) -
-                                                decImportePagosAnterioresIVAL;
-                                                rstFacturaBufferRTL.Excluido := 2;
-                                                rstFacturaBufferRTL."% Exclusion" := rstExencion."% exención";
-                                                rstFacturaBufferRTL."Fecha documento exclusion" := rstExencion."Fecha documento";
-                                                rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
-
-                                            end;
-
-                                        rstAccionEstFis."Acción exclusión"::"No aplicar exención":
-                                            begin
-
-                                                rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
-                                                //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
-                                                fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                                ) / 100) - decImportePagosAnterioresIVAL;
-                                                rstFacturaBufferRTL.Excluido := 0;
-                                                rstFacturaBufferRTL."% Exclusion" := 0;
-                                                rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
-
-                                            end;
-
-                                        rstAccionEstFis."Acción exclusión"::"Consultar al usuario":
-                                            begin
-
-                                                if Confirm('El proveedor %1 posee un Certificado de Exclusión de situación %2 por un %3 por ciento.\' +
-                                                '¿Desea aplicarlo en este pago?', false, rstProveedor.Name,
-                                                rstProveedor."Estado de situación fiscal", rstExencion."% exención") then begin
+                                            rstAccionEstFis."Acción exclusión"::"Aplicar exención":
+                                                begin
 
                                                     rstFacturaBufferRTL."Importe retencion" := (((rstFacturaBufferRTL."Importe neto factura" *
                                                     //rstConfiguracionRetencion."% retención")/100)*((-rstExencion."% exención"+100)/100))-
@@ -968,150 +788,312 @@ codeunit 50005 Retenciones
                                                     rstFacturaBufferRTL."Fecha documento exclusion" := rstExencion."Fecha documento";
                                                     rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
 
-                                                end
-                                                else begin
+                                                end;
+
+                                            rstAccionEstFis."Acción exclusión"::"No aplicar exención":
+                                                begin
 
                                                     rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
                                                     //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
+
                                                     fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
                                                     ) / 100) - decImportePagosAnterioresIVAL;
                                                     rstFacturaBufferRTL.Excluido := 0;
                                                     rstFacturaBufferRTL."% Exclusion" := 0;
                                                     rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
+                                                    rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
 
                                                 end;
 
-                                            end;
+                                            rstAccionEstFis."Acción exclusión"::"Consultar al usuario":
+                                                begin
+
+                                                    if Confirm('El proveedor %1 posee un Certificado de Exclusión de situación %2 por un %3 por ciento.\' +
+                                                    '¿Desea aplicarlo en este pago?', false, rstProveedor.Name,
+                                                    rstProveedor."Estado de situación fiscal", rstExencion."% exención") then begin
+
+                                                        rstFacturaBufferRTL."Importe retencion" := (((rstFacturaBufferRTL."Importe neto factura" *
+                                                        //rstConfiguracionRetencion."% retención")/100)*((-rstExencion."% exención"+100)/100))-
+                                                        fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                                        ) / 100) * ((-rstExencion."% exención" + 100) / 100)) -
+                                                        decImportePagosAnterioresIVAL;
+                                                        rstFacturaBufferRTL.Excluido := 2;
+                                                        rstFacturaBufferRTL."% Exclusion" := rstExencion."% exención";
+                                                        rstFacturaBufferRTL."Fecha documento exclusion" := rstExencion."Fecha documento";
+                                                        rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
+
+                                                    end
+                                                    else begin
+
+                                                        rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
+                                                        //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
+                                                        fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                                        ) / 100) - decImportePagosAnterioresIVAL;
+                                                        rstFacturaBufferRTL.Excluido := 0;
+                                                        rstFacturaBufferRTL."% Exclusion" := 0;
+                                                        rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
+                                                        rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
+
+                                                    end;
+
+                                                end;
+
+                                        end;
+                                    end
+                                    else begin
+                                        //Si la fecha del certificado de exclusión es anterior a la fecha del pago
+                                        Clear(rstExencion);
+                                        rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
+                                        rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
+                                        //rstExencion.SETFILTER("Fecha efectividad retencion",'<%1|%2',rstLinDiaGenL."Posting Date",0D);
+                                        rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
+                                        rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
+                                        if (rstExencion.FindLast) and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
+                                        //Se agrega la excepción en caso de actividades de la RG3594
+                                        /*(NOT rstCodigosRetencion."Verificar registro RG3594") THEN*/
+                                        begin
+                                            fntConfirmaExencionAntigua(rstExencion, rstProveedor);
+                                            rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
+                                            fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                            ) / 100) - decImportePagosAnterioresIVAL;
+
+                                            Evaluate(rstFacturaBufferRTL."Cod. sicore", rstCodigosRetencion."Codigo SICORE");
+
+                                            rstFacturaBufferRTL.Excluido := 0;
+                                            rstFacturaBufferRTL."% Exclusion" := 0;
+                                            rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
+
+                                        end
+                                        else begin
+
+                                            rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
+                                            //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
+                                            fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                            ) / 100) - decImportePagosAnterioresIVAL;
+
+                                            Evaluate(rstFacturaBufferRTL."Cod. sicore", rstCodigosRetencion."Codigo SICORE");
+
+                                            rstFacturaBufferRTL.Excluido := 0;
+                                            rstFacturaBufferRTL."% Exclusion" := 0;
+                                            rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
+
+                                        end;
+                                        Clear(rstExencion);
+                                        rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
+                                        rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::"Agente de retención IVA");
+                                        //rstExencion.SETFILTER("Fecha efectividad retencion",'<%1|%2',rstLinDiaGenL."Posting Date",0D);
+                                        rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
+                                        rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
+                                        if (not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent") then begin
+                                            rstFacturaBufferRTL."Importe retencion" := 0;
+                                            rstFacturaBufferRTL.Excluido := 6;
+                                            rstFacturaBufferRTL."% Exclusion" := 100;
+                                            rstFacturaBufferRTL."Fecha documento exclusion" := rstExencion."Fecha documento";
+                                        end;
 
                                     end;
+
+                                    if rstFacturaBufferRTL.Excluido = 0 then
+                                        fntTestExentoRetencionIVA(rstFacturaBufferRTL."Cliente/Proveedor", rstFacturaBufferRTL."Importe retencion", rstFacturaBufferRTL.Excluido);
 
                                 end
                                 else begin
 
-                                    //Si la fecha del certificado de exclusión es anterior a la fecha del pago
-
-                                    Clear(rstExencion);
-                                    rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
-                                    rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
-                                    //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1|%2',rstLinDiaGenL."Posting Date",0D);
-                                    rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                                    rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
-                                    //IF rstExencion.FINDLAST AND (rstExencion."Fecha efectividad retencion" < rstLinDiaGenL."Posting Date") THEN
-                                    /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
-                                    'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
-                                    ",rstProveedor.Name)*/
-                                    begin
-                                        fntConfirmaExencionAntigua(rstExencion, rstProveedor);
-                                        rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
-                                        //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
-                                        fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                        ) / 100) - decImportePagosAnterioresIVAL;
-                                        rstFacturaBufferRTL.Excluido := 0;
-                                        rstFacturaBufferRTL."% Exclusion" := 0;
-                                        rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
-                                    end
-                                    else begin
-
-                                        rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
-                                        //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
-                                        fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                        ) / 100) - decImportePagosAnterioresIVAL;
-                                        rstFacturaBufferRTL.Excluido := 0;
-                                        rstFacturaBufferRTL."% Exclusion" := 0;
-                                        rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
-
-                                    end;
-
-                                end;
-
-                                if not rstExencion.FindFirst then begin
+                                    //Almaceno en el buffer de retenciones el motivo de la exclusión para esta factura
 
                                     rstFacturaBufferRTL.Excluido := 3;
                                     rstFacturaBufferRTL.Modify;
 
                                 end;
 
-                            end
-                            else begin
+                            end;
 
-                                //Almaceno en el buffer de retenciones el motivo de la exclusión para esta factura
+                        rstTFiscal."Tipo cálculo acumulado"::"11 meses":
+                            begin
 
-                                rstFacturaBufferRTL.Excluido := 3;
-                                rstFacturaBufferRTL.Modify;
+                                rstConfiguracionRetencion.SetRange("Importe minimo Stepwise", 0, rstFacturaBufferRTL."Facturacion anterior 12M");
+                                if decPorcentajeIVA <> '' then
+                                    rstConfiguracionRetencion.SetFilter("Porcentaje de IVA", decPorcentajeIVA);
+                                if rstConfiguracionRetencion.FindLast then begin
+
+                                    //Si el proveedor tiene algún certificado de exclusión vigente
+
+                                    Clear(rstExencion);
+                                    rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
+                                    rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
+                                    rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
+                                    rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
+                                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
+                                    /*
+                                    IF rstExencion.FINDLAST AND (rstExencion."Fecha documento" <= rstLinDiaGenL."Posting Date") AND
+                                    (rstExencion."Fecha efectividad retencion" >= rstLinDiaGenL."Posting Date") THEN
+                                    */
+                                    begin
+
+                                        //Si el proveedor tiene un certificado de exclusión vigente, evalúo el Estado de Situación fiscal del proveedor
+                                        //antes de aplicar el porcentaje de exclusión
+
+                                        Clear(rstAccionEstFis);
+                                        rstAccionEstFis.Get(rstProveedor."Estado de situación fiscal");
+                                        case rstAccionEstFis."Acción exclusión" of
+
+                                            rstAccionEstFis."Acción exclusión"::"Aplicar exención":
+                                                begin
+
+                                                    rstFacturaBufferRTL."Importe retencion" := (((rstFacturaBufferRTL."Importe neto factura" *
+                                                    //rstConfiguracionRetencion."% retención")/100)*((-rstExencion."% exención"+100)/100))-
+                                                    fntCalcularPorcentajeRetencion(rstConfiguracionRetencion))
+                                                    / 100) * ((-rstExencion."% exención" + 100) / 100)) -
+                                                    decImportePagosAnterioresIVAL;
+                                                    rstFacturaBufferRTL.Excluido := 2;
+                                                    rstFacturaBufferRTL."% Exclusion" := rstExencion."% exención";
+                                                    rstFacturaBufferRTL."Fecha documento exclusion" := rstExencion."Fecha documento";
+                                                    rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
+
+                                                end;
+
+                                            rstAccionEstFis."Acción exclusión"::"No aplicar exención":
+                                                begin
+
+                                                    rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
+                                                    //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
+                                                    fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                                    ) / 100) - decImportePagosAnterioresIVAL;
+                                                    rstFacturaBufferRTL.Excluido := 0;
+                                                    rstFacturaBufferRTL."% Exclusion" := 0;
+                                                    rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
+
+                                                end;
+
+                                            rstAccionEstFis."Acción exclusión"::"Consultar al usuario":
+                                                begin
+
+                                                    if Confirm('El proveedor %1 posee un Certificado de Exclusión de situación %2 por un %3 por ciento.\' +
+                                                    '¿Desea aplicarlo en este pago?', false, rstProveedor.Name,
+                                                    rstProveedor."Estado de situación fiscal", rstExencion."% exención") then begin
+
+                                                        rstFacturaBufferRTL."Importe retencion" := (((rstFacturaBufferRTL."Importe neto factura" *
+                                                        //rstConfiguracionRetencion."% retención")/100)*((-rstExencion."% exención"+100)/100))-
+                                                        fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                                        ) / 100) * ((-rstExencion."% exención" + 100) / 100)) -
+                                                        decImportePagosAnterioresIVAL;
+                                                        rstFacturaBufferRTL.Excluido := 2;
+                                                        rstFacturaBufferRTL."% Exclusion" := rstExencion."% exención";
+                                                        rstFacturaBufferRTL."Fecha documento exclusion" := rstExencion."Fecha documento";
+                                                        rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
+
+                                                    end
+                                                    else begin
+
+                                                        rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
+                                                        //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
+                                                        fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                                        ) / 100) - decImportePagosAnterioresIVAL;
+                                                        rstFacturaBufferRTL.Excluido := 0;
+                                                        rstFacturaBufferRTL."% Exclusion" := 0;
+                                                        rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
+
+                                                    end;
+
+                                                end;
+
+                                        end;
+
+                                    end
+                                    else begin
+
+                                        //Si la fecha del certificado de exclusión es anterior a la fecha del pago
+
+                                        Clear(rstExencion);
+                                        rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
+                                        rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
+                                        //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1|%2',rstLinDiaGenL."Posting Date",0D);
+                                        rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
+                                        rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
+                                        if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
+                                        //IF rstExencion.FINDLAST AND (rstExencion."Fecha efectividad retencion" < rstLinDiaGenL."Posting Date") THEN
+                                        /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
+                                        'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
+                                        ",rstProveedor.Name)*/
+                                        begin
+                                            fntConfirmaExencionAntigua(rstExencion, rstProveedor);
+                                            rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
+                                            //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
+                                            fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                            ) / 100) - decImportePagosAnterioresIVAL;
+                                            rstFacturaBufferRTL.Excluido := 0;
+                                            rstFacturaBufferRTL."% Exclusion" := 0;
+                                            rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
+                                        end
+                                        else begin
+
+                                            rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
+                                            //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
+                                            fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                            ) / 100) - decImportePagosAnterioresIVAL;
+                                            rstFacturaBufferRTL.Excluido := 0;
+                                            rstFacturaBufferRTL."% Exclusion" := 0;
+                                            rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
+
+                                        end;
+
+                                    end;
+
+                                    if not rstExencion.FindFirst then begin
+
+                                        rstFacturaBufferRTL.Excluido := 3;
+                                        rstFacturaBufferRTL.Modify;
+
+                                    end;
+
+                                end
+                                else begin
+
+                                    //Almaceno en el buffer de retenciones el motivo de la exclusión para esta factura
+
+                                    rstFacturaBufferRTL.Excluido := 3;
+                                    rstFacturaBufferRTL.Modify;
+
+                                end;
 
                             end;
 
-                        end;
+                    end;
 
-                end;
+                    if rstCodigosRetencion."Exclusión por actividad" then
+                        rstFacturaBufferRTL.Excluido := 7;
 
-                if rstCodigosRetencion."Exclusión por actividad" then
-                    rstFacturaBufferRTL.Excluido := 7;
+                end
+                else begin
 
-            end
-            else begin
+                    //Si el cálculo de ese código de retención no es stepwise
 
-                //Si el cálculo de ese código de retención no es stepwise
+                    Clear(rstConfiguracionRetencion);
+                    rstConfiguracionRetencion.SetRange("Tipo retenciones", rstConfiguracionRetencion."Tipo retenciones"::IVA);
+                    rstConfiguracionRetencion.SetRange("Cod. retencion", rstLinFacturaL."Cód. retención IVA");
+                    rstConfiguracionRetencion.SetRange("Tipo fiscal", rstFacturaBufferRTL."Tipo fiscal");
+                    if rstConfiguracionRetencion.FindFirst then begin
 
-                Clear(rstConfiguracionRetencion);
-                rstConfiguracionRetencion.SetRange("Tipo retenciones", rstConfiguracionRetencion."Tipo retenciones"::IVA);
-                rstConfiguracionRetencion.SetRange("Cod. retencion", rstLinFacturaL."Cód. retención IVA");
-                rstConfiguracionRetencion.SetRange("Tipo fiscal", rstFacturaBufferRTL."Tipo fiscal");
-                if rstConfiguracionRetencion.FindFirst then begin
+                        //Si el proveedor tiene un certificado de exclusión vigente
 
-                    //Si el proveedor tiene un certificado de exclusión vigente
+                        Clear(rstExencion);
+                        rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
+                        rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
+                        rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
+                        rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
+                        if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
+                        //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1',rstLinDiaGenL."Posting Date");
+                        //IF rstExencion.FINDLAST THEN
+                        begin
 
-                    Clear(rstExencion);
-                    rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
-                    rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
-                    rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                    rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                    if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
-                    //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1',rstLinDiaGenL."Posting Date");
-                    //IF rstExencion.FINDLAST THEN
-                    begin
+                            //Si tiene certificado de exclusión, me fijo en el estado de situación fiscal
 
-                        //Si tiene certificado de exclusión, me fijo en el estado de situación fiscal
+                            Clear(rstAccionEstFis);
+                            rstAccionEstFis.Get(rstProveedor."Estado de situación fiscal");
+                            case rstAccionEstFis."Acción exclusión" of
 
-                        Clear(rstAccionEstFis);
-                        rstAccionEstFis.Get(rstProveedor."Estado de situación fiscal");
-                        case rstAccionEstFis."Acción exclusión" of
-
-                            rstAccionEstFis."Acción exclusión"::"Aplicar exención":
-                                begin
-
-                                    rstFacturaBufferRTL."Importe retencion" := (((rstFacturaBufferRTL."Importe neto factura" *
-                                    //rstConfiguracionRetencion."% retención")/100)*((-rstExencion."% exención"+100)/100))-
-                                    fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                    ) / 100) * ((-rstExencion."% exención" + 100) / 100)) -
-                                    decImportePagosAnterioresIVAL;
-                                    rstFacturaBufferRTL.Excluido := 2;
-                                    rstFacturaBufferRTL."% Exclusion" := rstExencion."% exención";
-                                    rstFacturaBufferRTL."Fecha documento exclusion" := rstExencion."Fecha documento";
-                                    rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
-
-                                end;
-
-                            rstAccionEstFis."Acción exclusión"::"No aplicar exención":
-                                begin
-
-                                    rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
-                                    //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
-                                    fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                    ) / 100) - decImportePagosAnterioresIVAL;
-                                    rstFacturaBufferRTL.Excluido := 0;
-                                    rstFacturaBufferRTL."% Exclusion" := 0;
-                                    rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
-
-                                end;
-
-                            rstAccionEstFis."Acción exclusión"::"Consultar al usuario":
-                                begin
-
-                                    if Confirm('El proveedor %1 posee un Certificado de Exclusión de situación %2 por un %3 por ciento.\' +
-                                    '¿Desea aplicarlo en este pago?', false, rstProveedor.Name,
-                                    rstProveedor."Estado de situación fiscal", rstExencion."% exención") then begin
+                                rstAccionEstFis."Acción exclusión"::"Aplicar exención":
+                                    begin
 
                                         rstFacturaBufferRTL."Importe retencion" := (((rstFacturaBufferRTL."Importe neto factura" *
                                         //rstConfiguracionRetencion."% retención")/100)*((-rstExencion."% exención"+100)/100))-
@@ -1123,8 +1105,10 @@ codeunit 50005 Retenciones
                                         rstFacturaBufferRTL."Fecha documento exclusion" := rstExencion."Fecha documento";
                                         rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
 
-                                    end
-                                    else begin
+                                    end;
+
+                                rstAccionEstFis."Acción exclusión"::"No aplicar exención":
+                                    begin
 
                                         rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
                                         //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
@@ -1135,52 +1119,69 @@ codeunit 50005 Retenciones
                                         rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
 
                                     end;
-                                end;
-                        end;
 
-                    end
-                    else begin
+                                rstAccionEstFis."Acción exclusión"::"Consultar al usuario":
+                                    begin
 
-                        Clear(rstExencion);
-                        rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
-                        rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
-                        //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1|%2',rstLinDiaGenL."Posting Date",0D);
-                        rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
-                        rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
+                                        if Confirm('El proveedor %1 posee un Certificado de Exclusión de situación %2 por un %3 por ciento.\' +
+                                        '¿Desea aplicarlo en este pago?', false, rstProveedor.Name,
+                                        rstProveedor."Estado de situación fiscal", rstExencion."% exención") then begin
 
-                        if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
-                            //IF rstExencion.FINDLAST AND (rstExencion."Fecha efectividad retencion" < rstLinDiaGenL."Posting Date") THEN
-                            /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
-                            'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
-                            ",rstProveedor.Name)*/
-                                        fntConfirmaExencionAntigua(rstExencion, rstProveedor)
+                                            rstFacturaBufferRTL."Importe retencion" := (((rstFacturaBufferRTL."Importe neto factura" *
+                                            //rstConfiguracionRetencion."% retención")/100)*((-rstExencion."% exención"+100)/100))-
+                                            fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                            ) / 100) * ((-rstExencion."% exención" + 100) / 100)) -
+                                            decImportePagosAnterioresIVAL;
+                                            rstFacturaBufferRTL.Excluido := 2;
+                                            rstFacturaBufferRTL."% Exclusion" := rstExencion."% exención";
+                                            rstFacturaBufferRTL."Fecha documento exclusion" := rstExencion."Fecha documento";
+                                            rstFacturaBufferRTL."Numero de Certificado" := rstExencion."No. documento";
 
-                        else begin
+                                        end
+                                        else begin
 
-                            if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") and (rstExencion."Fecha documento" > rstLinDiaGenL."Posting Date") then
-                                /*ERROR('El certificado de Exención del proveedor %1, %2, no está todavía vigente. \',
-                                ",rstProveedor.Name)*/
-                                            fntConfirmaExencionAntigua(rstExencion, rstProveedor);
-                        end;
-                        /*
-                          ELSE
-                          BEGIN
-                          */
-                        if (rstConfiguracionRetencion."Precio unitario maximo" < rstFacturaBufferRTL."Precio unitario maximo fac.") and
-                            (rstConfiguracionRetencion."Precio unitario maximo" <> 0) then begin
+                                            rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
+                                            //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
+                                            fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                            ) / 100) - decImportePagosAnterioresIVAL;
+                                            rstFacturaBufferRTL.Excluido := 0;
+                                            rstFacturaBufferRTL."% Exclusion" := 0;
+                                            rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
 
-                            rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
-                            //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
-                            fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                            ) / 100) - decImportePagosAnterioresIVAL;
-                            rstFacturaBufferRTL.Excluido := 0;
-                            rstFacturaBufferRTL."% Exclusion" := 0;
-                            rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
+                                        end;
+                                    end;
+                            end;
 
                         end
                         else begin
 
-                            if rstConfiguracionRetencion."Importe minimo Stepwise" < rstFacturaBufferRTL."Facturacion anterior 12M" then begin
+                            Clear(rstExencion);
+                            rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
+                            rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::IVA);
+                            //rstExencion.SETFILTER("Fecha efectividad retencion",'>=%1|%2',rstLinDiaGenL."Posting Date",0D);
+                            rstExencion.SetFilter("Fecha documento", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
+                            rstExencion.SetFilter("Fecha efectividad retencion", '>=%1|%2', rstLinDiaGenL."Posting Date", 0D);
+
+                            if (rstExencion.FindLast) and (not rstConfiguracionRetencion."Skip exclusions") and ((not rstExencion.IsEmpty) and (not rstTFiscal."Withhold Even if Agent")) then
+                                //IF rstExencion.FINDLAST AND (rstExencion."Fecha efectividad retencion" < rstLinDiaGenL."Posting Date") THEN
+                                /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
+                                'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
+                                ",rstProveedor.Name)*/
+                                        fntConfirmaExencionAntigua(rstExencion, rstProveedor)
+
+                            else begin
+
+                                if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") and (rstExencion."Fecha documento" > rstLinDiaGenL."Posting Date") then
+                                    /*ERROR('El certificado de Exención del proveedor %1, %2, no está todavía vigente. \',
+                                    ",rstProveedor.Name)*/
+                                            fntConfirmaExencionAntigua(rstExencion, rstProveedor);
+                            end;
+                            /*
+                              ELSE
+                              BEGIN
+                              */
+                            if (rstConfiguracionRetencion."Precio unitario maximo" < rstFacturaBufferRTL."Precio unitario maximo fac.") and
+                                (rstConfiguracionRetencion."Precio unitario maximo" <> 0) then begin
 
                                 rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
                                 //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
@@ -1190,32 +1191,46 @@ codeunit 50005 Retenciones
                                 rstFacturaBufferRTL."% Exclusion" := 0;
                                 rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
 
+                            end
+                            else begin
+
+                                if rstConfiguracionRetencion."Importe minimo Stepwise" < rstFacturaBufferRTL."Facturacion anterior 12M" then begin
+
+                                    rstFacturaBufferRTL."Importe retencion" := ((rstFacturaBufferRTL."Importe neto factura" *
+                                    //rstConfiguracionRetencion."% retención")/100)-decImportePagosAnterioresIVAL;
+                                    fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                    ) / 100) - decImportePagosAnterioresIVAL;
+                                    rstFacturaBufferRTL.Excluido := 0;
+                                    rstFacturaBufferRTL."% Exclusion" := 0;
+                                    rstFacturaBufferRTL."Fecha documento exclusion" := 0D;
+
+                                end;
                             end;
                         end;
                     end;
                 end;
+                if rstCodigosRetencion."Exclusión por actividad" then
+                    rstFacturaBufferRTL.Excluido := 7;
+
             end;
-            if rstCodigosRetencion."Exclusión por actividad" then
-                rstFacturaBufferRTL.Excluido := 7;
+            //Completo la línea de retención con la información de la retención
+            //Si está marcado "Exento retención en IVA" en el proveedor, tipo de exclusión 3
+            if rstFacturaBufferRTL.Excluido = 0 then
+                fntTestExentoRetencionIVA(rstFacturaBufferRTL."Cliente/Proveedor", rstFacturaBufferRTL."Importe retencion", rstFacturaBufferRTL.Excluido);
+
+            rstFacturaBufferRTL.Provincia := rstLinFacturaL.Area;
+            rstFacturaBufferRTL."% retencion" := rstConfiguracionRetencion."% retencion" /
+                                                  100 * rstConfiguracionRetencion."Porcentaje de IVA";
+            rstFacturaBufferRTL."No. serie IVA" := '';
+            rstFacturaBufferRTL."Fecha factura" := rstCabFacturaL."Document Date";
+            if not rstFacturaBufferRTL.Insert then
+                rstFacturaBufferRTL.Modify;
+
+            decPorcentajeIVA := '';
+            rst13810.GetTable(rstFacturaBufferRTL);
+            cduValidaciones.ValidarxTabla(rst13810, rst13810.GetPosition(), strFiltro);
 
         end;
-        //Completo la línea de retención con la información de la retención
-        //Si está marcado "Exento retención en IVA" en el proveedor, tipo de exclusión 3
-        if rstFacturaBufferRTL.Excluido = 0 then
-            fntTestExentoRetencionIVA(rstFacturaBufferRTL."Cliente/Proveedor", rstFacturaBufferRTL."Importe retencion", rstFacturaBufferRTL.Excluido);
-
-        rstFacturaBufferRTL.Provincia := rstLinFacturaL.Area;
-        rstFacturaBufferRTL."% retencion" := rstConfiguracionRetencion."% retencion" /
-                                              100 * rstConfiguracionRetencion."Porcentaje de IVA";
-        rstFacturaBufferRTL."No. serie IVA" := '';
-        rstFacturaBufferRTL."Fecha factura" := rstCabFacturaL."Document Date";
-        if not rstFacturaBufferRTL.Insert then
-            rstFacturaBufferRTL.Modify;
-
-        decPorcentajeIVA := '';
-        rst13810.GetTable(rstFacturaBufferRTL);
-        cduValidaciones.ValidarxTabla(rst13810, rst13810.GetPosition(), strFiltro);
-
     end;
 
     [Scope('OnPrem')]
@@ -1245,7 +1260,7 @@ codeunit 50005 Retenciones
         if rstFacturaBufferRT.FindFirst then
             repeat
 
-                rstFacturaBufferRT."Importe retencion" := Round(rstFacturaBufferRT."Importe retencion", 0.01);
+                rstFacturaBufferRT."Importe retencion" := Round(rstFacturaBufferRT."Importe retencion", rstConfCont."Amount Rounding Precision");
                 rstFacturaBufferRT.CalcFields(rstFacturaBufferRT."Importe retencion total");
 
                 if rstFacturaBufferRT."Tipo factura" = rstFacturaBufferRT."Tipo factura"::Factura then begin
@@ -1308,7 +1323,6 @@ codeunit 50005 Retenciones
                                         rstLinDiaGenTemp."Journal Batch Name" := rstLinDiaGen."Journal Batch Name";
                                         rstLinDiaGenTemp."Posting Date" := rstLinDiaGen."Posting Date";
                                         rstLinDiaGenTemp."Posting No. Series" := rstLinDiaGen."Posting No. Series";
-                                        rstLinDiaGenTemp."Due Date" := Today;
                                         rstLinDiaGenTemp."Document No." := rstLinDiaGen."Document No.";
                                         rstLinDiaGenTemp."Line No." := rstLinDiaGen2."Line No." + 1;
                                         rstLinDiaGenTemp."Due Date" := rstLinDiaGen."Due Date";
@@ -1407,7 +1421,6 @@ codeunit 50005 Retenciones
                                         rstLinDiaGenTemp."Journal Batch Name" := rstLinDiaGen."Journal Batch Name";
                                         rstLinDiaGenTemp."Posting Date" := rstLinDiaGen."Posting Date";
                                         rstLinDiaGenTemp."Posting No. Series" := rstLinDiaGen."Posting No. Series";
-                                        rstLinDiaGenTemp."Due Date" := Today;
                                         rstLinDiaGenTemp."Document No." := rstLinDiaGen."Document No.";
                                         rstLinDiaGenTemp."Line No." := rstLinDiaGen2."Line No." + 1;
                                         rstLinDiaGenTemp."Due Date" := rstLinDiaGen."Due Date";
@@ -1532,7 +1545,6 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp."Journal Batch Name" := rstLinDiaGen."Journal Batch Name";
                                     rstLinDiaGenTemp."Posting Date" := rstLinDiaGen."Posting Date";
                                     rstLinDiaGenTemp."Posting No. Series" := rstLinDiaGen."Posting No. Series";
-                                    rstLinDiaGenTemp."Due Date" := Today;
                                     rstLinDiaGenTemp."Document No." := rstLinDiaGen."Document No.";
                                     rstLinDiaGenTemp."Line No." := rstLinDiaGen2."Line No." + 1;
                                     rstLinDiaGenTemp."Due Date" := rstLinDiaGen."Due Date";
@@ -1629,7 +1641,6 @@ codeunit 50005 Retenciones
                                         rstLinDiaGenTemp."Journal Batch Name" := rstLinDiaGen."Journal Batch Name";
                                         rstLinDiaGenTemp."Posting Date" := rstLinDiaGen."Posting Date";
                                         rstLinDiaGenTemp."Posting No. Series" := rstLinDiaGen."Posting No. Series";
-                                        rstLinDiaGenTemp."Due Date" := Today;
                                         rstLinDiaGenTemp."Document No." := rstLinDiaGen."Document No.";
                                         rstLinDiaGenTemp."Line No." := rstLinDiaGen2."Line No." + 1;
                                         rstLinDiaGenTemp."Due Date" := rstLinDiaGen."Due Date";
@@ -1748,6 +1759,7 @@ codeunit 50005 Retenciones
         rstConfCont: Record "General Ledger Setup";
         intFactor: Integer;
         decPorcentajePagado: Decimal;
+        rstFacturaBufferRT3: Record "Invoice Withholding Buffer";
     begin
         //CalcularRetencionGanancias
 
@@ -1760,6 +1772,8 @@ codeunit 50005 Retenciones
         if rstLinDiaGenTemp.FindFirst then
             repeat
 
+                Clear(rstCabNC);
+                Clear(rstCabFactura);
                 //Voy a la línea de la factura, y comienzo a rellenar el buffer de retenciones
                 //Si el documento es una factura
                 case rstLinDiaGenTemp."Applies-to Doc. Type" of
@@ -1776,58 +1790,19 @@ codeunit 50005 Retenciones
                             rstLinFactura.SetFilter("No.", '<>%1', '');
                             if rstLinFactura.FindFirst then
                                 repeat
-                                    Clear(rstCabFactura);
                                     rstCabFactura.Get(rstLinFactura."Document No.");
                                     rstCabFactura.CalcFields(Amount, rstCabFactura."Amount Including VAT");
                                     if (rstProveedor."VAT Bus. Posting Group" = 'PRV-RI') then
                                         if blnConfirmar then
                                             rstLinFactura.TestField("Actividad AFIP");
-                                    Clear(rstFacturaBufferRT);
-                                    rstFacturaBufferRT.SetRange("Tipo registro", rstFacturaBufferRT."Tipo registro"::Compra);
-                                    rstFacturaBufferRT.SetRange("Cliente/Proveedor", rstProveedor."No.");
-                                    rstFacturaBufferRT.SetRange("No. Factura", '');
-                                    rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::Ganancias);
-                                    rstFacturaBufferRT.SetRange("Cod. retencion", rstLinFactura."Cód. retención ganancias");
-                                    rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
-                                    rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabFactura."VAT Bus. Posting Group");
-                                    if not rstFacturaBufferRT.FindFirst then begin
-                                        rstFacturaBufferRT."Tipo registro" := rstFacturaBufferRT."Tipo registro"::Compra;
-                                        rstFacturaBufferRT."Cliente/Proveedor" := rstProveedor."No.";
-                                        rstFacturaBufferRT."No. Factura" := '';
-                                        rstFacturaBufferRT."Tipo retencion" := rstFacturaBufferRT."Tipo retencion"::Ganancias;
-                                        rstFacturaBufferRT."Cod. retencion" := rstLinFactura."Cód. retención ganancias";
-                                        rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                        rstFacturaBufferRT."Tipo fiscal" := rstCabFactura."VAT Bus. Posting Group";
-                                        rstFacturaBufferRT."Fecha pago" := 0D;
-                                        rstFacturaBufferRT."Base pago retencion" := 0;
-                                        rstFacturaBufferRT."Pagos anteriores" := 0;
-                                        rstFacturaBufferRT."Importe retencion" := 0;
-                                        rstFacturaBufferRT."% retencion" := 0;
-                                        rstFacturaBufferRT.Provincia := '';
-                                        rstFacturaBufferRT."No. serie ganancias" := '';
-                                        rstFacturaBufferRT."No. serie IVA" := '';
-                                        rstFacturaBufferRT."No. serie Ingresos Brutos" := '';
-                                        rstFacturaBufferRT."Fecha factura" := 0D;
-                                        rstFacturaBufferRT.Nombre := '';
-                                        rstFacturaBufferRT."Importe neto factura" := 0;
-                                        rstFacturaBufferRT."Tipo factura" := rstFacturaBufferRT."Tipo factura"::Factura;
-                                        rstFacturaBufferRT.Insert;
+
+                                    TraerConfRet(rstCodigosRetencion, rstCodigosRetencion."Tipo impuesto retencion"::Ganancias, rstLinFactura."Cód. retención ganancias", false);
+                                    InsertarFacturaGanBuffer(rstLinDiaGen, rstLinDiaGenTemp, rstCodigosRetencion, rstCabFactura, rstLinFactura, rstCabNC, rstLinNC, rstMovProveedor);
+
+                                    if rstCodigosRetencion."Cód. alterno superior" <> '' then begin
+                                        TraerConfRet(rstCodigosRetencion, rstCodigosRetencion."Tipo impuesto retencion"::Ganancias, rstLinFactura."Cód. retención ganancias", true);
+                                        InsertarFacturaGanBuffer(rstLinDiaGen, rstLinDiaGenTemp, rstCodigosRetencion, rstCabFactura, rstLinFactura, rstCabNC, rstLinNC, rstMovProveedor);
                                     end;
-                                    rstFacturaBufferRT."Fecha pago" := rstLinDiaGen."Posting Date";
-                                    decTCambioPago := 1;
-                                    rstMovProveedor.SetFilter(rstMovProveedor."Applied by doc. type  Filter", '<>%1', rstMovProveedor."Applied by doc. type  Filter"::Abono);
-                                    if rstMovProveedor.Open then
-                                        decPorcentajePagado := Abs(rstLinDiaGenTemp.Amount / rstMovProveedor."Remaining Amount")
-                                    else
-                                        decPorcentajePagado := 1;
-                                    //decPorcentajePagado := ABS(rstLinDiaGenTemp.Amount/rstMovProveedor."Amount");
-                                    //decTCambioPago := fntTipoCambioPago(rstLinDiaGenTemp,rstFacturaBufferRT."No. Factura");
-                                    decTCambioPago := fntTipoCambioPago(rstLinDiaGenTemp, rstCabFactura."No.");
-                                    rstFacturaBufferRT."Importe neto factura" += rstLinFactura.Amount * decTCambioPago;
-                                    rstFacturaBufferRT."Base pago retencion" += Round(rstLinFactura.Amount * decTCambioPago * decPorcentajePagado, rstConfCont."Amount Rounding Precision");
-                                    rstFacturaBufferRT."Facturacion anterior 12M" := CalcularFacturaciónAnterior(rstLinDiaGen);
-                                    rstFacturaBufferRT."Precio unitario maximo fac." := CalcularPrecioUnitarioFac(rstLinDiaGen);
-                                    rstFacturaBufferRT.Modify;
 
                                 until (rstLinFactura.Next = 0);
                         end;
@@ -1845,61 +1820,19 @@ codeunit 50005 Retenciones
                             rstLinNC.SetFilter("No.", '<>%1', '');
                             if rstLinNC.FindFirst then
                                 repeat
-                                    Clear(rstCabNC);
                                     rstCabNC.Get(rstLinNC."Document No.");
                                     rstCabNC.CalcFields(Amount, rstCabNC."Amount Including VAT");
                                     if (rstProveedor."VAT Bus. Posting Group" = 'PRV-RI') then
                                         if blnConfirmar then
                                             rstLinNC.TestField("Actividad AFIP");
-                                    Clear(rstFacturaBufferRT);
-                                    rstFacturaBufferRT.SetRange("Tipo registro", rstFacturaBufferRT."Tipo registro"::Compra);
-                                    rstFacturaBufferRT.SetRange("Cliente/Proveedor", rstProveedor."No.");
-                                    rstFacturaBufferRT.SetRange("No. Factura", '');
-                                    rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::Ganancias);
-                                    rstFacturaBufferRT.SetRange("Cod. retencion", rstLinNC."Cód. retención ganancias");
-                                    rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
-                                    rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."VAT Bus. Posting Group");
-                                    if not rstFacturaBufferRT.FindFirst then begin
-                                        rstFacturaBufferRT."Tipo registro" := rstFacturaBufferRT."Tipo registro"::Compra;
-                                        rstFacturaBufferRT."Cliente/Proveedor" := rstProveedor."No.";
-                                        rstFacturaBufferRT."No. Factura" := '';
-                                        rstFacturaBufferRT."Tipo retencion" := rstFacturaBufferRT."Tipo retencion"::Ganancias;
-                                        rstFacturaBufferRT."Cod. retencion" := rstLinNC."Cód. retención ganancias";
-                                        rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
-                                        rstFacturaBufferRT."Tipo fiscal" := rstCabNC."VAT Bus. Posting Group";
-                                        rstFacturaBufferRT."Fecha pago" := 0D;
-                                        rstFacturaBufferRT."Base pago retencion" := 0;
-                                        rstFacturaBufferRT."Pagos anteriores" := 0;
-                                        rstFacturaBufferRT."Importe retencion" := 0;
-                                        rstFacturaBufferRT."% retencion" := 0;
-                                        rstFacturaBufferRT.Provincia := '';
-                                        rstFacturaBufferRT."No. serie ganancias" := '';
-                                        rstFacturaBufferRT."No. serie IVA" := '';
-                                        rstFacturaBufferRT."No. serie Ingresos Brutos" := '';
-                                        rstFacturaBufferRT."Fecha factura" := 0D;
-                                        rstFacturaBufferRT.Nombre := '';
-                                        rstFacturaBufferRT."Importe neto factura" := 0;
-                                        rstFacturaBufferRT."Tipo factura" := rstFacturaBufferRT."Tipo factura"::"Nota d/c";
-                                        rstFacturaBufferRT.Insert;
+
+                                    TraerConfRet(rstCodigosRetencion, rstCodigosRetencion."Tipo impuesto retencion"::Ganancias, rstLinNC."Cód. retención ganancias", false);
+                                    InsertarFacturaGanBuffer(rstLinDiaGen, rstLinDiaGenTemp, rstCodigosRetencion, rstCabFactura, rstLinFactura, rstCabNC, rstLinNC, rstMovProveedor);
+
+                                    if rstCodigosRetencion."Cód. alterno superior" <> '' then begin
+                                        TraerConfRet(rstCodigosRetencion, rstCodigosRetencion."Tipo impuesto retencion"::Ganancias, rstLinNC."Cód. retención ganancias", true);
+                                        InsertarFacturaGanBuffer(rstLinDiaGen, rstLinDiaGenTemp, rstCodigosRetencion, rstCabFactura, rstLinFactura, rstCabNC, rstLinNC, rstMovProveedor);
                                     end;
-                                    rstFacturaBufferRT."Fecha pago" := rstLinDiaGen."Posting Date";
-                                    if UserId in ['ULISES.SASOVSKY', 'ADMULISES'] then begin
-                                        rstMovProveedor.SetFilter(rstMovProveedor."Applied by doc. type  Filter", '%1', rstMovProveedor."Applied by doc. type  Filter"::Abono);
-                                        if rstMovProveedor.Open then
-                                            decPorcentajePagado := Abs(rstLinDiaGenTemp.Amount / rstMovProveedor."Remaining Amount")
-                                        else
-                                            decPorcentajePagado := 1;
-                                    end;
-                                    decTCambioPago := 1;
-                                    //rstMovProveedor.SETFILTER(rstMovProveedor."Applied by doc. type  Filter",'<>%1',rstMovProveedor."Applied by doc. type  Filter"::Abono);
-                                    //decPorcentajePagado := ABS(rstLinDiaGenTemp.Amount/rstMovProveedor."Remaining Amount");
-                                    //decTCambioPago := fntTipoCambioPago(rstLinDiaGenTemp,rstFacturaBufferRT."No. Factura");
-                                    decTCambioPago := fntTipoCambioPago(rstLinDiaGenTemp, rstCabNC."No.");
-                                    rstFacturaBufferRT."Importe neto factura" -= rstLinNC.Amount * decTCambioPago;
-                                    rstFacturaBufferRT."Base pago retencion" -= Round(rstLinNC.Amount * decTCambioPago * decPorcentajePagado, rstConfCont."Amount Rounding Precision");
-                                    rstFacturaBufferRT."Facturacion anterior 12M" := CalcularFacturaciónAnterior(rstLinDiaGen);
-                                    rstFacturaBufferRT."Precio unitario maximo fac." := CalcularPrecioUnitarioFac(rstLinDiaGen);
-                                    rstFacturaBufferRT.Modify;
                                 until (rstLinNC.Next = 0);
                         end;
                 end;
@@ -1958,74 +1891,61 @@ codeunit 50005 Retenciones
 
                         end;
 
-                        //Si el código de retención es RG3594, buscar el código correcto por medio de la lógica de registro
-                        if rstCodigosRetencion."Verificar registro RG3594" then begin
-
-                            if rstProveedor."Registrado RG3594" = rstProveedor."Registrado RG3594"::Activo then begin
-                                rstConfiguracionRetencion.SetRange("Importe minimo Stepwise");
-                                rstConfiguracionRetencion.SetRange("Registrado RG3594", rstConfiguracionRetencion."Registrado RG3594"::Activo);
-                                rstConfiguracionRetencion.FindLast;
-                            end;
-                            if rstProveedor."Registrado RG3594" <> rstProveedor."Registrado RG3594"::Activo then begin
-                                rstConfiguracionRetencion.SetRange("Importe minimo Stepwise");
-                                rstConfiguracionRetencion.SetFilter("Registrado RG3594", '<>%1', rstConfiguracionRetencion."Registrado RG3594"::Activo);
-                                rstConfiguracionRetencion.FindFirst;
-                            end;
+                        if rstConfiguracionRetencion.FindLast then begin
                             rstFacturaBufferRT2."Importe minimo pago" := rstConfiguracionRetencion."Importe pago minimo";
                             rstFacturaBufferRT2."Importe minimo retención" := rstConfiguracionRetencion."Importe min. retencion";
-                            case rstTFiscal."Tipo cálculo acumulado" of
+                            Clear(rstExencion);
+                            rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
+                            rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::Ganancias);
+                            rstExencion.SetFilter("Fecha documento", '<=%1', rstLinDiaGen."Posting Date");
+                            rstExencion.SetFilter("Fecha efectividad retencion", '>=%1', rstLinDiaGen."Posting Date");
+                            //IF rstExencion.FINDLAST AND (rstExencion."Fecha efectividad retencion" >= rstLinDiaGen."Posting Date") AND
+                            //Se agrega la excepción en caso de actividades de la RG3594
+                            //(NOT rstCodigosRetencion."Verificar registro RG3594") THEN
+                            if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") then begin
 
-                                rstTFiscal."Tipo cálculo acumulado"::" ",
-                              rstTFiscal."Tipo cálculo acumulado"::Mensual:
-                                    rstFacturaBufferRT2."Importe retencion" := intFactor * Round(rstConfiguracionRetencion."Importe retencion" +
-                                    (((rstFacturaBufferRT2."Base pago retencion" * intFactor + rstFacturaBufferRT2."Pagos anteriores"
-                                    - rstConfiguracionRetencion."Importe minimo Stepwise" - rstConfiguracionRetencion."Importe pago minimo") *
-                                    ((rstConfiguracionRetencion."% retencion" / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores")), 0.01);
-                                rstTFiscal."Tipo cálculo acumulado"::"11 meses":
-                                    rstFacturaBufferRT2."Importe retencion" :=
-                                    Round((rstFacturaBufferRT2."Base pago retencion" *
-                                    (rstConfiguracionRetencion."% retencion" / 100)), 0.01);
+                                Clear(rstAccionEstFis);
+                                rstAccionEstFis.Get(rstProveedor."Estado de situación fiscal");
 
-                            end;
+                                case rstAccionEstFis."Acción exclusión" of
 
-                            rstFacturaBufferRT2."% retencion" := rstConfiguracionRetencion."% retencion";
+                                    rstAccionEstFis."Acción exclusión"::"Aplicar exención":
+                                        begin
 
-                            if rstCodigosRetencion."Verificar registro RG3594" then begin
-                                case rstConfiguracionRetencion."% retencion" of
-                                    2:
-                                        rstFacturaBufferRT2."Cod. sicore" := 828;
-                                    10:
-                                        rstFacturaBufferRT2."Cod. sicore" := 829;
-                                    35:
-                                        rstFacturaBufferRT2."Cod. sicore" := 830;
-                                end;
-                            end
-                            else
-                                Evaluate(rstFacturaBufferRT2."Cod. sicore", rstCodigosRetencion."Codigo SICORE");
+                                            rstFacturaBufferRT2."Importe retencion" := intFactor * Round((((rstConfiguracionRetencion."Importe retencion" +
+                                            (((rstFacturaBufferRT2."Base pago retencion" * intFactor + rstFacturaBufferRT2."Pagos anteriores"
+                                            - rstConfiguracionRetencion."Importe minimo Stepwise") *
+                                            //(rstConfiguracionRetencion."% retención"-(rstExencion."% exención"*rstConfiguracionRetencion."% retención")/100))
+                                            (rstConfiguracionRetencion."% retencion" - (rstExencion."% exención" *
+                                            fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                            ) / 100))
+                                            / 100) - rstFacturaBufferRT2."Importe retenciones anteriores"))));
+                                            rstFacturaBufferRT2.Excluido := 2;
+                                            rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
+                                            rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
 
-                        end
-                        else begin
+                                        end;
 
-                            if rstConfiguracionRetencion.FindLast then begin
-                                rstFacturaBufferRT2."Importe minimo pago" := rstConfiguracionRetencion."Importe pago minimo";
-                                rstFacturaBufferRT2."Importe minimo retención" := rstConfiguracionRetencion."Importe min. retencion";
-                                Clear(rstExencion);
-                                rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
-                                rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::Ganancias);
-                                rstExencion.SetFilter("Fecha documento", '<=%1', rstLinDiaGen."Posting Date");
-                                rstExencion.SetFilter("Fecha efectividad retencion", '>=%1', rstLinDiaGen."Posting Date");
-                                //IF rstExencion.FINDLAST AND (rstExencion."Fecha efectividad retencion" >= rstLinDiaGen."Posting Date") AND
-                                //Se agrega la excepción en caso de actividades de la RG3594
-                                //(NOT rstCodigosRetencion."Verificar registro RG3594") THEN
-                                if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") then begin
+                                    rstAccionEstFis."Acción exclusión"::"No aplicar exención":
+                                        begin
 
-                                    Clear(rstAccionEstFis);
-                                    rstAccionEstFis.Get(rstProveedor."Estado de situación fiscal");
+                                            rstFacturaBufferRT2."Importe retencion" := intFactor * Round(rstConfiguracionRetencion."Importe retencion" +
+                                            (((rstFacturaBufferRT2."Base pago retencion" * intFactor + rstFacturaBufferRT2."Pagos anteriores"
+                                            - rstConfiguracionRetencion."Importe minimo Stepwise" - rstConfiguracionRetencion."Importe pago minimo") *
+                                            //rstConfiguracionRetencion."% retención")/100)-rstFacturaBufferRT2."Importe retenciones anteriores";
+                                            fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                            ) / 100) - rstFacturaBufferRT2."Importe retenciones anteriores");
+                                            rstFacturaBufferRT2.Excluido := 0;
+                                            rstFacturaBufferRT2."% Exclusion" := 0;
+                                            rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
 
-                                    case rstAccionEstFis."Acción exclusión" of
+                                        end;
 
-                                        rstAccionEstFis."Acción exclusión"::"Aplicar exención":
-                                            begin
+                                    rstAccionEstFis."Acción exclusión"::"Consultar al usuario":
+                                        begin
+
+                                            if Confirm('El proveedor %1 se encuentra observado por la AFIP. ¿Desea proseguir con el pago?'
+                                                       , false, rstProveedor.Name) then begin
 
                                                 rstFacturaBufferRT2."Importe retencion" := intFactor * Round((((rstConfiguracionRetencion."Importe retencion" +
                                                 (((rstFacturaBufferRT2."Base pago retencion" * intFactor + rstFacturaBufferRT2."Pagos anteriores"
@@ -2039,134 +1959,33 @@ codeunit 50005 Retenciones
                                                 rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
                                                 rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
 
-                                            end;
+                                            end
+                                            else begin
 
-                                        rstAccionEstFis."Acción exclusión"::"No aplicar exención":
-                                            begin
-
-                                                rstFacturaBufferRT2."Importe retencion" := intFactor * Round(rstConfiguracionRetencion."Importe retencion" +
+                                                rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
                                                 (((rstFacturaBufferRT2."Base pago retencion" * intFactor + rstFacturaBufferRT2."Pagos anteriores"
-                                                - rstConfiguracionRetencion."Importe minimo Stepwise" - rstConfiguracionRetencion."Importe pago minimo") *
-                                                //rstConfiguracionRetencion."% retención")/100)-rstFacturaBufferRT2."Importe retenciones anteriores";
+                                                - rstConfiguracionRetencion."Importe minimo Stepwise") *
+                                                //rstConfiguracionRetencion."% retención")/100))-rstFacturaBufferRT2."Importe retenciones anteriores";
                                                 fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                                ) / 100) - rstFacturaBufferRT2."Importe retenciones anteriores");
+                                                ) / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores");
                                                 rstFacturaBufferRT2.Excluido := 0;
                                                 rstFacturaBufferRT2."% Exclusion" := 0;
                                                 rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
 
                                             end;
 
-                                        rstAccionEstFis."Acción exclusión"::"Consultar al usuario":
-                                            begin
-
-                                                if Confirm('El proveedor %1 se encuentra observado por la AFIP. ¿Desea proseguir con el pago?'
-                                                           , false, rstProveedor.Name) then begin
-
-                                                    rstFacturaBufferRT2."Importe retencion" := intFactor * Round((((rstConfiguracionRetencion."Importe retencion" +
-                                                    (((rstFacturaBufferRT2."Base pago retencion" * intFactor + rstFacturaBufferRT2."Pagos anteriores"
-                                                    - rstConfiguracionRetencion."Importe minimo Stepwise") *
-                                                    //(rstConfiguracionRetencion."% retención"-(rstExencion."% exención"*rstConfiguracionRetencion."% retención")/100))
-                                                    (rstConfiguracionRetencion."% retencion" - (rstExencion."% exención" *
-                                                    fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                                    ) / 100))
-                                                    / 100) - rstFacturaBufferRT2."Importe retenciones anteriores"))));
-                                                    rstFacturaBufferRT2.Excluido := 2;
-                                                    rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
-                                                    rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
-
-                                                end
-                                                else begin
-
-                                                    rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
-                                                    (((rstFacturaBufferRT2."Base pago retencion" * intFactor + rstFacturaBufferRT2."Pagos anteriores"
-                                                    - rstConfiguracionRetencion."Importe minimo Stepwise") *
-                                                    //rstConfiguracionRetencion."% retención")/100))-rstFacturaBufferRT2."Importe retenciones anteriores";
-                                                    fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                                    ) / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores");
-                                                    rstFacturaBufferRT2.Excluido := 0;
-                                                    rstFacturaBufferRT2."% Exclusion" := 0;
-                                                    rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
-
-                                                end;
-
-                                            end
-                                        else begin
-
-                                            rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
-                                            (((rstFacturaBufferRT2."Base pago retencion" * intFactor + rstFacturaBufferRT2."Pagos anteriores"
-                                            - rstConfiguracionRetencion."Importe minimo Stepwise") *
-                                            //rstConfiguracionRetencion."% retención")/100))-rstFacturaBufferRT2."Importe retenciones anteriores";
-                                            fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                            ) / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores");
-                                            rstFacturaBufferRT2.Excluido := 0;
-                                            rstFacturaBufferRT2."% Exclusion" := 0;
-                                            rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
-
-                                        end;
-
-                                    end;
-
-                                end
-                                else begin
-
-                                    Clear(rstExencion);
-                                    rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
-                                    rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::Ganancias);
-                                    if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") and (rstExencion."Fecha efectividad retencion" < Today) and
-                                    //Se agrega la excepción en caso de actividades de la RG3594
-                                    (not rstCodigosRetencion."Verificar registro RG3594")
-                                    then
-
-                                        /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
-                                        'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
-                                        ",rstProveedor.Name)*/
-                                              fntConfirmaExencionAntigua(rstExencion, rstProveedor);
-                                    //ELSE
-                                    begin
-
-                                        case rstTFiscal."Tipo cálculo acumulado" of
-
-                                            rstTFiscal."Tipo cálculo acumulado"::" ",
-                                          rstTFiscal."Tipo cálculo acumulado"::Mensual:
-                                                rstFacturaBufferRT2."Importe retencion" := intFactor * Round(rstConfiguracionRetencion."Importe retencion" +
-                                                (((rstFacturaBufferRT2."Base pago retencion" * intFactor + rstFacturaBufferRT2."Pagos anteriores"
-                                                - rstConfiguracionRetencion."Importe minimo Stepwise" - rstConfiguracionRetencion."Importe pago minimo") *
-                                                ((rstConfiguracionRetencion."% retencion" / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores")), 0.01);
-                                            rstTFiscal."Tipo cálculo acumulado"::"11 meses":
-                                                rstFacturaBufferRT2."Importe retencion" :=
-                                                Round((rstFacturaBufferRT2."Base pago retencion" *
-                                                (rstConfiguracionRetencion."% retencion" / 100)), 0.01);
-
-                                        end;
-
-                                        rstFacturaBufferRT2."% retencion" := rstConfiguracionRetencion."% retencion";
-
-                                        if rstCodigosRetencion."Verificar registro RG3594" then begin
-                                            case rstConfiguracionRetencion."% retencion" of
-                                                2:
-                                                    rstFacturaBufferRT2."Cod. sicore" := 828;
-                                                10:
-                                                    rstFacturaBufferRT2."Cod. sicore" := 829;
-                                                35:
-                                                    rstFacturaBufferRT2."Cod. sicore" := 830;
-                                            end;
                                         end
-                                        else
-                                            Evaluate(rstFacturaBufferRT2."Cod. sicore", rstCodigosRetencion."Codigo SICORE");
+                                    else begin
 
-                                        if rstFacturaBufferRT2."Importe retencion" < rstConfiguracionRetencion."Importe min. retencion" then begin
-
-                                            rstFacturaBufferRT2.Excluido := 3;
-                                            rstFacturaBufferRT2.Modify;
-
-                                        end
-                                        else begin
-
-                                            rstFacturaBufferRT2.Excluido := 0;
-                                            rstFacturaBufferRT2."% Exclusion" := 0;
-                                            rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
-
-                                        end;
+                                        rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
+                                        (((rstFacturaBufferRT2."Base pago retencion" * intFactor + rstFacturaBufferRT2."Pagos anteriores"
+                                        - rstConfiguracionRetencion."Importe minimo Stepwise") *
+                                        //rstConfiguracionRetencion."% retención")/100))-rstFacturaBufferRT2."Importe retenciones anteriores";
+                                        fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                        ) / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores");
+                                        rstFacturaBufferRT2.Excluido := 0;
+                                        rstFacturaBufferRT2."% Exclusion" := 0;
+                                        rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
 
                                     end;
 
@@ -2175,273 +1994,141 @@ codeunit 50005 Retenciones
                             end
                             else begin
 
-                                rstFacturaBufferRT2.Excluido := 3;
-                                rstFacturaBufferRT2.Modify;
+                                Clear(rstExencion);
+                                rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
+                                rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::Ganancias);
+                                if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") and (rstExencion."Fecha efectividad retencion" < Today) and
+                                //Se agrega la excepción en caso de actividades de la RG3594
+                                (not rstCodigosRetencion."Verificar registro RG3594")
+                                then
 
-                            end;
-
-                        end;
-
-                    end
-                    else begin
-
-                        Clear(rstConfiguracionRetencion);
-                        decImportePagoPorConcepto := 0;
-                        decImportePagoPorConcepto := rstFacturaBufferRT2."Base pago retencion"; //CalcularImporteEstePagoPGcias(rstLinDiaGen,rstFacturaBufferRT2."Cod. retencion");
-                        rstConfiguracionRetencion.SetRange(rstConfiguracionRetencion."Tipo retenciones",
-                        rstConfiguracionRetencion."Tipo retenciones"::Ganancias);
-                        rstConfiguracionRetencion.SetRange("Cod. retencion", rstCodigosRetencion."Cod. retencion");
-                        rstConfiguracionRetencion.SetRange("Tipo fiscal", rstFacturaBufferRT2."Tipo fiscal");
-                        rstConfiguracionRetencion.SetRange("Importe pago minimo", 0, Abs(decImportePagoPorConcepto)
-                        + rstFacturaBufferRT2."Pagos anteriores");
-                        //rstConfiguracionRetencion.SETRANGE("Importe min. retención",0,rstConfiguracionRetencion."Importe retención");
-
-                        rstProveedor.Get(rstFacturaBufferRT2."Cliente/Proveedor");
-
-                        Clear(rstConfCont);
-                        rstConfCont.Get();
-
-                        Clear(rstTFiscal);
-                        rstTFiscal.Get(rstFacturaBufferRT2."Tipo fiscal");
-
-                        case rstTFiscal."Tipo cálculo acumulado" of
-
-                            rstTFiscal."Tipo cálculo acumulado"::" ",
-                            rstTFiscal."Tipo cálculo acumulado"::Mensual:
+                                    /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
+                                    'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
+                                    ",rstProveedor.Name)*/
+                                              fntConfirmaExencionAntigua(rstExencion, rstProveedor);
+                                //ELSE
                                 begin
 
-                                    if rstConfiguracionRetencion.FindFirst then begin
+                                    case rstTFiscal."Tipo cálculo acumulado" of
 
-                                        rstConfiguracionRetencion.SetRange("Importe min. retencion", 0, decImportePagoPorConcepto +
-                                        rstFacturaBufferRT2."Pagos anteriores" - rstConfiguracionRetencion."Importe pago minimo");
-                                        if rstConfiguracionRetencion.FindFirst then begin
-                                            rstFacturaBufferRT2."Importe minimo pago" := rstConfiguracionRetencion."Importe pago minimo";
-                                            rstFacturaBufferRT2."Importe minimo retención" := rstConfiguracionRetencion."Importe min. retencion";
-                                            Clear(rstExencion);
-                                            rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
-                                            rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::Ganancias);
-                                            rstExencion.SetFilter("Fecha documento", '<=%1', rstLinDiaGen."Posting Date");
-                                            rstExencion.SetFilter("Fecha efectividad retencion", '>=%1', rstLinDiaGen."Posting Date");
-                                            if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") then begin
-
-                                                Clear(rstAccionEstFis);
-                                                rstAccionEstFis.Get(rstProveedor."Estado de situación fiscal");
-                                                case rstAccionEstFis."Acción exclusión" of
-
-                                                    rstAccionEstFis."Acción exclusión"::"Aplicar exención":
-                                                        begin
-
-                                                            rstFacturaBufferRT2."Importe retencion" := intFactor * Round((((rstConfiguracionRetencion."Importe retencion" +
-                                                            ((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
-                                                            - rstConfiguracionRetencion."Importe pago minimo") *
-                                                            (rstConfiguracionRetencion."% retencion" - (rstExencion."% exención" * rstConfiguracionRetencion."% retencion") / 100)
-                                                            / 100))) - rstFacturaBufferRT2."Importe retenciones anteriores"), 0.01);
-                                                            rstFacturaBufferRT2.Excluido := 2;
-                                                            rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
-                                                            rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
-
-                                                        end;
-
-                                                    rstAccionEstFis."Acción exclusión"::"No aplicar exención":
-                                                        begin
-
-                                                            rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
-                                                            (((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
-                                                            - rstConfiguracionRetencion."Importe pago minimo") *
-                                                            //rstConfiguracionRetencion."% retención")/100))-rstFacturaBufferRT2."Importe retenciones anteriores";
-                                                            fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                                            ) / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores");
-                                                            rstFacturaBufferRT2.Excluido := 0;
-                                                            rstFacturaBufferRT2."% Exclusion" := 0;
-                                                            rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
-
-                                                        end;
-
-                                                    rstAccionEstFis."Acción exclusión"::"Consultar al usuario":
-                                                        begin
-
-                                                            if Confirm('El proveedor %1 posee un Certificado de Exclusión de situación %2 por un %3 por ciento.\' +
-                                                                       '¿Desea aplicarlo en este pago?', false, rstProveedor.Name,
-                                                                        rstProveedor."Estado de situación fiscal", rstExencion."% exención") then begin
-
-                                                                rstFacturaBufferRT2."Importe retencion" := intFactor * Round((((rstConfiguracionRetencion."Importe retencion" +
-                                                                ((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
-                                                                - rstConfiguracionRetencion."Importe pago minimo") *
-                                                                (rstConfiguracionRetencion."% retencion" - (rstExencion."% exención" * rstConfiguracionRetencion."% retencion") /
-                                                                100) / 100))) - rstFacturaBufferRT2."Importe retenciones anteriores"), 0.01);
-                                                                rstFacturaBufferRT2.Excluido := 2;
-                                                                rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
-                                                                rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
-
-                                                            end
-                                                            else begin
-
-                                                                rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
-                                                                (((decImportePagoPorConcepto - rstFacturaBufferRT2."Pagos anteriores"
-                                                                - rstConfiguracionRetencion."Importe pago minimo") *
-                                                                rstConfiguracionRetencion."% retencion") / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores", 0.01);
-                                                                rstFacturaBufferRT2.Excluido := 2;
-                                                                rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
-                                                                rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
-
-                                                            end;
-
-                                                        end;
-
-                                                end;
-
-                                            end
-                                            else begin
-
-                                                Clear(rstExencion);
-                                                rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
-                                                rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::Ganancias);
-                                                if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") and (rstExencion."Fecha efectividad retencion" < Today) then
-                                                    /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
-                                                    'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
-                                                    ",rstProveedor.Name)*/
-                                              fntConfirmaExencionAntigua(rstExencion, rstProveedor);
-                                                //ELSE
-                                                begin
-
-                                                    rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
-                                                    (((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
-                                                    - rstConfiguracionRetencion."Importe pago minimo") *
-                                                    rstConfiguracionRetencion."% retencion") / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores", 0.01);
-                                                    rstFacturaBufferRT2.Excluido := 0;
-                                                    rstFacturaBufferRT2."% Exclusion" := 0;
-                                                    rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
-
-                                                end;
-
-                                            end;
-
-                                        end
-                                        else
-                                            if rstConfiguracionRetencion."Importe pago minimo" > decImportePagoPorConcepto then
-                                                intMotivoExclusion := 3;
-
-                                    end
-                                    else begin
-
-                                        rstFacturaBufferRT2."Importe retencion" := 0;
-                                        rstFacturaBufferRT2."% retencion" := rstConfiguracionRetencion."% retencion";
-                                        rstFacturaBufferRT2.Excluido := 3;
-                                        rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
+                                        rstTFiscal."Tipo cálculo acumulado"::" ",
+                                      rstTFiscal."Tipo cálculo acumulado"::Mensual:
+                                            rstFacturaBufferRT2."Importe retencion" := intFactor * Round(rstConfiguracionRetencion."Importe retencion" +
+                                            (((rstFacturaBufferRT2."Base pago retencion" * intFactor + rstFacturaBufferRT2."Pagos anteriores"
+                                            - rstConfiguracionRetencion."Importe minimo Stepwise" - rstConfiguracionRetencion."Importe pago minimo") *
+                                            ((rstConfiguracionRetencion."% retencion" / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores")), rstConfCont."Amount Rounding Precision");
+                                        rstTFiscal."Tipo cálculo acumulado"::"11 meses":
+                                            rstFacturaBufferRT2."Importe retencion" :=
+                    Round((rstFacturaBufferRT2."Base pago retencion" *
+                    (rstConfiguracionRetencion."% retencion" / 100)), rstConfCont."Amount Rounding Precision");
 
                                     end;
 
                                     rstFacturaBufferRT2."% retencion" := rstConfiguracionRetencion."% retencion";
-                                    rstFacturaBufferRT2.Provincia := rstLinFactura.Area;
-                                    rstFacturaBufferRT2."No. serie IVA" := '';
-                                    rstFacturaBufferRT2."Fecha factura" := 0D;
-                                    if not rstFacturaBufferRT2.Insert then
+
+                                    if rstCodigosRetencion."Verificar registro RG3594" then begin
+                                        case rstConfiguracionRetencion."% retencion" of
+                                            2:
+                                                rstFacturaBufferRT2."Cod. sicore" := 828;
+                                            10:
+                                                rstFacturaBufferRT2."Cod. sicore" := 829;
+                                            35:
+                                                rstFacturaBufferRT2."Cod. sicore" := 830;
+                                        end;
+                                    end
+                                    else
+                                        Evaluate(rstFacturaBufferRT2."Cod. sicore", rstCodigosRetencion."Codigo SICORE");
+
+                                    if rstFacturaBufferRT2."Importe retencion" < rstConfiguracionRetencion."Importe min. retencion" then begin
+
+                                        rstFacturaBufferRT2.Excluido := 3;
                                         rstFacturaBufferRT2.Modify;
+
+                                    end
+                                    else begin
+
+                                        rstFacturaBufferRT2.Excluido := 0;
+                                        rstFacturaBufferRT2."% Exclusion" := 0;
+                                        rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
+
+                                    end;
 
                                 end;
 
-                            rstTFiscal."Tipo cálculo acumulado"::"11 meses":
-                                begin
+                            end;
 
+                        end
+                        else begin
+
+                            rstFacturaBufferRT2.Excluido := 3;
+                            rstFacturaBufferRT2.Modify;
+
+                        end;
+
+                    end;
+
+                end
+                else begin
+
+                    Clear(rstConfiguracionRetencion);
+                    decImportePagoPorConcepto := 0;
+                    decImportePagoPorConcepto := rstFacturaBufferRT2."Base pago retencion"; //CalcularImporteEstePagoPGcias(rstLinDiaGen,rstFacturaBufferRT2."Cod. retencion");
+                    rstConfiguracionRetencion.SetRange(rstConfiguracionRetencion."Tipo retenciones",
+                    rstConfiguracionRetencion."Tipo retenciones"::Ganancias);
+                    rstConfiguracionRetencion.SetRange("Cod. retencion", rstCodigosRetencion."Cod. retencion");
+                    rstConfiguracionRetencion.SetRange("Tipo fiscal", rstFacturaBufferRT2."Tipo fiscal");
+                    rstConfiguracionRetencion.SetRange("Importe pago minimo", 0, Abs(decImportePagoPorConcepto)
+                    + rstFacturaBufferRT2."Pagos anteriores");
+                    //rstConfiguracionRetencion.SETRANGE("Importe min. retención",0,rstConfiguracionRetencion."Importe retención");
+
+                    rstProveedor.Get(rstFacturaBufferRT2."Cliente/Proveedor");
+
+                    Clear(rstConfCont);
+                    rstConfCont.Get();
+
+                    Clear(rstTFiscal);
+                    rstTFiscal.Get(rstFacturaBufferRT2."Tipo fiscal");
+
+                    case rstTFiscal."Tipo cálculo acumulado" of
+
+                        rstTFiscal."Tipo cálculo acumulado"::" ",
+                        rstTFiscal."Tipo cálculo acumulado"::Mensual:
+                            begin
+
+                                if rstConfiguracionRetencion.FindFirst then begin
+
+                                    rstConfiguracionRetencion.SetRange("Importe min. retencion", 0, decImportePagoPorConcepto +
+                                    rstFacturaBufferRT2."Pagos anteriores" - rstConfiguracionRetencion."Importe pago minimo");
                                     if rstConfiguracionRetencion.FindFirst then begin
+                                        rstFacturaBufferRT2."Importe minimo pago" := rstConfiguracionRetencion."Importe pago minimo";
+                                        rstFacturaBufferRT2."Importe minimo retención" := rstConfiguracionRetencion."Importe min. retencion";
+                                        Clear(rstExencion);
+                                        rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
+                                        rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::Ganancias);
+                                        rstExencion.SetFilter("Fecha documento", '<=%1', rstLinDiaGen."Posting Date");
+                                        rstExencion.SetFilter("Fecha efectividad retencion", '>=%1', rstLinDiaGen."Posting Date");
+                                        if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") then begin
 
-                                        rstConfiguracionRetencion.SetRange("Importe min. retencion", 0, decImportePagoPorConcepto +
-                                        rstFacturaBufferRT2."Pagos anteriores" - rstConfiguracionRetencion."Importe pago minimo");
-                                        if rstConfiguracionRetencion.FindFirst then begin
-                                            rstFacturaBufferRT2."Importe minimo pago" := rstConfiguracionRetencion."Importe pago minimo";
-                                            rstFacturaBufferRT2."Importe minimo retención" := rstConfiguracionRetencion."Importe min. retencion";
-                                            Clear(rstExencion);
-                                            rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
-                                            rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::Ganancias);
-                                            rstExencion.SetFilter("Fecha documento", '<=%1', rstLinDiaGen."Posting Date");
-                                            rstExencion.SetFilter("Fecha efectividad retencion", '>=%1', rstLinDiaGen."Posting Date");
-                                            if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") then begin
+                                            Clear(rstAccionEstFis);
+                                            rstAccionEstFis.Get(rstProveedor."Estado de situación fiscal");
+                                            case rstAccionEstFis."Acción exclusión" of
 
-                                                Clear(rstAccionEstFis);
-                                                rstAccionEstFis.Get(rstProveedor."Estado de situación fiscal");
-                                                case rstAccionEstFis."Acción exclusión" of
+                                                rstAccionEstFis."Acción exclusión"::"Aplicar exención":
+                                                    begin
 
-                                                    rstAccionEstFis."Acción exclusión"::"Aplicar exención":
-                                                        begin
+                                                        rstFacturaBufferRT2."Importe retencion" := intFactor * Round((((rstConfiguracionRetencion."Importe retencion" +
+                                                        ((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
+                                                        - rstConfiguracionRetencion."Importe pago minimo") *
+                                                        (rstConfiguracionRetencion."% retencion" - (rstExencion."% exención" * rstConfiguracionRetencion."% retencion") / 100)
+                                                        / 100))) - rstFacturaBufferRT2."Importe retenciones anteriores"), rstConfCont."Amount Rounding Precision");
+                                                        rstFacturaBufferRT2.Excluido := 2;
+                                                        rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
+                                                        rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
 
-                                                            rstFacturaBufferRT2."Importe retencion" := intFactor * Round((((rstConfiguracionRetencion."Importe retencion" +
-                                                            ((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
-                                                            - rstConfiguracionRetencion."Importe pago minimo") *
-                                                            (rstConfiguracionRetencion."% retencion" - (rstExencion."% exención" * rstConfiguracionRetencion."% retencion") / 100)
-                                                            / 100))) - rstFacturaBufferRT2."Importe retenciones anteriores"), 0.01);
-                                                            rstFacturaBufferRT2.Excluido := 2;
-                                                            rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
-                                                            rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
+                                                    end;
 
-                                                        end;
-
-                                                    rstAccionEstFis."Acción exclusión"::"No aplicar exención":
-                                                        begin
-
-                                                            rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
-                                                            (((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
-                                                            - rstConfiguracionRetencion."Importe pago minimo") *
-                                                            //rstConfiguracionRetencion."% retención")/100))-rstFacturaBufferRT2."Importe retenciones anteriores";
-                                                            fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                                            ) / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores");
-                                                            rstFacturaBufferRT2.Excluido := 0;
-                                                            rstFacturaBufferRT2."% Exclusion" := 0;
-                                                            rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
-
-                                                        end;
-
-                                                    rstAccionEstFis."Acción exclusión"::"Consultar al usuario":
-                                                        begin
-
-                                                            if Confirm('El proveedor %1 posee un Certificado de Exclusión de situación %2 por un %3 por ciento.\' +
-                                                                       '¿Desea aplicarlo en este pago?', false, rstProveedor.Name,
-                                                                        rstProveedor."Estado de situación fiscal", rstExencion."% exención") then begin
-
-                                                                rstFacturaBufferRT2."Importe retencion" := intFactor * Round((((rstConfiguracionRetencion."Importe retencion" +
-                                                                ((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
-                                                                - rstConfiguracionRetencion."Importe pago minimo") *
-                                                                (rstConfiguracionRetencion."% retencion" - (rstExencion."% exención" * rstConfiguracionRetencion."% retencion") /
-                                                                100) / 100))) - rstFacturaBufferRT2."Importe retenciones anteriores"), 0.01);
-                                                                rstFacturaBufferRT2.Excluido := 2;
-                                                                rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
-                                                                rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
-
-                                                            end
-                                                            else begin
-
-                                                                rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
-                                                                (((decImportePagoPorConcepto - rstFacturaBufferRT2."Pagos anteriores"
-                                                                - rstConfiguracionRetencion."Importe pago minimo") *
-                                                                //rstConfiguracionRetencion."% retención")/100))-rstFacturaBufferRT2."Importe retenciones anteriores";
-                                                                fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
-                                                                ) / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores");
-                                                                rstFacturaBufferRT2.Excluido := 2;
-                                                                rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
-                                                                rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
-
-                                                            end;
-
-                                                        end;
-
-                                                end;
-
-                                            end
-                                            else begin
-
-                                                Clear(rstExencion);
-                                                rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
-                                                rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::Ganancias);
-
-                                                if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") and (rstExencion."Fecha efectividad retencion" < Today) then
-                                                    /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
-                                                    'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
-                                                    ",rstProveedor.Name)*/
-                                                fntConfirmaExencionAntigua(rstExencion, rstProveedor);
-                                                //ELSE
-                                                begin
-
-                                                    if (rstConfiguracionRetencion."Precio unitario maximo" < rstFacturaBufferRT2."Precio unitario maximo fac.") and
-                                                       (rstConfiguracionRetencion."Precio unitario maximo" <> 0) then begin
+                                                rstAccionEstFis."Acción exclusión"::"No aplicar exención":
+                                                    begin
 
                                                         rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
                                                         (((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
@@ -2453,22 +2140,218 @@ codeunit 50005 Retenciones
                                                         rstFacturaBufferRT2."% Exclusion" := 0;
                                                         rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
 
-                                                    end
-                                                    else begin
+                                                    end;
 
-                                                        if rstConfiguracionRetencion."Importe minimo Stepwise" < rstFacturaBufferRT2."Facturacion anterior 12M" then begin
+                                                rstAccionEstFis."Acción exclusión"::"Consultar al usuario":
+                                                    begin
+
+                                                        if Confirm('El proveedor %1 posee un Certificado de Exclusión de situación %2 por un %3 por ciento.\' +
+                                                                   '¿Desea aplicarlo en este pago?', false, rstProveedor.Name,
+                                                                    rstProveedor."Estado de situación fiscal", rstExencion."% exención") then begin
+
+                                                            rstFacturaBufferRT2."Importe retencion" := intFactor * Round((((rstConfiguracionRetencion."Importe retencion" +
+                                                            ((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
+                                                            - rstConfiguracionRetencion."Importe pago minimo") *
+                                                            (rstConfiguracionRetencion."% retencion" - (rstExencion."% exención" * rstConfiguracionRetencion."% retencion") /
+                                                            100) / 100))) - rstFacturaBufferRT2."Importe retenciones anteriores"), rstConfCont."Amount Rounding Precision");
+                                                            rstFacturaBufferRT2.Excluido := 2;
+                                                            rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
+                                                            rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
+
+                                                        end
+                                                        else begin
 
                                                             rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
-                                                            (((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
+                                                            (((decImportePagoPorConcepto - rstFacturaBufferRT2."Pagos anteriores"
+                                                            - rstConfiguracionRetencion."Importe pago minimo") *
+                                                            rstConfiguracionRetencion."% retencion") / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores", rstConfCont."Amount Rounding Precision");
+                                                            rstFacturaBufferRT2.Excluido := 2;
+                                                            rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
+                                                            rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
+
+                                                        end;
+
+                                                    end;
+
+                                            end;
+
+                                        end
+                                        else begin
+
+                                            Clear(rstExencion);
+                                            rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
+                                            rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::Ganancias);
+                                            if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") and (rstExencion."Fecha efectividad retencion" < Today) then
+                                                /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
+                                                'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
+                                                ",rstProveedor.Name)*/
+                                              fntConfirmaExencionAntigua(rstExencion, rstProveedor);
+                                            //ELSE
+                                            begin
+
+                                                rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
+                                                (((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
+                                                - rstConfiguracionRetencion."Importe pago minimo") *
+                                                rstConfiguracionRetencion."% retencion") / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores", 0.01);
+                                                rstFacturaBufferRT2.Excluido := 0;
+                                                rstFacturaBufferRT2."% Exclusion" := 0;
+                                                rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
+
+                                            end;
+
+                                        end;
+
+                                    end
+                                    else
+                                        if rstConfiguracionRetencion."Importe pago minimo" > decImportePagoPorConcepto then
+                                            intMotivoExclusion := 3;
+
+                                end
+                                else begin
+
+                                    rstFacturaBufferRT2."Importe retencion" := 0;
+                                    rstFacturaBufferRT2."% retencion" := rstConfiguracionRetencion."% retencion";
+                                    rstFacturaBufferRT2.Excluido := 3;
+                                    rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
+
+                                end;
+
+                                rstFacturaBufferRT2."% retencion" := rstConfiguracionRetencion."% retencion";
+                                rstFacturaBufferRT2.Provincia := rstLinFactura.Area;
+                                rstFacturaBufferRT2."No. serie IVA" := '';
+                                rstFacturaBufferRT2."Fecha factura" := 0D;
+                                if not rstFacturaBufferRT2.Insert then
+                                    rstFacturaBufferRT2.Modify;
+
+                            end;
+
+                        rstTFiscal."Tipo cálculo acumulado"::"11 meses":
+                            begin
+
+                                if rstConfiguracionRetencion.FindFirst then begin
+
+                                    rstConfiguracionRetencion.SetRange("Importe min. retencion", 0, decImportePagoPorConcepto +
+                                    rstFacturaBufferRT2."Pagos anteriores" - rstConfiguracionRetencion."Importe pago minimo");
+                                    if rstConfiguracionRetencion.FindFirst then begin
+                                        rstFacturaBufferRT2."Importe minimo pago" := rstConfiguracionRetencion."Importe pago minimo";
+                                        rstFacturaBufferRT2."Importe minimo retención" := rstConfiguracionRetencion."Importe min. retencion";
+                                        Clear(rstExencion);
+                                        rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
+                                        rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::Ganancias);
+                                        rstExencion.SetFilter("Fecha documento", '<=%1', rstLinDiaGen."Posting Date");
+                                        rstExencion.SetFilter("Fecha efectividad retencion", '>=%1', rstLinDiaGen."Posting Date");
+                                        if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") then begin
+
+                                            Clear(rstAccionEstFis);
+                                            rstAccionEstFis.Get(rstProveedor."Estado de situación fiscal");
+                                            case rstAccionEstFis."Acción exclusión" of
+
+                                                rstAccionEstFis."Acción exclusión"::"Aplicar exención":
+                                                    begin
+
+                                                        rstFacturaBufferRT2."Importe retencion" := intFactor * Round((((rstConfiguracionRetencion."Importe retencion" +
+                                                        ((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
+                                                        - rstConfiguracionRetencion."Importe pago minimo") *
+                                                        (rstConfiguracionRetencion."% retencion" - (rstExencion."% exención" * rstConfiguracionRetencion."% retencion") / 100)
+                                                        / 100))) - rstFacturaBufferRT2."Importe retenciones anteriores"), 0.01);
+                                                        rstFacturaBufferRT2.Excluido := 2;
+                                                        rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
+                                                        rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
+
+                                                    end;
+
+                                                rstAccionEstFis."Acción exclusión"::"No aplicar exención":
+                                                    begin
+
+                                                        rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
+                                                        (((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
+                                                        - rstConfiguracionRetencion."Importe pago minimo") *
+                                                        //rstConfiguracionRetencion."% retención")/100))-rstFacturaBufferRT2."Importe retenciones anteriores";
+                                                        fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                                        ) / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores");
+                                                        rstFacturaBufferRT2.Excluido := 0;
+                                                        rstFacturaBufferRT2."% Exclusion" := 0;
+                                                        rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
+
+                                                    end;
+
+                                                rstAccionEstFis."Acción exclusión"::"Consultar al usuario":
+                                                    begin
+
+                                                        if Confirm('El proveedor %1 posee un Certificado de Exclusión de situación %2 por un %3 por ciento.\' +
+                                                                   '¿Desea aplicarlo en este pago?', false, rstProveedor.Name,
+                                                                    rstProveedor."Estado de situación fiscal", rstExencion."% exención") then begin
+
+                                                            rstFacturaBufferRT2."Importe retencion" := intFactor * Round((((rstConfiguracionRetencion."Importe retencion" +
+                                                            ((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
+                                                            - rstConfiguracionRetencion."Importe pago minimo") *
+                                                            (rstConfiguracionRetencion."% retencion" - (rstExencion."% exención" * rstConfiguracionRetencion."% retencion") /
+                                                            100) / 100))) - rstFacturaBufferRT2."Importe retenciones anteriores"), rstConfCont."Amount Rounding Precision");
+                                                            rstFacturaBufferRT2.Excluido := 2;
+                                                            rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
+                                                            rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
+
+                                                        end
+                                                        else begin
+
+                                                            rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
+                                                            (((decImportePagoPorConcepto - rstFacturaBufferRT2."Pagos anteriores"
                                                             - rstConfiguracionRetencion."Importe pago minimo") *
                                                             //rstConfiguracionRetencion."% retención")/100))-rstFacturaBufferRT2."Importe retenciones anteriores";
                                                             fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
                                                             ) / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores");
-                                                            rstFacturaBufferRT2.Excluido := 0;
-                                                            rstFacturaBufferRT2."% Exclusion" := 0;
-                                                            rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
+                                                            rstFacturaBufferRT2.Excluido := 2;
+                                                            rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
+                                                            rstFacturaBufferRT2."Fecha documento exclusion" := rstExencion."Fecha documento";
 
                                                         end;
+
+                                                    end;
+
+                                            end;
+
+                                        end
+                                        else begin
+
+                                            Clear(rstExencion);
+                                            rstExencion.SetRange("Cod. proveedor/cliente", rstProveedor."No.");
+                                            rstExencion.SetRange("Tipo retención", rstExencion."Tipo retención"::Ganancias);
+
+                                            if rstExencion.FindLast and (not rstConfiguracionRetencion."Skip exclusions") and (rstExencion."Fecha efectividad retencion" < Today) then
+                                                /*ERROR('El certificado de Exención del proveedor %1, %2, ha vencido. \'+
+                                                'Por favor, actualice el certificado, o elimínelo de la configuración del proveedor.',
+                                                ",rstProveedor.Name)*/
+                                                fntConfirmaExencionAntigua(rstExencion, rstProveedor);
+                                            //ELSE
+                                            begin
+
+                                                if (rstConfiguracionRetencion."Precio unitario maximo" < rstFacturaBufferRT2."Precio unitario maximo fac.") and
+                                                   (rstConfiguracionRetencion."Precio unitario maximo" <> 0) then begin
+
+                                                    rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
+                                                    (((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
+                                                    - rstConfiguracionRetencion."Importe pago minimo") *
+                                                    //rstConfiguracionRetencion."% retención")/100))-rstFacturaBufferRT2."Importe retenciones anteriores";
+                                                    fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                                    ) / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores");
+                                                    rstFacturaBufferRT2.Excluido := 0;
+                                                    rstFacturaBufferRT2."% Exclusion" := 0;
+                                                    rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
+
+                                                end
+                                                else begin
+
+                                                    if rstConfiguracionRetencion."Importe minimo Stepwise" < rstFacturaBufferRT2."Facturacion anterior 12M" then begin
+
+                                                        rstFacturaBufferRT2."Importe retencion" := intFactor * Round((rstConfiguracionRetencion."Importe retencion" +
+                                                        (((decImportePagoPorConcepto + rstFacturaBufferRT2."Pagos anteriores"
+                                                        - rstConfiguracionRetencion."Importe pago minimo") *
+                                                        //rstConfiguracionRetencion."% retención")/100))-rstFacturaBufferRT2."Importe retenciones anteriores";
+                                                        fntCalcularPorcentajeRetencion(rstConfiguracionRetencion)
+                                                        ) / 100)) - rstFacturaBufferRT2."Importe retenciones anteriores");
+                                                        rstFacturaBufferRT2.Excluido := 0;
+                                                        rstFacturaBufferRT2."% Exclusion" := 0;
+                                                        rstFacturaBufferRT2."Fecha documento exclusion" := 0D;
 
                                                     end;
 
@@ -2476,35 +2359,36 @@ codeunit 50005 Retenciones
 
                                             end;
 
-                                        end
-                                        else
-                                            if rstConfiguracionRetencion."Importe pago minimo" > decImportePagoPorConcepto then
-                                                intMotivoExclusion := 3;
+                                        end;
 
                                     end
-                                    else begin
+                                    else
+                                        if rstConfiguracionRetencion."Importe pago minimo" > decImportePagoPorConcepto then
+                                            intMotivoExclusion := 3;
 
-                                        rstFacturaBufferRT2."Importe retencion" := 0;
-                                        rstFacturaBufferRT2."% retencion" := rstConfiguracionRetencion."% retencion";
-                                        rstFacturaBufferRT2.Excluido := 3;
-                                        rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
+                                end
+                                else begin
 
-                                    end;
-
+                                    rstFacturaBufferRT2."Importe retencion" := 0;
                                     rstFacturaBufferRT2."% retencion" := rstConfiguracionRetencion."% retencion";
-                                    rstFacturaBufferRT2.Provincia := rstLinFactura.Area;
-                                    rstFacturaBufferRT2."No. serie IVA" := '';
-                                    rstFacturaBufferRT2."Fecha factura" := 0D;
-                                    if not rstFacturaBufferRT2.Insert then
-                                        rstFacturaBufferRT2.Modify;
+                                    rstFacturaBufferRT2.Excluido := 3;
+                                    rstFacturaBufferRT2."% Exclusion" := rstExencion."% exención";
 
                                 end;
 
-                        end;
+                                rstFacturaBufferRT2."% retencion" := rstConfiguracionRetencion."% retencion";
+                                rstFacturaBufferRT2.Provincia := rstLinFactura.Area;
+                                rstFacturaBufferRT2."No. serie IVA" := '';
+                                rstFacturaBufferRT2."Fecha factura" := 0D;
+                                if not rstFacturaBufferRT2.Insert then
+                                    rstFacturaBufferRT2.Modify;
+
+                            end;
 
                     end;
 
                 end;
+
                 if not rstFacturaBufferRT2.Insert then
                     rstFacturaBufferRT2.Modify;
 
@@ -2513,10 +2397,147 @@ codeunit 50005 Retenciones
         if not rstFacturaBufferRT2.Insert then
             rstFacturaBufferRT2.Modify;
 
+        DepurarCalculos(rstLinDiaGen);
         //Insertamos el cálculo en el diario de pagos
         CrearDiarioPagosGanancias(rstLinDiaGen, rstFacturaBufferRT2);
 
     end;
+
+    LOCAL PROCEDURE InsertarFacturaGanBuffer(rstLinDiaGen: Record "Gen. Journal Line"; rstLinDiaGenTemp: Record "Gen. Journal Line"; rstCodigosRetencion: Record "Withholding codes"; rstCabFactura: Record "Purch. Inv. Header"; rstLinFactura: Record "Purch. Inv. Line"; rstCabNC: Record "Purch. Cr. Memo Hdr."; rstLinNC: Record "Purch. Cr. Memo Line"; rstMovProveedor: Record "Vendor Ledger Entry");
+    VAR
+        rstFacturaBufferRT: Record "Invoice Withholding Buffer";
+        rstConfCont: Record "General Ledger Setup";
+        decPorcentajePagado: Decimal;
+    BEGIN
+        decPorcentajePagado := 0;
+        Clear(rstFacturaBufferRT);
+        rstFacturaBufferRT.SetRange("Tipo registro", rstFacturaBufferRT."Tipo registro"::Compra);
+        rstFacturaBufferRT.SetRange("Cliente/Proveedor", rstProveedor."No.");
+        rstFacturaBufferRT.SetRange("No. Factura", '');
+        rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::Ganancias);
+        if rstCabFactura."No." <> '' then begin
+            rstFacturaBufferRT.SetRange("Cod. retencion", rstCodigosRetencion."Cod. retencion");
+            rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabFactura."Tipo fiscal");
+        end;
+        if rstCabNC."No." <> '' then begin
+            rstFacturaBufferRT.SetRange("Cod. retencion", rstCodigosRetencion."Cod. retencion");
+            rstFacturaBufferRT.SetRange("Tipo fiscal", rstCabNC."Tipo Fiscal");
+        end;
+        rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
+
+        if not rstFacturaBufferRT.FindFirst then begin
+            rstFacturaBufferRT."Tipo registro" := rstFacturaBufferRT."Tipo registro"::Compra;
+            rstFacturaBufferRT."Cliente/Proveedor" := rstMovProveedor."Vendor No.";
+            rstFacturaBufferRT."No. Factura" := '';
+            rstFacturaBufferRT."Tipo retencion" := rstFacturaBufferRT."Tipo retencion"::Ganancias;
+            rstFacturaBufferRT."Cod. retencion" := rstCodigosRetencion."Cod. retencion";
+            rstFacturaBufferRT."No. documento" := rstLinDiaGen."Document No.";
+            if rstCabFactura."No." <> '' then
+                rstFacturaBufferRT."Tipo fiscal" := rstCabFactura."Tipo fiscal";
+            if rstCabNC."No." <> '' then
+                rstFacturaBufferRT."Tipo fiscal" := rstCabNC."Tipo Fiscal";
+            rstFacturaBufferRT."Fecha pago" := 0D;
+            rstFacturaBufferRT."Base pago retencion" := 0;
+            rstFacturaBufferRT."Pagos anteriores" := 0;
+            rstFacturaBufferRT."Importe retencion" := 0;
+            rstFacturaBufferRT."% retencion" := 0;
+            rstFacturaBufferRT.Provincia := '';
+            rstFacturaBufferRT."No. serie ganancias" := '';
+            rstFacturaBufferRT."No. serie IVA" := '';
+            rstFacturaBufferRT."No. serie Ingresos Brutos" := '';
+            rstFacturaBufferRT."Fecha factura" := 0D;
+            rstFacturaBufferRT.Nombre := '';
+            rstFacturaBufferRT."Importe neto factura" := 0;
+            if rstCabFactura."No." <> '' then
+                rstFacturaBufferRT."Tipo factura" := rstFacturaBufferRT."Tipo factura"::Factura;
+            if rstCabNC."No." <> '' then
+                rstFacturaBufferRT."Tipo factura" := rstFacturaBufferRT."Tipo factura"::"Nota d/c";
+            rstFacturaBufferRT.Insert;
+        end;
+        rstFacturaBufferRT."Fecha pago" := rstLinDiaGen."Posting Date";
+        decTCambioPago := 1;
+        if rstCabFactura."No." <> '' then begin
+            rstMovProveedor.SetFilter(rstMovProveedor."Applied by doc. type  Filter", '<>%1', rstMovProveedor."Applied by doc. type  Filter"::Abono);
+            rstMovProveedor.CalcFields(Amount, "Remaining Amount");
+            if rstMovProveedor.Open then
+                decPorcentajePagado := Abs(rstLinDiaGenTemp.Amount / rstMovProveedor.Amount)
+            else
+                decPorcentajePagado := 1;
+            decTCambioPago := fntTipoCambioPago(rstLinDiaGenTemp, rstCabFactura."No.");
+            rstFacturaBufferRT."Importe neto factura" += rstLinFactura.Amount * decTCambioPago;
+            rstFacturaBufferRT."Base pago retencion" += Round(rstLinFactura.Amount * decTCambioPago * decPorcentajePagado, rstConfCont."Amount Rounding Precision");
+        end;
+        if rstCabNC."No." <> '' then begin
+            rstMovProveedor.CalcFields(Amount, "Remaining Amount");
+            if rstMovProveedor.Open then
+                decPorcentajePagado := Abs(rstLinDiaGenTemp.Amount / rstMovProveedor.Amount)
+            else
+                decPorcentajePagado := 1;
+            rstFacturaBufferRT."Fecha pago" := rstLinDiaGen."Posting Date";
+            decTCambioPago := fntTipoCambioPago(rstLinDiaGenTemp, rstCabNC."No.");
+            rstFacturaBufferRT."Importe neto factura" -= rstLinNC.Amount * decTCambioPago;
+            rstFacturaBufferRT."Base pago retencion" -= Round(rstLinNC.Amount * decTCambioPago * decPorcentajePagado, rstConfCont."Amount Rounding Precision");
+        end;
+
+        rstFacturaBufferRT."Facturacion anterior 12M" := CalcularFacturaciónAnterior(rstLinDiaGen);
+        rstFacturaBufferRT."Precio unitario maximo fac." := CalcularPrecioUnitarioFac(rstLinDiaGen);
+        rstFacturaBufferRT.Modify;
+    END;
+
+    LOCAL PROCEDURE TraerConfRet(VAR rstCodRet: Record "Withholding codes"; optTipoRet: Option IVA,"Ingresos Brutos",Ganancias,,,,,,"Seguridad Social"; codRet: Code[20]; blnCodRelacionado: Boolean);
+    VAR
+        rstCodRetRel: Record "Withholding codes";
+    BEGIN
+        if blnCodRelacionado then begin
+            Clear(rstCodRetRel);
+            rstCodRetRel.SetRange("Tipo impuesto retencion", optTipoRet);
+            rstCodRetRel.SetRange("Cod. retencion", codRet);
+            rstCodRetRel.FindSet;
+            codRet := rstCodRetRel."Cód. alterno superior";
+        end;
+        Clear(rstCodRet);
+        rstCodRet.SetRange(rstCodRet."Tipo impuesto retencion", optTipoRet);
+        rstCodRet.SetRange("Cod. retencion", codRet);
+        rstCodRet.FindSet;
+    END;
+
+    LOCAL PROCEDURE DepurarCalculos(l_rstLinDiaGen: Record "Gen. Journal Line");
+    VAR
+        l_rstIWB: Record "Invoice Withholding Buffer";
+        l_rstWT: Record "Withholding codes";
+        l_rstIWBRel: Record "Invoice Withholding Buffer";
+    BEGIN
+        Clear(l_rstWT);
+        l_rstWT.SetFilter("Cód. alterno superior", '<>%1', '');
+        if l_rstWT.FindSet then
+            repeat
+                //Encontrar retención con relación
+                Clear(l_rstIWB);
+                l_rstIWB.SetRange("No. documento", l_rstLinDiaGen."Document No.");
+                l_rstIWB.SetRange("Cod. retencion", l_rstWT."Cod. retencion");
+                if l_rstIWB.FindSet then begin
+                    Clear(l_rstIWBRel);
+                    l_rstIWBRel.SetRange("No. documento", l_rstLinDiaGen."Document No.");
+                    l_rstIWBRel.SetRange("Cod. retencion", l_rstWT."Cód. alterno superior");
+                    if l_rstIWBRel.FindSet then begin
+                        if l_rstIWB."Importe retencion" > l_rstIWBRel."Importe retencion" then begin
+                            l_rstIWBRel.Retenido := false;
+                            l_rstIWBRel.Excluido := 100;
+                            l_rstIWBRel."Comentario exclusion" := 'Reemplazada por código ' + l_rstWT."Cod. retencion";
+                            l_rstIWBRel.Modify;
+                            //l_rstIWBRel.DELETE;
+                        end;
+                        if l_rstIWB."Importe retencion" <= l_rstIWBRel."Importe retencion" then begin
+                            l_rstIWB.Retenido := false;
+                            l_rstIWB.Excluido := 100;
+                            l_rstIWB."Comentario exclusion" := 'Reemplazada por código ' + l_rstWT."Cód. alterno superior";
+                            l_rstIWB.Modify;
+                            //l_rstIWB.DELETE;
+                        end;
+                    end;
+                end;
+            until l_rstWT.Next = 0;
+    END;
 
     [Scope('OnPrem')]
     procedure CalcularPagosAnterioresGan(rstLinDiaGen: Record "Gen. Journal Line"; var rstFacturaBufferRTL: Record "Invoice Withholding Buffer")
@@ -3037,7 +3058,7 @@ codeunit 50005 Retenciones
         //CalcularImporteARetener
 
         Clear(rstCodigosRetencion);
-        rstProveedor.Get(rstLinNCL."Buy-from Vendor No.");
+        rstProveedor.Get(rstLinNCL."Pay-to Vendor No.");
         rstCodigosRetencion.SetRange("Tipo impuesto retencion", rstCodigosRetencion."Tipo impuesto retencion"::IVA);
         rstCodigosRetencion.SetFilter("Valid from", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
         rstCodigosRetencion.SetFilter("Valid to", '>%1|%2', rstLinDiaGenL."Posting Date", 0D);
@@ -3475,6 +3496,7 @@ codeunit 50005 Retenciones
         rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
         rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::Ganancias);
         rstFacturaBufferRT.SetFilter("Importe retencion", '<>0');
+        rstFacturaBufferRT.SetRange("Comentario exclusion", '');
         if rstFacturaBufferRT.FindFirst then
             repeat
 
@@ -3483,7 +3505,7 @@ codeunit 50005 Retenciones
                 else
                     intFactor := -1;
                 rstFacturaBufferRT.CalcFields("Importe minimo retención");
-                rstFacturaBufferRT."Importe retencion" := Round(rstFacturaBufferRT."Importe retencion", 0.01);
+                rstFacturaBufferRT."Importe retencion" := Round(rstFacturaBufferRT."Importe retencion", rstConfCont."Amount Rounding Precision");
                 if intMotivoExclusion = 0 then begin
 
                     Clear(rstCodigosRetencion);
@@ -3513,7 +3535,6 @@ codeunit 50005 Retenciones
                                 rstLinDiaGenTemp."Journal Batch Name" := rstLinDiaGen."Journal Batch Name";
                                 rstLinDiaGenTemp."Posting Date" := rstLinDiaGen."Posting Date";
                                 rstLinDiaGenTemp."Posting No. Series" := rstLinDiaGen."Posting No. Series";
-                                rstLinDiaGenTemp."Due Date" := Today;
                                 rstLinDiaGenTemp."Transaction No." := rstLinDiaGen."Transaction No.";
 
                                 rstLinDiaGenTemp."No. cheque" := rstLinDiaGen."No. cheque";
@@ -3609,7 +3630,6 @@ codeunit 50005 Retenciones
                             rstLinDiaGenTemp."Journal Batch Name" := rstLinDiaGen."Journal Batch Name";
                             rstLinDiaGenTemp."Posting Date" := rstLinDiaGen."Posting Date";
                             rstLinDiaGenTemp."Posting No. Series" := rstLinDiaGen."Posting No. Series";
-                            rstLinDiaGenTemp."Due Date" := Today;
                             rstLinDiaGenTemp."Document No." := rstLinDiaGen."Document No.";
                             rstLinDiaGenTemp."Line No." := rstLinDiaGen2."Line No." + 1;
                             rstLinDiaGenTemp."Due Date" := rstLinDiaGen."Due Date";
@@ -4244,7 +4264,7 @@ codeunit 50005 Retenciones
     begin
         //CalcularImporteARetenerSS
 
-        rstProveedor.Get(rstLinFacturaL."Buy-from Vendor No.");
+        rstProveedor.Get(rstLinFacturaL."Pay-to Vendor No.");
         Clear(rstCodigosRetencion);
         rstCodigosRetencion.SetFilter("Valid from", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
         rstCodigosRetencion.SetFilter("Valid to", '>%1|%2', rstLinDiaGenL."Posting Date", 0D);
@@ -4396,9 +4416,11 @@ codeunit 50005 Retenciones
         rstExencion: Record "Withholding details";
         rstProveedor: Record Vendor;
         rstAccionEstFis: Record "Acción estado sit. fiscal";
+        rstConfCont: Record "General Ledger Setup";
     begin
         //CalcularImporteARetenerNCSS
 
+        rstConfCont.get();
         rstProveedor.Get(rstLinNCL."Buy-from Vendor No.");
         Clear(rstCodigosRetencion);
         rstCodigosRetencion.SetFilter("Valid from", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
@@ -4442,7 +4464,7 @@ codeunit 50005 Retenciones
 
                                     rstFacturaBufferRTL."Importe retencion" := Round((((rstFacturaBufferRTL."Importe neto factura" *
                                     rstConfiguracionRetencion."% retencion") / 100) * ((-rstExencion."% exención" + 100) / 100)) -
-                                    decImportePagosAnterioresIVAL, 0.01);
+                                    decImportePagosAnterioresIVAL, rstConfCont."Amount Rounding Precision");
                                     rstFacturaBufferRTL.Excluido := 2;
                                     rstFacturaBufferRTL."% Exclusion" := rstExencion."% exención";
                                     rstFacturaBufferRTL."Fecha documento exclusion" := rstExencion."Fecha documento";
@@ -4612,7 +4634,6 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp."Journal Batch Name" := rstLinDiaGen."Journal Batch Name";
                                     rstLinDiaGenTemp."Posting Date" := rstLinDiaGen."Posting Date";
                                     rstLinDiaGenTemp."Posting No. Series" := rstLinDiaGen."Posting No. Series";
-                                    rstLinDiaGenTemp."Due Date" := Today;
                                     rstLinDiaGenTemp."Document No." := rstLinDiaGen."Document No.";
                                     rstLinDiaGenTemp."Line No." := rstLinDiaGen2."Line No." + 1;
                                     rstLinDiaGenTemp."Transaction No." := rstLinDiaGen."Transaction No.";
@@ -4724,7 +4745,6 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp."Journal Batch Name" := rstLinDiaGen."Journal Batch Name";
                                     rstLinDiaGenTemp."Posting Date" := rstLinDiaGen."Posting Date";
                                     rstLinDiaGenTemp."Posting No. Series" := rstLinDiaGen."Posting No. Series";
-                                    rstLinDiaGenTemp."Due Date" := Today;
                                     rstLinDiaGenTemp."Document No." := rstLinDiaGen."Document No.";
                                     rstLinDiaGenTemp."Line No." := rstLinDiaGen2."Line No." + 1;
                                     rstLinDiaGenTemp."Due Date" := rstLinDiaGen."Due Date";
@@ -4843,16 +4863,21 @@ codeunit 50005 Retenciones
         rstLinDiaGenTemp.SetRange("Journal Batch Name", rstLinDiaGen."Journal Batch Name");
         rstLinDiaGenTemp.SetRange("Document No.", rstLinDiaGen."Document No.");
         rstLinDiaGenTemp.SetFilter("Applies-to Doc. No.", '<>%1', '');
-
+        rstConfCont.Get();
         //Me posiciono en la primera factura a pagar
 
         if rstLinDiaGenTemp.FindFirst then
             repeat
 
-                //Si el documento es una factura, voy a la línea de la factura, y comienzo a rellenar el buffer de retenciones
+                //Si el documento es una factura, voy a la l¡nea de la factura, y comienzo a rellenar el buffer de retenciones
 
                 if rstLinDiaGenTemp."Applies-to Doc. Type" = rstLinDiaGenTemp."Applies-to Doc. Type"::Invoice then begin
-
+                    Clear(rstMovProveedor);
+                    rstMovProveedor.SetCurrentKey(rstMovProveedor."Vendor No.", "Document No.");
+                    rstMovProveedor.SetRange(rstMovProveedor."Vendor No.", rstLinDiaGenTemp."Account No.");
+                    rstMovProveedor.SetRange("Document No.", rstLinDiaGenTemp."Applies-to Doc. No.");
+                    if rstMovProveedor.FindFirst then;
+                    rstMovProveedor.CalcFields(Amount, "Remaining Amount");
                     Clear(rstLinFactura);
                     rstLinFactura.SetRange("Document No.", rstLinDiaGenTemp."Applies-to Doc. No.");
                     //rstLinFactura.SETFILTER("VAT %",'<>0');
@@ -4922,20 +4947,19 @@ codeunit 50005 Retenciones
                               rstFacturaBufferRT."Importe neto factura"  += (rstLinFactura.Amount)/rstCabFactura."Currency Factor"
                             ELSE
                               rstFacturaBufferRT."Importe neto factura"  += (rstLinFactura.Amount);
-                              */
+                */
                             rstFacturaBufferRT."Importe neto factura" += (rstLinFactura.Amount) * decTCambioPago;
-                            rstFacturaBufferRT."Base pago retencion" += (rstLinFactura.Amount)
-                              * decTCambioPago;
+                            rstFacturaBufferRT."Base pago retencion" += Round(rstLinFactura.Amount * decTCambioPago * decPorcentajePagado, rstConfCont."Amount Rounding Precision");
                             /*
-                        END
-                        ELSE
-                        BEGIN
+                                  END
+                                  ELSE
+                                  BEGIN
 
-                          rstFacturaBufferRT."Importe neto factura"  += (rstLinFactura.Amount);
-                          rstFacturaBufferRT."Base pago retencion" += (rstLinFactura.Amount);
+                                    rstFacturaBufferRT."Importe neto factura"  += (rstLinFactura.Amount);
+                                    rstFacturaBufferRT."Base pago retencion" += (rstLinFactura.Amount);
 
-                        END;
-                        */
+                                  END;
+                                  */
                             //Calculo los pagos realizados anteriormente sobre esta factura
                             decImportePagosAnterioresIVA := 0;
                             decImportePagosAnterioresIVA := CalcularPagosAnterioresIIBB(rstFacturaBufferRT);
@@ -5057,21 +5081,21 @@ codeunit 50005 Retenciones
                                                   //decTCambioPago := 1/rstLinDiaGenTemp."Currency Factor";
                                                   rstFacturaBufferRT."Importe neto factura"  -= (rstLinNC.Amount)/rstCabNC."Currency Factor"
                                                 ELSE
-                                                */
+                      */
                                                 rstFacturaBufferRT."Importe neto factura" -= (rstLinNC.Amount) * decTCambioPago;
-                                                rstFacturaBufferRT."Base pago retencion" -= (rstLinNC.Amount) * decTCambioPago;
+                                                rstFacturaBufferRT."Base pago retencion" += Round(rstLinNC.Amount * decTCambioPago * decPorcentajePagado, rstConfCont."Amount Rounding Precision");
                                                 /*
-                                            END
-                                            ELSE
-                                            BEGIN
+                                                                  END
+                                                                  ELSE
+                                                                  BEGIN
 
-                                              rstFacturaBufferRT."Importe neto factura"  -= (rstLinNC.Amount)*ABS(rstMovProveedorFC."Closed by Amount"/
-                                                                                                                rstMovProveedor."Amount (LCY)");
-                                              rstFacturaBufferRT."Base pago retencion" -= (rstLinNC.Amount)
-                                              *ABS(rstMovProveedorFC."Closed by Amount"/rstMovProveedor."Amount (LCY)");
+                                                                    rstFacturaBufferRT."Importe neto factura"  -= (rstLinNC.Amount)*ABS(rstMovProveedorFC."Closed by Amount"/
+                                                                                                                                      rstMovProveedor."Amount (LCY)");
+                                                                    rstFacturaBufferRT."Base pago retencion" -= (rstLinNC.Amount)
+                                                                    *ABS(rstMovProveedorFC."Closed by Amount"/rstMovProveedor."Amount (LCY)");
 
-                                            END;
-                                            */
+                                                                  END;
+                                                                  */
                                                 //Calculo el importe a retener. Para eso, busco la configuración de retenciones correcta
 
                                                 CalcularImporteARetenerNCIIBB(rstLinNC, rstLinDiaGen, decImportePagosAnterioresIVA, rstFacturaBufferRT, rstCabNC);
@@ -5379,6 +5403,8 @@ codeunit 50005 Retenciones
                                         //factura para el cálculo de las retenciones.
                                         //++Arbu 2022 -- El tipo de cambio a utilizar debería ser el del pago
                                         decTCambioPago := fntTipoCambioPago(rstLinDiaGenTemp, rstFacturaBufferRT."No. Factura");
+                                        rstMovProveedor.CalcFields(Amount, "Remaining Amount");
+                                        decPorcentajePagado := Abs(rstLinDiaGenTemp.Amount / rstMovProveedor.Amount);
                                         //--Arbu 2022 -- El tipo de cambio a utilizar debería ser el del pago
                                         //IF decTCambioPago <> 0 THEN
                                         //IF rstCabNC."Currency Code" <> '' THEN
@@ -5392,8 +5418,7 @@ codeunit 50005 Retenciones
                                         ELSE
                                         */
                                         rstFacturaBufferRT."Importe neto factura" -= (rstLinNC.Amount) * decTCambioPago;
-                                        rstFacturaBufferRT."Base pago retencion" -= (rstLinNC.Amount)
-                                          * decTCambioPago;
+                                        rstFacturaBufferRT."Base pago retencion" += Round(rstLinNC.Amount * decTCambioPago * decPorcentajePagado, rstConfCont."Amount Rounding Precision");
                                         /*
                                     END
                                     ELSE
@@ -5479,7 +5504,7 @@ codeunit 50005 Retenciones
     begin
         //CalcularImporteARetenerIIBB
 
-        rstProveedor.Get(rstLinFacturaL."Buy-from Vendor No.");
+        rstProveedor.Get(rstLinFacturaL."Pay-to Vendor No.");
         Clear(rstCodigosRetencion);
         rstCodigosRetencion.SetFilter("Valid from", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
         rstCodigosRetencion.SetFilter("Valid to", '>%1|%2', rstLinDiaGenL."Posting Date", 0D);
@@ -5581,7 +5606,7 @@ codeunit 50005 Retenciones
     begin
         //CalcularImporteARetenerIIBB
 
-        rstProveedor.Get(rstLinFacturaL."Buy-from Vendor No.");
+        rstProveedor.Get(rstLinFacturaL."Pay-to Vendor No.");
         Clear(rstCodigosRetencion);
         rstCodigosRetencion.SetFilter("Valid from", '<=%1|%2', rstLinDiaGenL."Posting Date", 0D);
         rstCodigosRetencion.SetFilter("Valid to", '>%1|%2', rstLinDiaGenL."Posting Date", 0D);
@@ -5728,7 +5753,7 @@ codeunit 50005 Retenciones
         if rstFacturaBufferRT.FindFirst then
             repeat
 
-                rstFacturaBufferRT."Importe retencion" := Round(rstFacturaBufferRT."Importe retencion", 0.01);
+                rstFacturaBufferRT."Importe retencion" := Round(rstFacturaBufferRT."Importe retencion", rstConfCont."Amount Rounding Precision");
                 rstFacturaBufferRT.CalcFields(rstFacturaBufferRT."Importe retencion total", "Importe retenido real",
                                               rstFacturaBufferRT."Importe minimo pago", rstFacturaBufferRT."Importe minimo retención");
 
@@ -5769,7 +5794,6 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp."Journal Batch Name" := rstLinDiaGen."Journal Batch Name";
                                     rstLinDiaGenTemp."Posting Date" := rstLinDiaGen."Posting Date";
                                     rstLinDiaGenTemp."Posting No. Series" := rstLinDiaGen."Posting No. Series";
-                                    rstLinDiaGenTemp."Due Date" := Today;
                                     rstLinDiaGenTemp."Document No." := rstLinDiaGen."Document No.";
                                     rstLinDiaGenTemp."Line No." := rstLinDiaGen2."Line No." + 1;
                                     rstLinDiaGenTemp."Transaction No." := rstLinDiaGen."Transaction No.";
@@ -5818,6 +5842,7 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp.validate("Currency Code",rstLinDiaGen."Currency Code");
                                     rstLinDiaGenTemp.validate("Currency factor",rstLinDiaGen."Currency factor");
                                     */
+                                    rstLinDiaGenTemp.Validate("Account No.");
                                     rstLinDiaGenTemp."Factor divisa operacion" := rstLinDiaGen."Factor divisa operacion";
                                     rstLinDiaGenTemp."Valor divisa operacion" := rstLinDiaGen."Valor divisa operacion";
                                     rstLinDiaGenTemp.Validate(Amount, -rstFacturaBufferRT."Importe retencion");
@@ -5887,7 +5912,6 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp."Journal Batch Name" := rstLinDiaGen."Journal Batch Name";
                                     rstLinDiaGenTemp."Posting Date" := rstLinDiaGen."Posting Date";
                                     rstLinDiaGenTemp."Posting No. Series" := rstLinDiaGen."Posting No. Series";
-                                    rstLinDiaGenTemp."Due Date" := Today;
                                     rstLinDiaGenTemp."Document No." := rstLinDiaGen."Document No.";
                                     rstLinDiaGenTemp."Line No." := rstLinDiaGen2."Line No." + 1;
                                     rstLinDiaGenTemp."Due Date" := rstLinDiaGen."Due Date";
@@ -5924,7 +5948,7 @@ codeunit 50005 Retenciones
                                             end;
                                         rstFacturaBufferRT."Tipo retencion"::Ganancias:
                                             begin
-                                                rstLinDiaGenTemp.validate("Account No.", rstConfCont."Winnings withholding account");
+                                                rstLinDiaGenTemp."Account No." := rstConfCont."Winnings withholding account";
                                                 rstLinDiaGenTemp.Description := CopyStr('Ret. Gan. ' + rstCodigosRetencion.Descripcion, 1, 50);
                                             end;
                                         rstFacturaBufferRT."Tipo retencion"::"Seguridad Social":
@@ -5934,6 +5958,7 @@ codeunit 50005 Retenciones
                                             end;
 
                                     end;
+                                    rstLinDiaGenTemp.Validate("Account No.");
                                     rstLinDiaGenTemp.Validate(Amount, -rstFacturaBufferRT."Importe retencion");
                                     rstLinDiaGenTemp."Descripción 2" := rstFacturaBufferRT."No. Factura";
                                     rstLinDiaGenTemp."External Document No." := rstMovProveedor."External Document No.";
@@ -6072,11 +6097,13 @@ codeunit 50005 Retenciones
                         //Cambio de lógica. Siempre se paga la factura en pesos, así que utilizo el tipo de cambio por el que se cargó la
                         //factura para el cálculo de las retenciones.
 
-                        if (decTCambioPago <> 0) and
-                        (rstCabFactura."Currency Code" <> '') then begin
-
+                        if rstCabFactura."Currency Code" <> '' then begin
                             decTCambioPago := 0;
                             decTCambioPago := 1 / rstCabFactura."Currency Factor";
+                        end;
+                        if (decTCambioPago <> 0) and
+          (rstCabFactura."Currency Code" <> '') then begin
+
                             rstFacturaBufferRT."Importe neto factura" += (rstLinFactura.Amount)
                               * decTCambioPago;
                             rstFacturaBufferRT."Base pago retencion" += (rstLinFactura."Amount Including VAT" - rstLinFactura."VAT Base Amount")
@@ -6213,7 +6240,7 @@ codeunit 50005 Retenciones
         if rstFacturaBufferRT.FindFirst then
             repeat
 
-                rstFacturaBufferRT."Importe retencion" := Round(rstFacturaBufferRT."Importe retencion", 0.01);
+                rstFacturaBufferRT."Importe retencion" := Round(rstFacturaBufferRT."Importe retencion", rstConfCont."Amount Rounding Precision");
                 rstFacturaBufferRT.CalcFields(rstFacturaBufferRT."Importe retencion total", "Importe retenido real",
                                               rstFacturaBufferRT."Importe minimo pago", rstFacturaBufferRT."Importe minimo retención");
 
@@ -6248,6 +6275,8 @@ codeunit 50005 Retenciones
                                     rstLinFacturaTemp.Validate("Bill-to Customer No.", l_rstCabFactura."Bill-to Customer No.");
                                     rstLinFacturaTemp."Document No." := l_rstCabFactura."No.";
                                     rstLinFacturaTemp."Line No." := rstLinFactura2."Line No." + 1;
+                                    rstLinFacturaTemp.Quantity := 1;
+
                                     rstLinFacturaTemp.Validate("Shortcut Dimension 1 Code", l_rstCabFactura."Shortcut Dimension 1 Code");
                                     rstLinFacturaTemp.Validate("Shortcut Dimension 2 Code", l_rstCabFactura."Shortcut Dimension 2 Code");
                                     rstLinFacturaTemp.Validate("Shortcut Dimension 3 Code", l_rstCabFactura."Shortcut Dimension 3 Code");

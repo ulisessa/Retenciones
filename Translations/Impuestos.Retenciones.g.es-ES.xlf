@@ -897,12 +897,6 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension ARCAActExt - Control VAT Bus. Posting Group - Property ToolTip</note>
         </trans-unit>
-        <trans-unit id="PageExtension 2296492898 - Control 1844012642 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1670609200">
-          <source>VAT Bus. Posting Group</source>
-          <target>Grupo registro IVA neg.</target>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ARCAActExt - Control VAT Bus. Posting Group - Property Caption</note>
-        </trans-unit>
         <trans-unit id="PageExtension 396235278 - Control 1551535165 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
           <source>Filing</source>
           <target>Archivado</target>
