@@ -191,6 +191,7 @@ page 50669 Retenciones
     local procedure RunImportAction()
     var
         cdu419: Codeunit "File Management";
+        SelectedFile: Text;
     begin
         if optModoOperacion <> optModoOperacion::Importar then begin
             optModoOperacion := optModoOperacion::Importar;
@@ -202,7 +203,14 @@ page 50669 Retenciones
 
         j := 0;
         Clear(cdu419);
-        strRetenidoSRV := cdu419.UploadFile('Importar archivo', strRetCualquiera1);
+        SelectedFile := cdu419.UploadFile('Importar archivo', strRetCualquiera1);
+        if SelectedFile = '' then begin
+            Message('Importación cancelada por el usuario.');
+            exit;
+        end;
+
+        strRetCualquiera1 := SelectedFile;
+        strRetenidoSRV := SelectedFile;
 
         case optRet of
             optRet::"Exclusiones de IVA":
@@ -226,6 +234,11 @@ page 50669 Retenciones
     end;
 
     local procedure RunExportAction()
+    var
+        SuggestedFileName: Text[128];
+        ExportExtension: Text[8];
+        ExportFile: File;
+        ExportInStream: InStream;
     begin
         if optModoOperacion <> optModoOperacion::Exportar then begin
             optModoOperacion := optModoOperacion::Exportar;
@@ -242,27 +255,80 @@ page 50669 Retenciones
         strRetCualquiera2 := FileMgt.ServerTempFileName(strRetCualquiera2);
         strRetenidoSRV := strRetCualquiera2;
 
+        // Ejecutar exportación según tipo
         case optRetExpo of
             optRetExpo::SICORE:
-                fntExportarSICORE;
+                begin
+                    fntExportarSICORE;
+                    ExportExtension := '.txt';
+                end;
             optRetExpo::SIRE:
-                fntExportarSIRE;
+                begin
+                    fntExportarSIRE;
+                    ExportExtension := '.txt';
+                end;
             optRetExpo::"Comprobar Documentos":
-                fntExportarComprobarDocumentos;
+                begin
+                    fntExportarComprobarDocumentos;
+                    ExportExtension := '.txt';
+                end;
             optRetExpo::"CITI Compras":
-                fntExportarCitiCompras;
+                begin
+                    fntExportarCitiCompras;
+                    ExportExtension := '.txt';
+                end;
             optRetExpo::AGIP:
                 begin
                     fntExportarAGIP;
                     fntExportarAGIPNC;
+                    ExportExtension := '.txt';
                 end;
             optRetExpo::"Exportar consulta Reproweb":
-                fntExportarReproweb;
+                begin
+                    fntExportarReproweb;
+                    ExportExtension := '.txt';
+                end;
             optRetExpo::ARBA:
-                fntExportarARBA;
+                begin
+                    fntExportarARBA;
+                    ExportExtension := '.txt';
+                end;
             optRetExpo::IIBB:
-                fntExportarIIBB;
+                begin
+                    fntExportarIIBB;
+                    ExportExtension := '.txt';
+                end;
+            else
+                ExportExtension := '.txt';
         end;
+
+        // Sugerir nombre de archivo
+        SuggestedFileName := 'Retenciones_';
+        case optRetExpo of
+            optRetExpo::SICORE:
+                SuggestedFileName += 'SICORE_';
+            optRetExpo::SIRE:
+                SuggestedFileName += 'SIRE_';
+            optRetExpo::"Comprobar Documentos":
+                SuggestedFileName += 'ComprobarDocumentos_';
+            optRetExpo::"CITI Compras":
+                SuggestedFileName += 'CITICompras_';
+            optRetExpo::AGIP:
+                SuggestedFileName += 'AGIP_';
+            optRetExpo::"Exportar consulta Reproweb":
+                SuggestedFileName += 'Reproweb_';
+            optRetExpo::ARBA:
+                SuggestedFileName += 'ARBA_';
+            optRetExpo::IIBB:
+                SuggestedFileName += 'IIBB_';
+        end;
+        SuggestedFileName += Format(Today, 0, '<Year4><Month,2><Day,2>') + ExportExtension;
+
+        // Descargar por stream para preservar el nombre sugerido en el diálogo
+        ExportFile.Open(strRetenidoSRV);
+        ExportFile.CreateInStream(ExportInStream);
+        DownloadFromStream(ExportInStream, 'Exportar archivo', '', '', SuggestedFileName);
+        ExportFile.Close();
 
         Message(Message1, Format(j));
         CurrPage.Close;
@@ -1835,11 +1901,6 @@ page 50669 Retenciones
 
         FileTest.Close();
 
-        FileMgt.DownloadTempFile(strRetenidoSRV);
-
-        strRetCualquiera2 := FileMgt.UploadFileWithFilter('Archivo nuevo ', strRetenidoSRV, 'Archivos de texto (*.txt)|*.txt', '*.txt');
-        //FileMgt.DownloadToFile(strRetenidoSRV, strRetCualquiera2);
-
     end;
 
     [Scope('OnPrem')]
@@ -2254,11 +2315,6 @@ page 50669 Retenciones
         dlgDialogo.Close;
 
         FileTest.Close();
-
-        FileMgt.DownloadTempFile(strRetenidoSRV);
-
-        strRetCualquiera3 := FileMgt.UploadFileWithFilter('Archivo nuevo ', strRetenidoSRV, 'Archivos de texto (*.txt)|*.txt', '*.txt');
-        //FileMgt.DownloadToFile(strRetenidoSRV, strRetCualquiera3);
     end;
 
     [Scope('OnPrem')]
@@ -2455,14 +2511,11 @@ page 50669 Retenciones
 
         FileTest.Close();
 
-        FileMgt.DownloadTempFile(strRetenidoSRV);
-
-        strRetCualquiera3 := FileMgt.UploadFileWithFilter('Percepciones ', strRetenidoSRV, 'Archivos de texto (*.txt)|*.txt', '*.txt');
-        //FileMgt.DownloadToFile(strRetenidoSRV, strRetCualquiera3);
-
         //Ahora, con Aduana
         FileTest.TextMode(true);
-        FileTest.Create(strRetenidoSRV);
+        FileTest.WriteMode(true);
+        FileTest.Open(strRetenidoSRV);
+        FileTest.Seek(FileTest.Len);
         FileTest.CreateOutStream(StreamInTest);
 
         Clear(dlgDialogo);
@@ -2549,11 +2602,6 @@ page 50669 Retenciones
         dlgDialogo.Close;
 
         FileTest.Close();
-
-        FileMgt.DownloadTempFile(strRetenidoSRV);
-
-        strRetCualquiera3 := FileMgt.UploadFileWithFilter('Aduana ', strRetenidoSRV, 'Archivos de texto (*.txt)|*.txt', '*.txt');
-        //FileMgt.DownloadToFile(strRetenidoSRV, strRetCualquiera3);
 
     end;
 
@@ -2757,11 +2805,6 @@ page 50669 Retenciones
         dlgDialogo.Close;
 
         FileTest.Close();
-
-        FileMgt.DownloadTempFile(strRetenidoSRV);
-
-        strRetCualquiera3 := FileMgt.UploadFileWithFilter('Archivo nuevo ', strRetenidoSRV, 'Archivos de texto (*.txt)|*.txt', '*.txt');
-        //FileMgt.DownloadToFile(strRetenidoSRV, strRetCualquiera3);
     end;
 
     [Scope('OnPrem')]
@@ -2977,11 +3020,6 @@ page 50669 Retenciones
         dlgDialogo.Close;
 
         FileTest.Close();
-
-        FileMgt.DownloadTempFile(strRetenidoSRV);
-
-        strRetCualquiera3 := FileMgt.UploadFileWithFilter('Archivo nuevo ', strRetenidoSRV, 'Archivos de texto (*.txt)|*.txt', '*.txt');
-        //FileMgt.DownloadToFile(strRetenidoSRV, strRetCualquiera3);
     end;
 
     [Scope('OnPrem')]
@@ -3065,11 +3103,6 @@ page 50669 Retenciones
         UNTIL rstCli.NEXT = 0;
         */
         FileTest.Close();
-
-        FileMgt.DownloadTempFile(strRetenidoSRV);
-
-        strRetCualquiera3 := FileMgt.UploadFileWithFilter('Archivo nuevo ', strRetenidoSRV, 'Archivos de texto (*.txt)|*.txt', '*.txt');
-        //FileMgt.DownloadToFile(strRetenidoSRV, strRetCualquiera3);
 
     end;
 
@@ -4111,11 +4144,6 @@ page 50669 Retenciones
 
         FileTest.Close();
 
-        FileMgt.DownloadTempFile(strRetenidoSRV);
-
-        strRetCualquiera3 := FileMgt.UploadFileWithFilter('Facturas', 'Facturas.txt', 'Archivos de texto (*.txt)|*.txt', '*.txt');
-        //FileMgt.DownloadToFile(strRetenidoSRV, strRetCualquiera3);
-
     end;
 
     [Scope('OnPrem')]
@@ -4586,12 +4614,6 @@ page 50669 Retenciones
 
         FileTest.Close();
 
-        FileMgt.DownloadTempFile(strRetenidoSRV);
-
-        strRetCualquiera3 := FileMgt.UploadFileWithFilter('Notas de crédito', 'NotasCredito.txt', 'Archivos de texto (*.txt)|*.txt', '*.txt');
-
-        //FileMgt.DownloadToFile(strRetenidoSRV, strRetCualquiera3);
-
     end;
 
     procedure fntImportarApocs()
@@ -4641,8 +4663,6 @@ page 50669 Retenciones
         rstGLS.TestField("Apochryphal file ext.");
 
         strRetenidoSRV := cduFM.DownloadFromURL(rstGLS."Apochryphal listing URL", rstGLS."Apochryphal file ext.");
-
-        FileMgt.DownloadTempFile(strRetenidoSRV);
         FileTest.Open(strRetenidoSRV);
         FileTest.CreateInStream(StreamInTest);
         i := 0;
@@ -4920,11 +4940,6 @@ page 50669 Retenciones
         dlgDialogo.Close;
 
         FileTest.Close();
-
-        FileMgt.DownloadTempFile(strRetenidoSRV);
-
-        strRetCualquiera2 := FileMgt.UploadFileWithFilter('Archivo nuevo', '*.*', 'Archivos de texto (*.txt)|*.txt', '*.txt');
-        //FileMgt.DownloadToFile(strRetenidoSRV, strRetCualquiera2);
 
     end;
 
