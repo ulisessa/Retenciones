@@ -2,19 +2,35 @@ page 50669 Retenciones
 {
     SaveValues = true;
     Caption = 'Retenciones';
+    ApplicationArea = All;
+    UsageCategory = Administration;
 
     layout
     {
         area(content)
         {
+            group(Operación)
+            {
+                field("Modo operación"; optModoOperacion)
+                {
+                    trigger OnValidate()
+                    begin
+                        ApplyOperationMode();
+                        CurrPage.Update;
+                    end;
+                }
+            }
             group("Importar archivo")
             {
+                Visible = blnMostrarImportar;
+
                 field("Tipo archivo"; optRet)
                 {
 
                     trigger OnValidate()
                     begin
                         strRetCualquiera1 := '';
+                        optRetExpo := 0;
                         CurrPage.Update;
                     end;
                 }
@@ -69,12 +85,15 @@ page 50669 Retenciones
             }
             group("Exportar ")
             {
+                Visible = blnMostrarExportar;
+
                 field("Tipo archivo Expo"; optRetExpo)
                 {
 
                     trigger OnValidate()
                     begin
                         strRetCualquiera1 := '';
+                        optRet := 0;
                         CurrPage.Update;
                     end;
                 }
@@ -119,154 +138,21 @@ page 50669 Retenciones
     {
         area(processing)
         {
-            action("Importar/Exportar")
+            action(Procesar)
             {
                 Image = Import;
+                Caption = 'Procesar';
 
                 trigger OnAction()
-                var
-                    rstConfCont: Record "General Ledger Setup";
-                    cdu419: Codeunit "File Management";
                 begin
-                    Clear(cdu419);
-
-                    if (optRetExpo <> optRetExpo::" ") and (optRet <> optRet::" ") then
-                        Error('Seleccione una operación de importación o exportación, no puede seleccionar ambas operaciones.');
-
-                    strRetCualquiera2 := FileMgt.ServerTempFileName(strRetCualquiera2);
-
-                    if optRetExpo = optRetExpo::SICORE then
-                        strSICORE := strRetCualquiera2;
-                    if optRetExpo = optRetExpo::SIRE then
-                        strSIRE := strRetCualquiera2;
-                    if optRetExpo = optRetExpo::"Comprobar Documentos" then
-                        strComprobarDocumentos := strRetCualquiera2;
-                    if optRetExpo = optRetExpo::"CITI Compras" then
-                        strCITICompras := strRetCualquiera2;
-                    if optRetExpo = optRetExpo::AGIP then
-                        strAgIP := strRetCualquiera2;
-                    if optRetExpo = optRetExpo::"Exportar consulta Reproweb" then
-                        strReproweb := strRetCualquiera2;
-                    if optRetExpo = optRetExpo::ARBA then
-                        strARBA := strRetCualquiera2;
-                    if optRetExpo = optRetExpo::IIBB then
-                        strIIBB := strRetCualquiera2;
-
-                    if optRet <> optRet::" " then
-                        strRetenidoSRV := cdu419.UploadFile('Importar archivo', strRetenidoIVA + strRetenidoAg + strRetenidoSS + strRetenidoGan + strSICORE + strReproweb + strSIRE + strComprobarDocumentos + strCITICompras + strPadronAGIP + strAgIP + strPadronARBA + strARBA + strIIBB);
-
-                    case (strRetenidoIVA + strRetenidoAg + strRetenidoSS + strRetenidoGan + strSICORE + strReproweb + strSIRE + strComprobarDocumentos + strCITICompras + strPadronAGIP + strAgIP + strPadronARBA + strARBA + strIIBB) of
-                        strRetenidoIVA:
-                            begin
-
-                                fntImportarIVA;
-
-                            end;
-                        strRetenidoGan:
-                            begin
-
-                                fntImportarGan;
-
-                            end;
-                        strRetenidoSS:
-                            begin
-
-                                fntImportarSS;
-
-                            end;
-                        strRetenidoAg:
-                            begin
-
-                                fntImportarAg;
-
-                            end;
-                        strSICORE:
-                            begin
-
-                                strRetenidoSRV := strRetenidoIVA + strRetenidoAg + strRetenidoSS + strRetenidoGan + strSICORE + strSIRE;
-                                fntExportarSICORE;
-
-                            end;
-                        strARBA:
-                            begin
-
-                                strRetenidoSRV := strRetenidoIVA + strRetenidoAg + strRetenidoSS + strRetenidoGan + strSICORE + strSIRE + strARBA;
-                                fntExportarARBA;
-
-                            end;
-                        strReproweb:
-                            begin
-
-                                if optRetExpo = optRetExpo::"Exportar consulta Reproweb" then begin
-                                    strRetenidoSRV := strRetenidoIVA + strRetenidoAg + strRetenidoSS + strRetenidoGan + strSICORE + strSIRE + strReproweb;
-                                    fntExportarReproweb;
-                                end;
-                                if optRet = optRet::Reproweb then
-                                    fntImportarReproweb;
-
-                            end;
-                        strSIRE:
-                            begin
-
-                                strRetenidoSRV := strRetenidoIVA + strRetenidoAg + strRetenidoSS + strRetenidoGan + strSICORE + strSIRE;
-                                fntExportarSIRE;
-
-                            end;
-
-                        strComprobarDocumentos:
-                            begin
-
-                                strRetenidoSRV := strRetenidoIVA + strRetenidoAg + strRetenidoSS + strRetenidoGan + strSICORE + strSIRE + strComprobarDocumentos;
-                                fntExportarComprobarDocumentos;
-
-                            end;
-
-                        strIIBB:
-                            begin
-                                strRetenidoSRV := strRetenidoIVA + strRetenidoAg + strRetenidoSS + strRetenidoGan + strSICORE + strSIRE + strComprobarDocumentos + strIIBB;
-                                fntExportarIIBB;
-                            end;
-                        strCITICompras:
-                            begin
-
-                                strRetenidoSRV := strRetenidoIVA + strRetenidoAg + strRetenidoSS + strRetenidoGan + strSICORE + strSIRE + strComprobarDocumentos +
-                                                  strCITICompras;
-                                fntExportarCitiCompras;
-
-                            end;
-
-                        strPadronAGIP:
-                            begin
-
-                                //strRetenidoSRV := strRetenidoIVA+strRetenidoAg+strRetenidoSS+strRetenidoGan+strSICORE+strSIRE+strComprobarDocumentos+
-                                //                  strCITICompras+strPadronAGIP;
-
-                                //strRetenidoSRV := strPadronARBA;
-                                fntImportarAgiP;
-
-                            end;
-
-                        strAgIP:
-                            begin
-
-                                strRetenidoSRV := strAgIP;
-                                fntExportarAGIP;
-                                fntExportarAGIPNC;
-
-                            end;
-
-                        strPadronARBA:
-                            begin
-
-                                fntImportarARBA;
-
-                            end;
-
+                    case optModoOperacion of
+                        optModoOperacion::Importar:
+                            RunImportAction();
+                        optModoOperacion::Exportar:
+                            RunExportAction();
+                        else
+                            Error('Seleccione el tipo de operación.');
                     end;
-
-                    Message(Message1, Format(j));
-
-                    CurrPage.Close;
                 end;
             }
         }
@@ -274,7 +160,7 @@ page 50669 Retenciones
         {
             group(Category_Process)
             {
-                actionref("Importar/Exportar_Promoted"; "Importar/Exportar")
+                actionref(Procesar_Promoted; Procesar)
                 {
                 }
             }
@@ -285,6 +171,200 @@ page 50669 Retenciones
     begin
         strRetCualquiera2 := '';
         strRetCualquiera1 := '';
+        if optModoOperacion = optModoOperacion::" " then
+            optModoOperacion := optModoOperacion::Importar;
+        ApplyOperationMode();
+    end;
+
+    local procedure ApplyOperationMode()
+    begin
+        blnMostrarImportar := optModoOperacion = optModoOperacion::Importar;
+        blnMostrarExportar := optModoOperacion = optModoOperacion::Exportar;
+
+        if blnMostrarImportar then
+            optRetExpo := 0;
+
+        if blnMostrarExportar then
+            optRet := 0;
+    end;
+
+    local procedure RunImportAction()
+    var
+        cdu419: Codeunit "File Management";
+    begin
+        if optModoOperacion <> optModoOperacion::Importar then begin
+            optModoOperacion := optModoOperacion::Importar;
+            ApplyOperationMode();
+        end;
+
+        if optRet = optRet::" " then
+            Error(Error1);
+
+        j := 0;
+        Clear(cdu419);
+        strRetenidoSRV := cdu419.UploadFile('Importar archivo', strRetCualquiera1);
+
+        case optRet of
+            optRet::"Exclusiones de IVA":
+                fntImportarIVA;
+            optRet::"Exclusiones de Ganancias":
+                fntImportarGan;
+            optRet::"Exclusiones de Seguridad Social":
+                fntImportarSS;
+            optRet::"Agentes de retención de IVA":
+                fntImportarAg;
+            optRet::Reproweb:
+                fntImportarReproweb;
+            optRet::"Padrón AGIP":
+                fntImportarAgiP;
+            optRet::"Padrón ARBA":
+                fntImportarARBA;
+        end;
+
+        Message(Message1, Format(j));
+        CurrPage.Close;
+    end;
+
+    local procedure RunExportAction()
+    begin
+        if optModoOperacion <> optModoOperacion::Exportar then begin
+            optModoOperacion := optModoOperacion::Exportar;
+            ApplyOperationMode();
+        end;
+
+        if optRetExpo = optRetExpo::" " then
+            Error('Por favor, seleccione primero el tipo de archivo a exportar');
+
+        if (datInicio = 0D) or (datFinal = 0D) then
+            Error(Error2);
+
+        j := 0;
+        strRetCualquiera2 := FileMgt.ServerTempFileName(strRetCualquiera2);
+        strRetenidoSRV := strRetCualquiera2;
+
+        case optRetExpo of
+            optRetExpo::SICORE:
+                fntExportarSICORE;
+            optRetExpo::SIRE:
+                fntExportarSIRE;
+            optRetExpo::"Comprobar Documentos":
+                fntExportarComprobarDocumentos;
+            optRetExpo::"CITI Compras":
+                fntExportarCitiCompras;
+            optRetExpo::AGIP:
+                begin
+                    fntExportarAGIP;
+                    fntExportarAGIPNC;
+                end;
+            optRetExpo::"Exportar consulta Reproweb":
+                fntExportarReproweb;
+            optRetExpo::ARBA:
+                fntExportarARBA;
+            optRetExpo::IIBB:
+                fntExportarIIBB;
+        end;
+
+        Message(Message1, Format(j));
+        CurrPage.Close;
+    end;
+
+    local procedure RegisterImportedFile(var SourceFilePath: Text[1024]; Level4Code: Code[20]; LinkDescriptionPrefix: Text)
+    var
+        l_rst99008535: Codeunit "Temp Blob";
+        l_rstDocumentosDigitalizados: Record "Documentos digitalizados";
+        l_rrDocsDigitalizados: RecordRef;
+        intLinea: Integer;
+        l_rstCI: Record "Company Information";
+        cduFM: Codeunit "File Management";
+    begin
+        Clear(FileMgt);
+        FileMgt.BLOBImportFromServerFile(l_rst99008535, SourceFilePath);
+
+        Clear(l_rstDocumentosDigitalizados);
+        if l_rstDocumentosDigitalizados.Find('+') then
+            intLinea := l_rstDocumentosDigitalizados.Linea
+        else
+            intLinea := 1;
+
+        Clear(l_rstDocumentosDigitalizados);
+        l_rstDocumentosDigitalizados.Linea := intLinea + 1;
+        l_rstDocumentosDigitalizados.Archivo := SourceFilePath;
+        l_rstDocumentosDigitalizados."Nivel 1" := 'txt';
+        l_rstDocumentosDigitalizados."Nivel 4" := Level4Code;
+        l_rstDocumentosDigitalizados.Insert;
+
+        Clear(l_rrDocsDigitalizados);
+        l_rrDocsDigitalizados.Get(l_rstDocumentosDigitalizados.RecordId);
+        l_rst99008535.ToRecordRef(l_rrDocsDigitalizados, l_rstDocumentosDigitalizados.FieldNo("BlobFile"));
+        l_rrDocsDigitalizados.Modify;
+
+        Clear(l_rstCI);
+        l_rstCI.Get();
+
+        SourceFilePath := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + cduFM.GetFileName(l_rstDocumentosDigitalizados.Archivo);
+        if File.Exists(SourceFilePath) then
+            SourceFilePath := CopyStr(SourceFilePath, 1, StrLen(SourceFilePath) - 4) + DelChr(Format(CurrentDateTime, 10, 1), '=', '/ :') + '.txt';
+
+        cduFM.CopyServerFile(l_rstDocumentosDigitalizados.Archivo, SourceFilePath, true);
+
+        if StrPos(UpperCase(SourceFilePath), UpperCase(l_rstCI."Ruta Intranet")) = 0 then
+            SourceFilePath := l_rstCI."Ruta Intranet" + (ConvertStr(CopyStr(SourceFilePath, StrLen(l_rstCI."Ruta de digitalizacion"), 250), '\\', '/'));
+
+        AddRecordLink(SourceFilePath, LinkDescriptionPrefix + Format(Today));
+    end;
+
+    local procedure RegisterImportedFileFromBlob(var SourceFilePath: Text[1024]; Level4Code: Code[20]; LinkDescriptionPrefix: Text; var SourceBlob: Codeunit "Temp Blob")
+    var
+        l_rstDocumentosDigitalizados: Record "Documentos digitalizados";
+        l_rrDocsDigitalizados: RecordRef;
+        intLinea: Integer;
+        l_rstCI: Record "Company Information";
+        cduFM: Codeunit "File Management";
+    begin
+        Clear(l_rstDocumentosDigitalizados);
+        if l_rstDocumentosDigitalizados.Find('+') then
+            intLinea := l_rstDocumentosDigitalizados.Linea
+        else
+            intLinea := 1;
+
+        Clear(l_rstDocumentosDigitalizados);
+        l_rstDocumentosDigitalizados.Linea := intLinea + 1;
+        l_rstDocumentosDigitalizados.Archivo := SourceFilePath;
+        l_rstDocumentosDigitalizados."Nivel 1" := 'txt';
+        l_rstDocumentosDigitalizados."Nivel 4" := Level4Code;
+        l_rstDocumentosDigitalizados.Insert;
+
+        Clear(l_rrDocsDigitalizados);
+        l_rrDocsDigitalizados.Get(l_rstDocumentosDigitalizados.RecordId);
+        SourceBlob.ToRecordRef(l_rrDocsDigitalizados, l_rstDocumentosDigitalizados.FieldNo("BlobFile"));
+        l_rrDocsDigitalizados.Modify;
+
+        Clear(l_rstCI);
+        l_rstCI.Get();
+
+        SourceFilePath := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + cduFM.GetFileName(l_rstDocumentosDigitalizados.Archivo);
+        if File.Exists(SourceFilePath) then
+            SourceFilePath := CopyStr(SourceFilePath, 1, StrLen(SourceFilePath) - 4) + DelChr(Format(CurrentDateTime, 10, 1), '=', '/ :') + '.txt';
+
+        cduFM.CopyServerFile(l_rstDocumentosDigitalizados.Archivo, SourceFilePath, true);
+
+        if StrPos(UpperCase(SourceFilePath), UpperCase(l_rstCI."Ruta Intranet")) = 0 then
+            SourceFilePath := l_rstCI."Ruta Intranet" + (ConvertStr(CopyStr(SourceFilePath, StrLen(l_rstCI."Ruta de digitalizacion"), 250), '\\', '/'));
+
+        AddRecordLink(SourceFilePath, LinkDescriptionPrefix + Format(Today));
+    end;
+
+    local procedure AddRecordLink(LinkTarget: Text; LinkDescription: Text)
+    var
+        rstGLS: Record "General Ledger Setup";
+        rstRL: Record "Record Link";
+        LinkID: Integer;
+    begin
+        Clear(rstGLS);
+        rstGLS.Get();
+        LinkID := rstGLS.AddLink(LinkTarget, LinkDescription);
+        Clear(rstRL);
+        rstRL.Get(LinkID);
     end;
 
     var
@@ -304,6 +384,9 @@ page 50669 Retenciones
         strPadronARBA: Text[1024];
         strARBA: Text[1024];
         strIIBB: Text[1024];
+        optModoOperacion: Option " ",Importar,Exportar;
+        blnMostrarImportar: Boolean;
+        blnMostrarExportar: Boolean;
         optRet: Option " ","Exclusiones de IVA","Exclusiones de Ganancias","Exclusiones de Seguridad Social","Agentes de retención de IVA",Reproweb,"Padrón AGIP","Padrón ARBA";
         optRetExpo: Option " ",SICORE,SIRE,"Comprobar Documentos","CITI Compras",AGIP,"Exportar consulta Reproweb",ARBA,IIBB;
         strRetCualquiera1: Text[1024];
@@ -517,39 +600,7 @@ page 50669 Retenciones
 
         dlgDialogo.Close;
 
-        Clear(cduFM);
-        cduFM.BLOBImportFromServerFile(l_rst99008535, strRetenidoSRV);
-
-        Clear(l_rstDocumentosDigitalizados);
-        if l_rstDocumentosDigitalizados.Find('+') then
-            intLinea := l_rstDocumentosDigitalizados.Linea
-        else
-            intLinea := 1;
-
-        Clear(l_rstDocumentosDigitalizados);
-        l_rstDocumentosDigitalizados.Linea := intLinea + 1;
-        l_rstDocumentosDigitalizados.Archivo := strRetenidoSRV;
-        l_rstDocumentosDigitalizados."Nivel 1" := 'txt';
-        l_rstDocumentosDigitalizados."Nivel 4" := 'RG17';
-        l_rstDocumentosDigitalizados.Insert;
-
-        clear(l_rrDocsDigitalizados);
-        l_rrDocsDigitalizados.get(l_rstDocumentosDigitalizados.RecordId);
-        l_rst99008535.ToRecordRef(l_rrDocsDigitalizados, l_rstDocumentosDigitalizados.FieldNo("BlobFile"));
-        l_rrDocsDigitalizados.Modify;
-
-        clear(l_rstCI);
-        l_rstCI.get();
-
-        strRetenidoSRV := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + cduFM.GetFileName(l_rstDocumentosDigitalizados.Archivo);
-        If File.Exists(strRetenidoSRV) then
-            strRetenidoSRV := CopyStr(strRetenidoSRV, 1, StrLen(strRetenidoSRV) - 4) + DelChr(format(CurrentDateTime, 10, 1), '=', '/ :') + '.txt';
-        cduFM.CopyServerFile(l_rstDocumentosDigitalizados.Archivo, strRetenidoSRV, true);
-        IF STRPOS(UPPERCASE(strRetenidoSRV), UPPERCASE(l_rstCI."Ruta Intranet")) = 0 THEN
-            strRetenidoSRV := l_rstCI."Ruta Intranet" + (CONVERTSTR(COPYSTR(strRetenidoSRV, STRLEN(l_rstCI."Ruta de digitalizacion"), 250), '\', '/'));
-        LinkID := rstGLS.AddLink(strRetenidoSRV, 'RG17 importado el ' + Format(Today));
-        Clear(rstRL);
-        rstRL.Get(LinkID);
+        RegisterImportedFile(strRetenidoSRV, 'RG17', 'RG17 importado el ');
 
         FileTest.Close();
 
@@ -710,42 +761,7 @@ page 50669 Retenciones
 
         dlgDialogo.Close;
 
-        Clear(FileMgt);
-        FileMgt.BLOBImportFromServerFile(l_rst99008535, strRetenidoSRV);
-
-        Clear(l_rstDocumentosDigitalizados);
-        if l_rstDocumentosDigitalizados.Find('+') then
-            intLinea := l_rstDocumentosDigitalizados.Linea
-        else
-            intLinea := 1;
-
-        Clear(l_rstDocumentosDigitalizados);
-        l_rstDocumentosDigitalizados.Linea := intLinea + 1;
-        l_rstDocumentosDigitalizados.Archivo := strRetenidoSRV;
-        l_rstDocumentosDigitalizados."Nivel 1" := 'txt';
-        l_rstDocumentosDigitalizados."Nivel 4" := 'RG830';
-        //l_rstDocumentosDigitalizados.BlobFile := l_rst99008535.Blob;
-        l_rstDocumentosDigitalizados.Insert;
-
-
-        clear(l_rrDocsDigitalizados);
-        l_rrDocsDigitalizados.get(l_rstDocumentosDigitalizados.RecordId);
-        l_rst99008535.ToRecordRef(l_rrDocsDigitalizados, l_rstDocumentosDigitalizados.FieldNo("BlobFile"));
-        l_rrDocsDigitalizados.Modify;
-
-        clear(l_rstCI);
-        l_rstCI.get();
-
-        strRetenidoSRV := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + cduGA.GetFileName(l_rstDocumentosDigitalizados.Archivo);
-        If File.Exists(strRetenidoSRV) then
-            strRetenidoSRV := CopyStr(strRetenidoSRV, 1, StrLen(strRetenidoSRV) - 4) + DelChr(format(CurrentDateTime, 10, 1), '=', '/ :') + '.txt';
-        clear(cduGA);
-        cduGA.CopyServerFile(l_rstDocumentosDigitalizados.Archivo, strRetenidoSRV, true);
-        IF STRPOS(UPPERCASE(strRetenidoSRV), UPPERCASE(l_rstCI."Ruta Intranet")) = 0 THEN
-            strRetenidoSRV := l_rstCI."Ruta Intranet" + (CONVERTSTR(COPYSTR(strRetenidoSRV, STRLEN(l_rstCI."Ruta de digitalizacion"), 250), '\', '/'));
-        LinkID := rstGLS.AddLink(strRetenidoSRV, 'RG830 importado el ' + Format(Today));
-        Clear(rstRL);
-        rstRL.Get(LinkID);
+        RegisterImportedFile(strRetenidoSRV, 'RG830', 'RG830 importado el ');
 
         FileTest.Close();
 
@@ -793,6 +809,9 @@ page 50669 Retenciones
         LinkID: Integer;
         l_rstCI: Record "Company Information";
     begin
+        Clear(rstGLS);
+        rstGLS.Get();
+
         rstRet.SetRange("Tipo retención", rstRet."Tipo retención"::"Seguridad Social");
         rstRet.SetFilter("Fecha efectividad retencion", '>%1', WorkDate);
         rstRet.DeleteAll;
@@ -812,6 +831,7 @@ page 50669 Retenciones
             strDato := Txt;
 
             if StrPos(strDato, ';') <> 0 then begin
+                codInciso := '';
 
                 for i := 1 to 8 do begin
 
@@ -829,6 +849,7 @@ page 50669 Retenciones
                         3:
                             begin
                                 strVacio := CopyStr(strDato, 1, StrPos(strDato, ';') - 1);
+                                codInciso := CopyStr(UpperCase(DelChr(strVacio, '=', ' ')), 1, 1);
                                 if StrLen(strVacio) <> 0 then
                                     strDato := CopyStr(strDato, StrPos(strDato, ';') + 1, 250)
                                 else
@@ -958,41 +979,7 @@ page 50669 Retenciones
 
         dlgDialogo.Close;
 
-        Clear(FileMgt);
-        FileMgt.BLOBImportFromServerFile(l_rst99008535, strRetenidoSRV);
-
-        Clear(l_rstDocumentosDigitalizados);
-        if l_rstDocumentosDigitalizados.Find('+') then
-            intLinea := l_rstDocumentosDigitalizados.Linea
-        else
-            intLinea := 1;
-
-        Clear(l_rstDocumentosDigitalizados);
-        l_rstDocumentosDigitalizados.Linea := intLinea + 1;
-        l_rstDocumentosDigitalizados.Archivo := strRetenidoSRV;
-        l_rstDocumentosDigitalizados."Nivel 1" := 'txt';
-        l_rstDocumentosDigitalizados."Nivel 4" := 'RGSS';
-        //l_rstDocumentosDigitalizados.BlobFile := l_rst99008535.Blob;
-        l_rstDocumentosDigitalizados.Insert;
-
-        clear(l_rrDocsDigitalizados);
-        l_rrDocsDigitalizados.get(l_rstDocumentosDigitalizados.RecordId);
-        l_rst99008535.ToRecordRef(l_rrDocsDigitalizados, l_rstDocumentosDigitalizados.FieldNo("BlobFile"));
-        l_rrDocsDigitalizados.Modify;
-
-        clear(l_rstCI);
-        l_rstCI.get();
-
-        strRetenidoSRV := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + cduGA.GetFileName(l_rstDocumentosDigitalizados.Archivo);
-        If File.Exists(strRetenidoSRV) then
-            strRetenidoSRV := CopyStr(strRetenidoSRV, 1, StrLen(strRetenidoSRV) - 4) + DelChr(format(CurrentDateTime, 10, 1), '=', '/ :') + '.txt';
-        clear(cduGA);
-        cduGA.CopyServerFile(l_rstDocumentosDigitalizados.Archivo, strRetenidoSRV, true);
-        IF STRPOS(UPPERCASE(strRetenidoSRV), UPPERCASE(l_rstCI."Ruta Intranet")) = 0 THEN
-            strRetenidoSRV := l_rstCI."Ruta Intranet" + (CONVERTSTR(COPYSTR(strRetenidoSRV, STRLEN(l_rstCI."Ruta de digitalizacion"), 250), '\', '/'));
-        LinkID := rstGLS.AddLink(strRetenidoSRV, 'Padrón Seguridad Social importado el ' + Format(Today));
-        Clear(rstRL);
-        rstRL.Get(LinkID);
+        RegisterImportedFile(strRetenidoSRV, 'RGSS', 'Padrón Seguridad Social importado el ');
 
         FileTest.Close();
     end;
@@ -1115,36 +1102,8 @@ page 50669 Retenciones
         end;
 
         dlgDialogo.Close;
-        Clear(FileMgt);
-        FileMgt.BLOBImportFromServerFile(l_rst99008535, strRetenidoSRV);
 
-        Clear(l_rstDocumentosDigitalizados);
-        if l_rstDocumentosDigitalizados.Find('+') then
-            intLinea := l_rstDocumentosDigitalizados.Linea
-        else
-            intLinea := 1;
-
-        Clear(l_rstDocumentosDigitalizados);
-        l_rstDocumentosDigitalizados.Linea := intLinea + 1;
-        l_rstDocumentosDigitalizados.Archivo := strRetenidoSRV;
-        l_rstDocumentosDigitalizados."Nivel 1" := 'txt';
-        l_rstDocumentosDigitalizados."Nivel 4" := 'RG18';
-        //l_rstDocumentosDigitalizados.BlobFile := l_rst99008535.Blob;
-        l_rstDocumentosDigitalizados.Insert;
-
-        clear(l_rstCI);
-        l_rstCI.get();
-
-        strRetenidoSRV := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + cduGA.GetFileName(l_rstDocumentosDigitalizados.Archivo);
-        If File.Exists(strRetenidoSRV) then
-            strRetenidoSRV := CopyStr(strRetenidoSRV, 1, StrLen(strRetenidoSRV) - 4) + DelChr(format(CurrentDateTime, 10, 1), '=', '/ :') + '.txt';
-        clear(cduGA);
-        cduGA.CopyServerFile(l_rstDocumentosDigitalizados.Archivo, strRetenidoSRV, true);
-        IF STRPOS(UPPERCASE(strRetenidoSRV), UPPERCASE(l_rstCI."Ruta Intranet")) = 0 THEN
-            strRetenidoSRV := l_rstCI."Ruta Intranet" + (CONVERTSTR(COPYSTR(strRetenidoSRV, STRLEN(l_rstCI."Ruta de digitalizacion"), 250), '\', '/'));
-        LinkID := rstGLS.AddLink(strRetenidoSRV, 'Padrón RG18 importado el ' + Format(Today));
-        Clear(rstRL);
-        rstRL.Get(LinkID);
+        RegisterImportedFile(strRetenidoSRV, 'RG18', 'Padrón RG18 importado el ');
 
         FileTest.Close();
 
@@ -1174,7 +1133,7 @@ page 50669 Retenciones
         strFecha: Text[30];
         codEstado: Code[30];
         rstProveedor: Record Vendor;
-        rstAreaImpuesto: Record "Tax Area";
+        rstAreaImpuesto: Record "VAT Business Posting Group";
         rstFecha: Record Date;
         datFecha: Date;
         rstGLS: Record "General Ledger Setup";
@@ -1297,7 +1256,7 @@ page 50669 Retenciones
             if rstProveedor.Get(CopyStr(codNumero, 1, 10)) then begin
 
                 Clear(rstAreaImpuesto);
-                if rstAreaImpuesto.Get(rstProveedor."Tax Area Code") then begin
+                if rstAreaImpuesto.Get(rstProveedor."VAT Bus. Posting Group") then begin
 
                     if rstAreaImpuesto."Importar Reproweb" then begin
 
@@ -1323,19 +1282,7 @@ page 50669 Retenciones
 
         dlgDialogo.Close;
 
-        clear(l_rstCI);
-        l_rstCI.get();
-
-        strRetenidoSRV := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + cduGA.GetFileName(l_rstDocumentosDigitalizados.Archivo);
-        If File.Exists(strRetenidoSRV) then
-            strRetenidoSRV := CopyStr(strRetenidoSRV, 1, StrLen(strRetenidoSRV) - 4) + DelChr(format(CurrentDateTime, 10, 1), '=', '/ :') + '.txt';
-        clear(cduGA);
-        cduGA.CopyServerFile(l_rstDocumentosDigitalizados.Archivo, strRetenidoSRV, true);
-        IF STRPOS(UPPERCASE(strRetenidoSRV), UPPERCASE(l_rstCI."Ruta Intranet")) = 0 THEN
-            strRetenidoSRV := l_rstCI."Ruta Intranet" + (CONVERTSTR(COPYSTR(strRetenidoSRV, STRLEN(l_rstCI."Ruta de digitalizacion"), 250), '\', '/'));
-        LinkID := rstGLS.AddLink(strRetenidoSRV, 'Padrón Reproweb importado el ' + Format(Today));
-        Clear(rstRL);
-        rstRL.Get(LinkID);
+        RegisterImportedFile(strRetenidoSRV, 'Reproweb', 'Padrón Reproweb importado el ');
 
         FileTest.Close();
 
@@ -3073,7 +3020,7 @@ page 50669 Retenciones
             repeat
 
                 Clear(rstAreaImpuesto);
-                if rstAreaImpuesto.Get(rstProv."Tax Area Code") then begin
+                if rstAreaImpuesto.Get(rstProv."VAT Bus. Posting Group") then begin
 
                     if (rstAreaImpuesto."Importar Reproweb") and (rstProv."VAT Registration No." <> '') then begin
 
@@ -3338,41 +3285,7 @@ page 50669 Retenciones
 
         dlgDialogo.Close;
 
-        Clear(FileMgt);
-        FileMgt.BLOBImportFromServerFile(l_rst99008535, strRetenidoSRV);
-
-        Clear(l_rstDocumentosDigitalizados);
-        if l_rstDocumentosDigitalizados.Find('+') then
-            intLinea := l_rstDocumentosDigitalizados.Linea
-        else
-            intLinea := 1;
-
-        Clear(l_rstDocumentosDigitalizados);
-        l_rstDocumentosDigitalizados.Linea := intLinea + 1;
-        l_rstDocumentosDigitalizados.Archivo := strRetenidoSRV;
-        l_rstDocumentosDigitalizados."Nivel 1" := 'txt';
-        l_rstDocumentosDigitalizados."Nivel 4" := 'AGIP';
-        //l_rstDocumentosDigitalizados.BlobFile := l_rst99008535.Blob;
-        l_rstDocumentosDigitalizados.Insert;
-
-
-        clear(l_rrDocsDigitalizados);
-        l_rrDocsDigitalizados.get(l_rstDocumentosDigitalizados.RecordId);
-        l_rst99008535.ToRecordRef(l_rrDocsDigitalizados, l_rstDocumentosDigitalizados.FieldNo("BlobFile"));
-        l_rrDocsDigitalizados.Modify;
-
-        clear(l_rstCI);
-        l_rstCI.get();
-
-        strRetenidoSRV := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + cduGA.GetFileName(l_rstDocumentosDigitalizados.Archivo);
-        If File.Exists(strRetenidoSRV) then
-            strRetenidoSRV := CopyStr(strRetenidoSRV, 1, StrLen(strRetenidoSRV) - 4) + DelChr(format(CurrentDateTime, 10, 1), '=', '/ :') + '.txt';
-        cduGA.CopyServerFile(l_rstDocumentosDigitalizados.Archivo, strRetenidoSRV, true);
-        IF STRPOS(UPPERCASE(strRetenidoSRV), UPPERCASE(l_rstCI."Ruta Intranet")) = 0 THEN
-            strRetenidoSRV := l_rstCI."Ruta Intranet" + (CONVERTSTR(COPYSTR(strRetenidoSRV, STRLEN(l_rstCI."Ruta de digitalizacion"), 250), '\', '/'));
-        LinkID := rstGLS.AddLink(strRetenidoSRV, 'Padrón AGIP importado el ' + Format(Today));
-        Clear(rstRL);
-        rstRL.Get(LinkID);
+        RegisterImportedFile(strRetenidoSRV, 'AGIP', 'Padrón AGIP importado el ');
 
         FileTest.Close();
 
@@ -3571,41 +3484,7 @@ page 50669 Retenciones
         end;
         dlgDialogo.Close;
 
-        Clear(FileMgt);
-        FileMgt.BLOBImportFromServerFile(l_rst99008535, strRetenidoSRV);
-
-        Clear(l_rstDocumentosDigitalizados);
-        if l_rstDocumentosDigitalizados.Find('+') then
-            intLinea := l_rstDocumentosDigitalizados.Linea
-        else
-            intLinea := 1;
-
-        Clear(l_rstDocumentosDigitalizados);
-        l_rstDocumentosDigitalizados.Linea := intLinea + 1;
-        l_rstDocumentosDigitalizados.Archivo := strRetenidoSRV;
-        l_rstDocumentosDigitalizados."Nivel 1" := 'txt';
-        l_rstDocumentosDigitalizados."Nivel 4" := 'ARBA';
-        //l_rstDocumentosDigitalizados.BlobFile := l_rst99008535.Blob;
-        l_rstDocumentosDigitalizados.Insert;
-
-
-        clear(l_rrDocsDigitalizados);
-        l_rrDocsDigitalizados.get(l_rstDocumentosDigitalizados.RecordId);
-        l_rst99008535.ToRecordRef(l_rrDocsDigitalizados, l_rstDocumentosDigitalizados.FieldNo("BlobFile"));
-        l_rrDocsDigitalizados.Modify;
-
-        clear(l_rstCI);
-        l_rstCI.get();
-
-        strRetenidoSRV := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + cduGA.GetFileName(l_rstDocumentosDigitalizados.Archivo);
-        If File.Exists(strRetenidoSRV) then
-            strRetenidoSRV := CopyStr(strRetenidoSRV, 1, StrLen(strRetenidoSRV) - 4) + DelChr(format(CurrentDateTime, 10, 1), '=', '/ :') + '.txt';
-        cduGA.CopyServerFile(l_rstDocumentosDigitalizados.Archivo, strRetenidoSRV, true);
-        IF STRPOS(UPPERCASE(strRetenidoSRV), UPPERCASE(l_rstCI."Ruta Intranet")) = 0 THEN
-            strRetenidoSRV := l_rstCI."Ruta Intranet" + (CONVERTSTR(COPYSTR(strRetenidoSRV, STRLEN(l_rstCI."Ruta de digitalizacion"), 250), '\', '/'));
-        LinkID := rstGLS.AddLink(strRetenidoSRV, 'Padrón ARBA importado el ' + Format(Today));
-        Clear(rstRL);
-        rstRL.Get(LinkID);
+        RegisterImportedFile(strRetenidoSRV, 'ARBA', 'Padrón ARBA importado el ');
 
         FileTest.Close();
     end;
@@ -4128,12 +4007,12 @@ page 50669 Retenciones
                             14://Situación frente al IVA del Retenido
                                 begin
 
-                                    case rstProv."Tax Area Code" of
-                                        'PRV-MONO':
+                                    case rstProv."VAT Bus. Posting Group" of
+                                        'MONO':
                                             strSituacionIVA := '4';
-                                        'PRV-RI':
+                                        'RI':
                                             strSituacionIVA := '1';
-                                        'PRV-EXENTO':
+                                        'EXENTO':
                                             strSituacionIVA := '3';
                                     end;
 
@@ -4823,46 +4702,14 @@ page 50669 Retenciones
 
         end;
 
-        LinkID := rstGLS.AddLink(strArchivo, 'Informe de facturas apócrifas ejecutado el ' + Format(Today));
+        AddRecordLink(strArchivo, 'Informe de facturas apócrifas ejecutado el ' + Format(Today));
 
 
         //rstRL.Type := rstRL.Type::Note;
         //rstRL.Note.IMPORT(strRetenidoSRV,false);
 
-        Clear(l_rstDocumentosDigitalizados);
-        if l_rstDocumentosDigitalizados.Find('+') then
-            intLinea := l_rstDocumentosDigitalizados.Linea
-        else
-            intLinea := 1;
-
-        Clear(l_rstDocumentosDigitalizados);
-        l_rstDocumentosDigitalizados.Linea := intLinea + 1;
-        l_rstDocumentosDigitalizados.Archivo := strRetenidoSRV;
-        l_rstDocumentosDigitalizados."Nivel 1" := 'txt';
-        l_rstDocumentosDigitalizados."Nivel 4" := 'Apócrifas';
-        l_rstDocumentosDigitalizados.Insert;
-
-        clear(l_rrDocsDigitalizados);
-        l_rrDocsDigitalizados.get(l_rstDocumentosDigitalizados.RecordId);
         BLOBRef.CreateOutStream(NVOutStream);
-        BLOBRef.ToRecordRef(l_rrDocsDigitalizados, l_rstDocumentosDigitalizados.FieldNo("BlobFile"));
-        l_rrDocsDigitalizados.Modify;
-
-
-        strRetenidoSRV := FileMgt.ServerTempFileName('txt');
-
-        clear(l_rstCI);
-        l_rstCI.get();
-
-        strRetenidoSRV := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + cduGA.GetFileName(l_rstDocumentosDigitalizados.Archivo);
-        If File.Exists(strRetenidoSRV) then
-            strRetenidoSRV := CopyStr(strRetenidoSRV, 1, StrLen(strRetenidoSRV) - 4) + DelChr(format(CurrentDateTime, 10, 1), '=', '/ :') + '.txt';
-        cduGA.CopyServerFile(l_rstDocumentosDigitalizados.Archivo, strRetenidoSRV, true);
-        IF STRPOS(UPPERCASE(strRetenidoSRV), UPPERCASE(l_rstCI."Ruta Intranet")) = 0 THEN
-            strRetenidoSRV := l_rstCI."Ruta Intranet" + (CONVERTSTR(COPYSTR(strRetenidoSRV, STRLEN(l_rstCI."Ruta de digitalizacion"), 250), '\', '/'));
-        LinkID := rstGLS.AddLink(strRetenidoSRV, 'Padrón facturas apócrifas importado el ' + Format(Today));
-        Clear(rstRL);
-        rstRL.Get(LinkID);
+        RegisterImportedFileFromBlob(strRetenidoSRV, 'Apócrifas', 'Padrón facturas apócrifas importado el ', BLOBRef);
 
         FileTest.Close;
 
