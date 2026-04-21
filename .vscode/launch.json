@@ -12,6 +12,7 @@
             "breakOnError": "All",
             "enableLongRunningSqlStatements": true,
             "enableSqlInformationDebugger": true,
+            "sessionId": 2595,
             "tenant": "default",
             "breakOnNext": "WebClient"
         },
@@ -24,20 +25,18 @@
             "authentication": "Windows",
             "port": 7049,
             "startupObjectId": 190
-            //"startupObjectId": 50111
         },
         {
             "name": "AL: Generated Attach request",
             "request": "attach",
             "type": "al",
-            "server": "https://mimir2.arbumasa.com/BC252",
+            "server": "http://localhost",
             "serverInstance": "BC252",
             "authentication": "Windows",
             "port": 7049,
-            "sessionId": 8497,
-            "breakOnNext": "WebClient"
-            //,"breakOnRecordWrite": "All"
-            //"breakOnError": "ExcludeTry"
+            "sessionId": 1864,
+            "breakOnNext": "WebClient",
+            "breakOnError": "ExcludeTry"
         }
     ]
 }
