@@ -178,7 +178,7 @@ report 50616 "Certificado Retención IIBB"
                     rstMovIvab.FindFirst;
 
                     Clear(rst318);
-                    rst318.Get(rstMovIvab."Tax Area Code");
+                    rst318.Get(rstMovIvab."VAT Bus. Posting Group");
 
                     "Invoice Withholding Buffer".CalcFields("Importe minimo retención");
 

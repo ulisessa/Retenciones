@@ -133,8 +133,6 @@ codeunit 50005 Retenciones
         //Si el proveedor no está excluído de Ingresos Brutos, le calculamos la retención
 
         //Si envió la documentación y está verificada, me fijo si es necesario retener
-        Clear(rstCompInfo);
-        rstCompInfo.Get();
         if rstCompInfo."Ag. Retencion Ingreso Brutos" then begin
 
             if rstLinDiaGen."Account Type" = rstLinDiaGen."Account Type"::Vendor then begin
@@ -204,7 +202,7 @@ codeunit 50005 Retenciones
                     Clear(rstLinFactura);
                     rstLinFactura.SetRange("Document No.", rstLinDiaGenTemp."Applies-to Doc. No.");
 
-                    if (rstProveedor."VAT Bus. Posting Group" = 'PRV-RI') then
+                    if IsVatBusPostingGroupRI(rstProveedor."VAT Bus. Posting Group") then
                         rstLinFactura.SetFilter("VAT %", '<>0');
 
                     rstLinFactura.SetFilter("No.", '<>%1', '');
@@ -222,7 +220,7 @@ codeunit 50005 Retenciones
                                 Clear(rstCabFactura);
                                 rstCabFactura.Get(rstLinFactura."Document No.");
 
-                                if (rstProveedor."VAT Bus. Posting Group" = 'PRV-RI') then
+                                if IsVatBusPostingGroupRI(rstProveedor."VAT Bus. Posting Group") then
                                     rstLinFactura.TestField("Actividad AFIP");
 
                                 TraerConfRet(rstWithholdingCodes, rstWithholdingCodes."Tipo impuesto retencion"::IVA, rstLinFactura."Cód. retención IVA", FALSE);
@@ -530,16 +528,12 @@ codeunit 50005 Retenciones
                                      rstPagosBuffer."Cod. retencion", rstPagosBuffer."Tipo fiscal");
         rstPagosBuffer.SetRange("Cliente/Proveedor", rstFacturaBuffer."Cliente/Proveedor");
         rstPagosBuffer.SetRange("No. Factura", rstFacturaBuffer."No. Factura");
+        rstPagosBuffer.SetFilter("No. documento", '<>%1', rstFacturaBuffer."No. documento");
         rstPagosBuffer.SetRange("Tipo retencion", rstFacturaBuffer."Tipo retencion");
         rstPagosBuffer.SetRange("Cod. retencion", rstFacturaBuffer."Cod. retencion");
         rstPagosBuffer.SetRange("Tipo fiscal", rstFacturaBuffer."Tipo fiscal");
-        rstPagosBuffer.SetFilter(rstPagosBuffer."No. documento", '<>%1', rstFacturaBuffer."No. documento");
-        if rstPagosBuffer.FindFirst then
-            repeat
-
-                decImporte += rstPagosBuffer."Importe retencion";
-
-            until rstPagosBuffer.Next = 0;
+        rstPagosBuffer.CalcSums("Importe retencion");
+        decImporte := rstPagosBuffer."Importe retencion";
 
         exit(decImporte);
     end;
@@ -1257,7 +1251,7 @@ codeunit 50005 Retenciones
         rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
         rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::IVA);
         rstFacturaBufferRT.SetFilter("Importe retencion", '<>0');
-        if rstFacturaBufferRT.FindFirst then
+        if rstFacturaBufferRT.FindSet then
             repeat
 
                 rstFacturaBufferRT."Importe retencion" := Round(rstFacturaBufferRT."Importe retencion", rstConfCont."Amount Rounding Precision");
@@ -1287,9 +1281,6 @@ codeunit 50005 Retenciones
                                 rstConfiguracionRetencion.SetRange("Cod. retencion", rstFacturaBufferRT."Cod. retencion");
 
                                 rstProveedor.Get(rstFacturaBufferRT."Cliente/Proveedor");
-
-                                Clear(rstConfCont);
-                                rstConfCont.Get();
 
                                 Clear(rstTFiscal);
                                 rstTFiscal.Get(rstFacturaBufferRT."Tipo fiscal");
@@ -1331,36 +1322,7 @@ codeunit 50005 Retenciones
                                         rstLinDiaGenTemp."Transaction No." := rstLinDiaGen."Transaction No.";
                                         rstLinDiaGenTemp."No. cheque" := rstLinDiaGen."No. cheque";
                                         //rstLinDiaGenTemp."Account No." := rstTipoImpRetencion."Cuenta retención";
-                                        case rstFacturaBufferRT."Tipo retencion" of
-                                            rstFacturaBufferRT."Tipo retencion"::IVA:
-                                                begin
-                                                    Clear(rstConfCont);
-                                                    rstConfCont.Get();
-                                                    rstLinDiaGenTemp."Account No." := rstConfCont."VAT withholding account";
-                                                    rstLinDiaGenTemp.Description := CopyStr('Ret. IVA ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                                end;
-                                            rstFacturaBufferRT."Tipo retencion"::Ganancias:
-                                                begin
-                                                    Clear(rstConfCont);
-                                                    rstConfCont.Get();
-                                                    rstLinDiaGenTemp."Account No." := rstConfCont."Winnings withholding account";
-                                                    rstLinDiaGenTemp.Description := CopyStr('Ret. Gan. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                                end;
-                                            rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos":
-                                                begin
-                                                    Clear(rstConfCont);
-                                                    rstConfCont.Get();
-                                                    rstLinDiaGenTemp."Account No." := rstConfCont."GI withholding account";
-                                                    rstLinDiaGenTemp.Description := CopyStr('Ret. I.B. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                                end;
-                                            rstFacturaBufferRT."Tipo retencion"::"Seguridad Social":
-                                                begin
-                                                    Clear(rstConfCont);
-                                                    rstConfCont.Get();
-                                                    rstLinDiaGenTemp."Account No." := rstConfCont."SS withholding account";
-                                                    rstLinDiaGenTemp.Description := CopyStr('Ret. SS. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                                end;
-                                        end;
+                                        SetWithholdingAccountAndDescription(rstLinDiaGenTemp, rstConfCont, rstFacturaBufferRT, rstCodigosRetencion, false, '', '', '', '');
 
                                         rstLinDiaGenTemp.Validate("Account No.");
                                         rstLinDiaGenTemp.Validate(Amount, -rstFacturaBufferRT."Importe retencion");
@@ -1445,37 +1407,7 @@ codeunit 50005 Retenciones
                                         */
                                         rstLinDiaGenTemp."Document Type" := rstLinDiaGenTemp."Document Type"::Payment;
                                         rstLinDiaGenTemp."Account Type" := rstLinDiaGenTemp."Account Type"::"G/L Account";
-                                        case rstFacturaBufferRT."Tipo retencion" of
-                                            rstFacturaBufferRT."Tipo retencion"::IVA:
-                                                begin
-                                                    Clear(rstConfCont);
-                                                    rstConfCont.Get();
-                                                    rstLinDiaGenTemp.validate("Account No.", rstConfCont."VAT withholding account");
-                                                    rstLinDiaGenTemp.Description := CopyStr('Ret. IVA ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                                end;
-                                            rstFacturaBufferRT."Tipo retencion"::Ganancias:
-                                                begin
-                                                    Clear(rstConfCont);
-                                                    rstConfCont.Get();
-                                                    rstLinDiaGenTemp.validate("Account No.", rstConfCont."Winnings withholding account");
-                                                    rstLinDiaGenTemp.Description := CopyStr('Ret. Gan. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                                end;
-                                            rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos":
-                                                begin
-                                                    Clear(rstConfCont);
-                                                    rstConfCont.Get();
-                                                    rstLinDiaGenTemp.validate("Account No.", rstConfCont."GI withholding account");
-                                                    rstLinDiaGenTemp.Description := CopyStr('Ret. I.B. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                                end;
-                                            rstFacturaBufferRT."Tipo retencion"::"Seguridad Social":
-                                                begin
-                                                    Clear(rstConfCont);
-                                                    rstConfCont.Get();
-                                                    rstLinDiaGenTemp.validate("Account No.", rstConfCont."SS withholding account");
-                                                    rstLinDiaGenTemp.Description := CopyStr('Ret. SS. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                                end;
-
-                                        end;
+                                        SetWithholdingAccountAndDescription(rstLinDiaGenTemp, rstConfCont, rstFacturaBufferRT, rstCodigosRetencion, true, '', '', '', '');
                                         rstLinDiaGenTemp.Validate(Amount, -rstFacturaBufferRT."Importe retencion");
                                         rstLinDiaGenTemp."External Document No." := rstHisCFacComp."Vendor Invoice No.";
                                         rstLinDiaGenTemp."Descripción 2" := rstFacturaBufferRT."No. Factura";
@@ -1570,36 +1502,7 @@ codeunit 50005 Retenciones
                                         rstLinDiaGenTemp.Validate("Shortcut Dimension 7 Code", rstLinDiaGen."Shortcut Dimension 7 Code");
                                     */
                                     //rstLinDiaGenTemp."Account No." := rstTipoImpRetencion."Cuenta retención";
-                                    case rstFacturaBufferRT."Tipo retencion" of
-                                        rstFacturaBufferRT."Tipo retencion"::IVA:
-                                            begin
-                                                Clear(rstConfCont);
-                                                rstConfCont.Get();
-                                                rstLinDiaGenTemp.validate("Account No.", rstConfCont."VAT withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. IVA ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                        rstFacturaBufferRT."Tipo retencion"::Ganancias:
-                                            begin
-                                                Clear(rstConfCont);
-                                                rstConfCont.Get();
-                                                rstLinDiaGenTemp.validate("Account No.", rstConfCont."Winnings withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. Gan. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                        rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos":
-                                            begin
-                                                Clear(rstConfCont);
-                                                rstConfCont.Get();
-                                                rstLinDiaGenTemp.validate("Account No.", rstConfCont."GI withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. I.B. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                        rstFacturaBufferRT."Tipo retencion"::"Seguridad Social":
-                                            begin
-                                                Clear(rstConfCont);
-                                                rstConfCont.Get();
-                                                rstLinDiaGenTemp.validate("Account No.", rstConfCont."SS withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. SS. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                    end;
+                                    SetWithholdingAccountAndDescription(rstLinDiaGenTemp, rstConfCont, rstFacturaBufferRT, rstCodigosRetencion, true, '', '', '', '');
 
                                     rstLinDiaGenTemp.Validate(Amount, -rstFacturaBufferRT."Importe retencion");
                                     rstLinDiaGenTemp."Descripción 2" := rstFacturaBufferRT."No. Factura";
@@ -1665,36 +1568,7 @@ codeunit 50005 Retenciones
                                         rstLinDiaGenTemp."No. cheque" := rstLinDiaGen."No. cheque";
                                         rstLinDiaGenTemp."Document Type" := rstLinDiaGenTemp."Document Type"::Payment;
                                         rstLinDiaGenTemp."Account Type" := rstLinDiaGenTemp."Account Type"::"G/L Account";
-                                        case rstFacturaBufferRT."Tipo retencion" of
-                                            rstFacturaBufferRT."Tipo retencion"::IVA:
-                                                begin
-                                                    Clear(rstConfCont);
-                                                    rstConfCont.Get();
-                                                    rstLinDiaGenTemp.validate("Account No.", rstConfCont."VAT withholding account");
-                                                    rstLinDiaGenTemp.Description := CopyStr('Ret. IVA ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                                end;
-                                            rstFacturaBufferRT."Tipo retencion"::Ganancias:
-                                                begin
-                                                    Clear(rstConfCont);
-                                                    rstConfCont.Get();
-                                                    rstLinDiaGenTemp.validate("Account No.", rstConfCont."Winnings withholding account");
-                                                    rstLinDiaGenTemp.Description := CopyStr('Ret. Gan. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                                end;
-                                            rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos":
-                                                begin
-                                                    Clear(rstConfCont);
-                                                    rstConfCont.Get();
-                                                    rstLinDiaGenTemp.validate("Account No.", rstConfCont."GI withholding account");
-                                                    rstLinDiaGenTemp.Description := CopyStr('Ret. I.B. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                                end;
-                                            rstFacturaBufferRT."Tipo retencion"::"Seguridad Social":
-                                                begin
-                                                    Clear(rstConfCont);
-                                                    rstConfCont.Get();
-                                                    rstLinDiaGenTemp.validate("Account No.", rstConfCont."SS withholding account");
-                                                    rstLinDiaGenTemp.Description := CopyStr('Ret. SS. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                                end;
-                                        end;
+                                        SetWithholdingAccountAndDescription(rstLinDiaGenTemp, rstConfCont, rstFacturaBufferRT, rstCodigosRetencion, true, '', '', '', '');
                                         rstLinDiaGenTemp.Validate(Amount, -rstFacturaBufferRT."Importe retencion");
                                         rstLinDiaGenTemp."Descripción 2" := rstFacturaBufferRT."No. Factura";
                                         rstLinDiaGenTemp."External Document No." := rstHisCNC."Vendor Cr. Memo No.";
@@ -1792,7 +1666,7 @@ codeunit 50005 Retenciones
                                 repeat
                                     rstCabFactura.Get(rstLinFactura."Document No.");
                                     rstCabFactura.CalcFields(Amount, rstCabFactura."Amount Including VAT");
-                                    if (rstProveedor."VAT Bus. Posting Group" = 'PRV-RI') then
+                                    if IsVatBusPostingGroupRI(rstProveedor."VAT Bus. Posting Group") then
                                         if blnConfirmar then
                                             rstLinFactura.TestField("Actividad AFIP");
 
@@ -1822,7 +1696,7 @@ codeunit 50005 Retenciones
                                 repeat
                                     rstCabNC.Get(rstLinNC."Document No.");
                                     rstCabNC.CalcFields(Amount, rstCabNC."Amount Including VAT");
-                                    if (rstProveedor."VAT Bus. Posting Group" = 'PRV-RI') then
+                                    if IsVatBusPostingGroupRI(rstProveedor."VAT Bus. Posting Group") then
                                         if blnConfirmar then
                                             rstLinNC.TestField("Actividad AFIP");
 
@@ -2412,7 +2286,7 @@ codeunit 50005 Retenciones
         decPorcentajePagado := 0;
         Clear(rstFacturaBufferRT);
         rstFacturaBufferRT.SetRange("Tipo registro", rstFacturaBufferRT."Tipo registro"::Compra);
-        rstFacturaBufferRT.SetRange("Cliente/Proveedor", rstProveedor."No.");
+        rstFacturaBufferRT.SetRange("Cliente/Proveedor", rstMovProveedor."Vendor No.");
         rstFacturaBufferRT.SetRange("No. Factura", '');
         rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::Ganancias);
         if rstCabFactura."No." <> '' then begin
@@ -2458,9 +2332,9 @@ codeunit 50005 Retenciones
         decTCambioPago := 1;
         if rstCabFactura."No." <> '' then begin
             rstMovProveedor.SetFilter(rstMovProveedor."Applied by doc. type  Filter", '<>%1', rstMovProveedor."Applied by doc. type  Filter"::Abono);
-            rstMovProveedor.CalcFields(Amount, "Remaining Amount");
+            rstMovProveedor.CalcFields("Remaining Amount");
             if rstMovProveedor.Open then
-                decPorcentajePagado := Abs(rstLinDiaGenTemp.Amount / rstMovProveedor.Amount)
+                decPorcentajePagado := Abs(rstLinDiaGenTemp.Amount / rstMovProveedor."Remaining Amount")
             else
                 decPorcentajePagado := 1;
             decTCambioPago := fntTipoCambioPago(rstLinDiaGenTemp, rstCabFactura."No.");
@@ -2468,9 +2342,9 @@ codeunit 50005 Retenciones
             rstFacturaBufferRT."Base pago retencion" += Round(rstLinFactura.Amount * decTCambioPago * decPorcentajePagado, rstConfCont."Amount Rounding Precision");
         end;
         if rstCabNC."No." <> '' then begin
-            rstMovProveedor.CalcFields(Amount, "Remaining Amount");
+            rstMovProveedor.CalcFields("Remaining Amount");
             if rstMovProveedor.Open then
-                decPorcentajePagado := Abs(rstLinDiaGenTemp.Amount / rstMovProveedor.Amount)
+                decPorcentajePagado := Abs(rstLinDiaGenTemp.Amount / rstMovProveedor."Remaining Amount")
             else
                 decPorcentajePagado := 1;
             rstFacturaBufferRT."Fecha pago" := rstLinDiaGen."Posting Date";
@@ -2492,13 +2366,13 @@ codeunit 50005 Retenciones
             Clear(rstCodRetRel);
             rstCodRetRel.SetRange("Tipo impuesto retencion", optTipoRet);
             rstCodRetRel.SetRange("Cod. retencion", codRet);
-            rstCodRetRel.FindSet;
+            rstCodRetRel.FindFirst;
             codRet := rstCodRetRel."Cód. alterno superior";
         end;
         Clear(rstCodRet);
         rstCodRet.SetRange(rstCodRet."Tipo impuesto retencion", optTipoRet);
         rstCodRet.SetRange("Cod. retencion", codRet);
-        rstCodRet.FindSet;
+        rstCodRet.FindFirst;
     END;
 
     LOCAL PROCEDURE DepurarCalculos(l_rstLinDiaGen: Record "Gen. Journal Line");
@@ -3036,12 +2910,8 @@ codeunit 50005 Retenciones
         rstFacturaRTBufferCalculoTotal.SetCurrentKey(rstFacturaRTBufferCalculoTotal."No. documento");
         rstFacturaRTBufferCalculoTotal.SetRange(rstFacturaRTBufferCalculoTotal."No. documento", strDocumento);
         rstFacturaRTBufferCalculoTotal.SetRange("No. Factura", strFactura);
-        if rstFacturaRTBufferCalculoTotal.FindFirst then
-            repeat
-
-                decTotalRetenido += rstFacturaRTBufferCalculoTotal."Importe retencion";
-
-            until rstFacturaRTBufferCalculoTotal.Next = 0;
+        rstFacturaRTBufferCalculoTotal.CalcSums("Importe retencion");
+        decTotalRetenido := rstFacturaRTBufferCalculoTotal."Importe retencion";
     end;
 
     [Scope('OnPrem')]
@@ -3490,6 +3360,9 @@ codeunit 50005 Retenciones
     begin
         //CrearDiarioPagosGanancias
 
+        Clear(rstConfCont);
+        rstConfCont.Get();
+
         CalcularTotalRetenido(rstLinDiaGen."Document No.", '');
         Clear(rstFacturaBufferRT);
         rstFacturaBufferRT.SetCurrentKey(rstFacturaBufferRT."No. documento");
@@ -3497,7 +3370,7 @@ codeunit 50005 Retenciones
         rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::Ganancias);
         rstFacturaBufferRT.SetFilter("Importe retencion", '<>0');
         rstFacturaBufferRT.SetRange("Comentario exclusion", '');
-        if rstFacturaBufferRT.FindFirst then
+        if rstFacturaBufferRT.FindSet then
             repeat
 
                 if rstFacturaBufferRT."Base pago retencion" > 0 then
@@ -3545,35 +3418,9 @@ codeunit 50005 Retenciones
                                 rstLinDiaGenTemp."Account Type" := rstLinDiaGenTemp."Account Type"::"G/L Account";
                                 //rstLinDiaGenTemp."Account No." := rstTipoImpRetencion."Cuenta retención";
 
-                                Clear(rstConfCont);
-                                rstConfCont.Get();
-
-                                case rstFacturaBufferRT."Tipo retencion" of
-                                    rstFacturaBufferRT."Tipo retencion"::IVA:
-                                        begin
-
-                                            rstLinDiaGenTemp.validate("Account No.", rstConfCont."VAT withholding account");
-                                            rstLinDiaGenTemp.Description := CopyStr('Ret. IVA ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            rstLinDiaGenTemp."External Document No." := rstFacturaBufferRT."No. Factura";
-                                        end;
-                                    rstFacturaBufferRT."Tipo retencion"::Ganancias:
-                                        begin
-                                            rstLinDiaGenTemp.validate("Account No.", rstConfCont."Winnings withholding account");
-                                            rstLinDiaGenTemp.Description := CopyStr('Ret. Gan. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                        end;
-                                    rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos":
-                                        begin
-                                            rstLinDiaGenTemp.validate("Account No.", rstConfCont."GI withholding account");
-                                            rstLinDiaGenTemp.Description := CopyStr('Ret. I.B. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                        end;
-                                    rstFacturaBufferRT."Tipo retencion"::"Seguridad Social":
-                                        begin
-                                            Clear(rstConfCont);
-                                            rstConfCont.Get();
-                                            rstLinDiaGenTemp.validate("Account No.", rstConfCont."SS withholding account");
-                                            rstLinDiaGenTemp.Description := CopyStr('Ret. SS. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                        end;
-                                end;
+                                SetWithholdingAccountAndDescription(rstLinDiaGenTemp, rstConfCont, rstFacturaBufferRT, rstCodigosRetencion, true, '', '', '', '');
+                                if rstFacturaBufferRT."Tipo retencion" = rstFacturaBufferRT."Tipo retencion"::IVA then
+                                    rstLinDiaGenTemp."External Document No." := rstFacturaBufferRT."No. Factura";
                                 /*
                                 if rstLinDiaGenTemp."Shortcut Dimension 1 Code" = '' then
                                     rstLinDiaGenTemp.Validate("Shortcut Dimension 1 Code", rstLinDiaGen."Shortcut Dimension 1 Code");
@@ -3637,34 +3484,9 @@ codeunit 50005 Retenciones
                             rstLinDiaGenTemp."No. cheque" := rstLinDiaGen."No. cheque";
                             rstLinDiaGenTemp."Document Type" := rstLinDiaGenTemp."Document Type"::Payment;
                             rstLinDiaGenTemp."Account Type" := rstLinDiaGenTemp."Account Type"::"G/L Account";
-                            Clear(rstConfCont);
-                            rstConfCont.Get();
-
-                            case rstFacturaBufferRT."Tipo retencion" of
-                                rstFacturaBufferRT."Tipo retencion"::IVA:
-                                    begin
-                                        rstLinDiaGenTemp.Validate("Account No.", rstConfCont."VAT withholding account");
-                                        rstLinDiaGenTemp.Description := CopyStr('Ret. IVA ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                        rstLinDiaGenTemp."External Document No." := rstFacturaBufferRT."No. Factura";
-                                    end;
-                                rstFacturaBufferRT."Tipo retencion"::Ganancias:
-                                    begin
-                                        rstLinDiaGenTemp.Validate("Account No.", rstConfCont."Winnings withholding account");
-                                        rstLinDiaGenTemp.Description := CopyStr('Ret. Gan. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                    end;
-                                rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos":
-                                    begin
-                                        rstLinDiaGenTemp.Validate("Account No.", rstConfCont."GI withholding account");
-                                        rstLinDiaGenTemp.Description := CopyStr('Ret. I.B. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                    end;
-                                rstFacturaBufferRT."Tipo retencion"::"Seguridad Social":
-                                    begin
-                                        Clear(rstConfCont);
-                                        rstConfCont.Get();
-                                        rstLinDiaGenTemp.Validate("Account No.", rstConfCont."SS withholding account");
-                                        rstLinDiaGenTemp.Description := CopyStr('Ret. SS. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                    end;
-                            end;
+                            SetWithholdingAccountAndDescription(rstLinDiaGenTemp, rstConfCont, rstFacturaBufferRT, rstCodigosRetencion, true, '', '', '', '');
+                            if rstFacturaBufferRT."Tipo retencion" = rstFacturaBufferRT."Tipo retencion"::IVA then
+                                rstLinDiaGenTemp."External Document No." := rstFacturaBufferRT."No. Factura";
                             /*
                             if rstLinDiaGenTemp."Shortcut Dimension 1 Code" = '' then
                                 rstLinDiaGenTemp.Validate("Shortcut Dimension 1 Code", rstLinDiaGen."Shortcut Dimension 1 Code");
@@ -4241,13 +4063,8 @@ codeunit 50005 Retenciones
         rstPagosBuffer.SetRange("Tipo retencion", rstFacturaBuffer."Tipo retencion");
         rstPagosBuffer.SetRange("Cod. retencion", rstFacturaBuffer."Cod. retencion");
         rstPagosBuffer.SetRange("Tipo fiscal", rstFacturaBuffer."Tipo fiscal");
-        rstPagosBuffer.SetFilter(rstPagosBuffer."No. documento", '<>%1', rstFacturaBuffer."No. documento");
-        if rstPagosBuffer.FindFirst then
-            repeat
-
-                decImporte += rstPagosBuffer."Importe retencion";
-
-            until rstPagosBuffer.Next = 0;
+        rstPagosBuffer.CalcSums("Importe retencion");
+        decImporte := rstPagosBuffer."Importe retencion";
 
         exit(decImporte);
     end;
@@ -4582,6 +4399,9 @@ codeunit 50005 Retenciones
     begin
         //CrearDiarioPagosSS
 
+        Clear(rstConfCont);
+        rstConfCont.Get();
+
 
         Clear(rstFacturaBufferRT);
         CalcularTotalRetenido(rstLinDiaGen."Document No.", rstLinDiaGen."Applies-to Doc. No.");
@@ -4589,10 +4409,10 @@ codeunit 50005 Retenciones
         rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
         rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::"Seguridad Social");
         rstFacturaBufferRT.SetFilter("Importe retencion", '<>0');
-        if rstFacturaBufferRT.FindFirst then
+        if rstFacturaBufferRT.FindSet then
             repeat
 
-                rstFacturaBufferRT."Importe retencion" := Round(rstFacturaBufferRT."Importe retencion", 0.01);
+                rstFacturaBufferRT."Importe retencion" := Round(rstFacturaBufferRT."Importe retencion", rstConfCont."Amount Rounding Precision");
                 rstFacturaBufferRT.CalcFields(rstFacturaBufferRT."Importe retencion total", "Importe retenido real",
                                               rstFacturaBufferRT."Importe minimo pago", rstFacturaBufferRT."Importe minimo retención");
 
@@ -4641,25 +4461,7 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp."Due Date" := rstLinDiaGen."Due Date";
                                     rstLinDiaGenTemp."Document Type" := rstLinDiaGenTemp."Document Type"::Payment;
                                     rstLinDiaGenTemp."Account Type" := rstLinDiaGenTemp."Account Type"::"G/L Account";
-                                    Clear(rstConfCont);
-                                    rstConfCont.Get();
-                                    case rstFacturaBufferRT."Tipo retencion" of
-                                        rstFacturaBufferRT."Tipo retencion"::"Seguridad Social":
-                                            begin
-                                                rstLinDiaGenTemp.Validate("Account No.", rstConfCont."SS withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. Seguridad Social ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                        rstFacturaBufferRT."Tipo retencion"::Ganancias:
-                                            begin
-                                                rstLinDiaGenTemp.Validate("Account No.", rstConfCont."Winnings withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. Gan. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                        rstFacturaBufferRT."Tipo retencion"::IVA:
-                                            begin
-                                                rstLinDiaGenTemp.Validate("Account No.", rstConfCont."VAT withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. IVA ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                    end;
+                                    SetWithholdingAccountAndDescription(rstLinDiaGenTemp, rstConfCont, rstFacturaBufferRT, rstCodigosRetencion, true, '', '', '', 'Ret. Seguridad Social ');
                                     /*
                                     if rstLinDiaGenTemp."Shortcut Dimension 1 Code" = '' then
                                         rstLinDiaGenTemp.Validate("Shortcut Dimension 1 Code", rstLinDiaGen."Shortcut Dimension 1 Code");
@@ -4683,8 +4485,6 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp."Valor divisa operacion" := rstLinDiaGen."Valor divisa operacion";
                                     rstLinDiaGenTemp.Retención := true;
                                     rstFacturaBufferRT.Retenido := true;
-                                    Clear(rstConfCont);
-                                    rstConfCont.Get();
 
                                     rstFacturaBufferRT.Modify;
 
@@ -4752,27 +4552,7 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp."No. cheque" := rstLinDiaGen."No. cheque";
                                     rstLinDiaGenTemp."Document Type" := rstLinDiaGenTemp."Document Type"::Payment;
                                     rstLinDiaGenTemp."Account Type" := rstLinDiaGenTemp."Account Type"::"G/L Account";
-                                    Clear(rstConfCont);
-                                    rstConfCont.Get();
-                                    case rstFacturaBufferRT."Tipo retencion" of
-                                        rstFacturaBufferRT."Tipo retencion"::Ganancias:
-                                            begin
-                                                rstLinDiaGenTemp.validate("Account No.", rstConfCont."Winnings withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. Gan. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                        rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos":
-                                            begin
-                                                rstLinDiaGenTemp.validate("Account No.", rstConfCont."GI withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. I.B. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                        rstFacturaBufferRT."Tipo retencion"::"Seguridad Social":
-                                            begin
-                                                Clear(rstConfCont);
-                                                rstConfCont.Get();
-                                                rstLinDiaGenTemp.validate("Account No.", rstConfCont."SS withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. SS. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                    end;
+                                    SetWithholdingAccountAndDescription(rstLinDiaGenTemp, rstConfCont, rstFacturaBufferRT, rstCodigosRetencion, true, '', '', '', '');
                                     /*
                                     if rstLinDiaGenTemp."Shortcut Dimension 1 Code" = '' then
                                         rstLinDiaGenTemp.Validate("Shortcut Dimension 1 Code", rstLinDiaGen."Shortcut Dimension 1 Code");
@@ -4796,9 +4576,6 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp."Valor divisa operacion" := rstLinDiaGen."Valor divisa operacion";
                                     rstLinDiaGenTemp.Retención := true;
                                     rstFacturaBufferRT.Retenido := true;
-
-                                    Clear(rstConfCont);
-                                    rstConfCont.Get();
 
                                     rstFacturaBufferRT.Modify;
 
@@ -5481,13 +5258,8 @@ codeunit 50005 Retenciones
         rstPagosBuffer.SetRange("Tipo retencion", rstFacturaBuffer."Tipo retencion");
         rstPagosBuffer.SetRange("Cod. retencion", rstFacturaBuffer."Cod. retencion");
         rstPagosBuffer.SetRange("Tipo fiscal", rstFacturaBuffer."Tipo fiscal");
-        rstPagosBuffer.SetFilter(rstPagosBuffer."No. documento", '<>%1', rstFacturaBuffer."No. documento");
-        if rstPagosBuffer.FindFirst then
-            repeat
-
-                decImporte += rstPagosBuffer."Importe retencion";
-
-            until rstPagosBuffer.Next = 0;
+        rstPagosBuffer.CalcSums("Importe retencion");
+        decImporte := rstPagosBuffer."Importe retencion";
 
         exit(decImporte);
     end;
@@ -5743,6 +5515,9 @@ codeunit 50005 Retenciones
     begin
         //CrearDiarioPagosIIBB
 
+        Clear(rstConfCont);
+        rstConfCont.Get();
+
 
         Clear(rstFacturaBufferRT);
         CalcularTotalRetenido(rstLinDiaGen."Document No.", rstLinDiaGen."Applies-to Doc. No.");
@@ -5750,7 +5525,7 @@ codeunit 50005 Retenciones
         rstFacturaBufferRT.SetRange(rstFacturaBufferRT."No. documento", rstLinDiaGen."Document No.");
         rstFacturaBufferRT.SetRange("Tipo retencion", rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos");
         rstFacturaBufferRT.SetFilter("Importe retencion", '<>0');
-        if rstFacturaBufferRT.FindFirst then
+        if rstFacturaBufferRT.FindSet then
             repeat
 
                 rstFacturaBufferRT."Importe retencion" := Round(rstFacturaBufferRT."Importe retencion", rstConfCont."Amount Rounding Precision");
@@ -5818,26 +5593,7 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp."Due Date" := rstLinDiaGen."Due Date";
                                     rstLinDiaGenTemp."Document Type" := rstLinDiaGenTemp."Document Type"::Payment;
                                     rstLinDiaGenTemp."Account Type" := rstLinDiaGenTemp."Account Type"::"G/L Account";
-                                    Clear(rstConfCont);
-                                    rstConfCont.Get();
-
-                                    case rstFacturaBufferRT."Tipo retencion" of
-                                        rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos":
-                                            begin
-                                                rstLinDiaGenTemp.validate("Account No.", rstConfCont."GI withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. Ingresos Brutos ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                        rstFacturaBufferRT."Tipo retencion"::Ganancias:
-                                            begin
-                                                rstLinDiaGenTemp.validate("Account No.", rstConfCont."Winnings withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. Gan. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                        rstFacturaBufferRT."Tipo retencion"::IVA:
-                                            begin
-                                                rstLinDiaGenTemp.validate("Account No.", rstConfCont."VAT withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. IVA ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                    end;
+                                    SetWithholdingAccountAndDescription(rstLinDiaGenTemp, rstConfCont, rstFacturaBufferRT, rstCodigosRetencion, false, '', '', 'Ret. Ingresos Brutos ', '');
                                     /*
                                     rstLinDiaGenTemp.validate("Currency Code",rstLinDiaGen."Currency Code");
                                     rstLinDiaGenTemp.validate("Currency factor",rstLinDiaGen."Currency factor");
@@ -5850,8 +5606,6 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp."External Document No." := rstMovProveedor."External Document No.";
                                     rstLinDiaGenTemp.Retención := true;
                                     rstFacturaBufferRT.Retenido := true;
-                                    Clear(rstConfCont);
-                                    rstConfCont.Get();
 
                                     rstFacturaBufferRT.Modify;
 
@@ -5936,28 +5690,9 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp."No. cheque" := rstLinDiaGen."No. cheque";
                                     rstLinDiaGenTemp."Document Type" := rstLinDiaGenTemp."Document Type"::Payment;
                                     rstLinDiaGenTemp."Account Type" := rstLinDiaGenTemp."Account Type"::"G/L Account";
-                                    Clear(rstConfCont);
-                                    rstConfCont.Get();
-
-                                    case rstFacturaBufferRT."Tipo retencion" of
-                                        rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos":
-                                            begin
-                                                rstLinDiaGenTemp.validate("Account No.", rstConfCont."GI withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. Ingresos Brutos ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                                rstLinDiaGenTemp."External Document No." := rstHisCNC."Vendor Cr. Memo No.";
-                                            end;
-                                        rstFacturaBufferRT."Tipo retencion"::Ganancias:
-                                            begin
-                                                rstLinDiaGenTemp."Account No." := rstConfCont."Winnings withholding account";
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. Gan. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-                                        rstFacturaBufferRT."Tipo retencion"::"Seguridad Social":
-                                            begin
-                                                rstLinDiaGenTemp.validate("Account No.", rstConfCont."SS withholding account");
-                                                rstLinDiaGenTemp.Description := CopyStr('Ret. SS. ' + rstCodigosRetencion.Descripcion, 1, 50);
-                                            end;
-
-                                    end;
+                                    SetWithholdingAccountAndDescription(rstLinDiaGenTemp, rstConfCont, rstFacturaBufferRT, rstCodigosRetencion, false, '', '', 'Ret. Ingresos Brutos ', '');
+                                    if rstFacturaBufferRT."Tipo retencion" = rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos" then
+                                        rstLinDiaGenTemp."External Document No." := rstHisCNC."Vendor Cr. Memo No.";
                                     rstLinDiaGenTemp.Validate("Account No.");
                                     rstLinDiaGenTemp.Validate(Amount, -rstFacturaBufferRT."Importe retencion");
                                     rstLinDiaGenTemp."Descripción 2" := rstFacturaBufferRT."No. Factura";
@@ -5966,9 +5701,6 @@ codeunit 50005 Retenciones
                                     rstLinDiaGenTemp."Valor divisa operacion" := rstLinDiaGen."Valor divisa operacion";
                                     rstLinDiaGenTemp.Retención := true;
                                     rstFacturaBufferRT.Retenido := true;
-
-                                    Clear(rstConfCont);
-                                    rstConfCont.Get();
 
                                     rstFacturaBufferRT.Modify;
 
@@ -6284,8 +6016,6 @@ codeunit 50005 Retenciones
                                     rstLinFacturaTemp.Validate("Shortcut Dimension 5 Code", l_rstCabFactura."Shortcut Dimension 5 Code");
                                     rstLinFacturaTemp.Validate("Shortcut Dimension 6 Code", l_rstCabFactura."Shortcut Dimension 6 Code");
                                     rstLinFacturaTemp.Validate("Shortcut Dimension 7 Code", l_rstCabFactura."Shortcut Dimension 7 Code");
-                                    Clear(rstConfCont);
-                                    rstConfCont.Get();
                                     case rstFacturaBufferRT."Tipo retencion" of
                                         rstFacturaBufferRT."Tipo retencion"::"Ingresos Brutos":
                                             begin
@@ -6315,8 +6045,6 @@ codeunit 50005 Retenciones
                                         rstLinFacturaTemp.Validate(rstLinFacturaTemp."Unit Price", rstFacturaBufferRT."Importe retencion" * l_rstCabFactura."Currency Factor");
                                     rstLinFacturaTemp."Description 2" := rstFacturaBufferRT."No. Factura";
                                     rstFacturaBufferRT.Retenido := true;
-                                    Clear(rstConfCont);
-                                    rstConfCont.Get();
 
                                     rstFacturaBufferRT.Modify;
 
@@ -6650,7 +6378,7 @@ codeunit 50005 Retenciones
     begin
         Clear(rstProveedor);
         rstProveedor.Get(l_rstLinDiaGen."Account No.");
-        if rstProveedor."VAT Bus. Posting Group" <> 'PRV-RI' then
+        if not IsVatBusPostingGroupRI(rstProveedor."VAT Bus. Posting Group") then
             exit;
 
         Clear(l_rstLinDiaGenTemp);
@@ -6791,6 +6519,55 @@ codeunit 50005 Retenciones
             until (l_rstLinDiaGenTemp.Next = 0);
 
         exit(blnRG3594);
+    end;
+
+    local procedure IsVatBusPostingGroupRI(vatBusPostingGroup: Code[20]): Boolean
+    begin
+        exit(vatBusPostingGroup = 'PRV-RI');
+    end;
+
+    local procedure SetWithholdingAccountAndDescription(var parLinDiaGen: Record "Gen. Journal Line"; parConfCont: Record "General Ledger Setup"; parFacturaBufferRT: Record "Invoice Withholding Buffer"; parCodigosRetencion: Record "Withholding codes"; useValidateAccountNo: Boolean; ivaPrefix: Text[50]; gananciasPrefix: Text[50]; iibbPrefix: Text[50]; ssPrefix: Text[50])
+    var
+        accountNo: Code[20];
+        descriptionPrefix: Text[50];
+    begin
+        case parFacturaBufferRT."Tipo retencion" of
+            parFacturaBufferRT."Tipo retencion"::IVA:
+                begin
+                    accountNo := parConfCont."VAT withholding account";
+                    descriptionPrefix := ivaPrefix;
+                    if descriptionPrefix = '' then
+                        descriptionPrefix := 'Ret. IVA ';
+                end;
+            parFacturaBufferRT."Tipo retencion"::Ganancias:
+                begin
+                    accountNo := parConfCont."Winnings withholding account";
+                    descriptionPrefix := gananciasPrefix;
+                    if descriptionPrefix = '' then
+                        descriptionPrefix := 'Ret. Gan. ';
+                end;
+            parFacturaBufferRT."Tipo retencion"::"Ingresos Brutos":
+                begin
+                    accountNo := parConfCont."GI withholding account";
+                    descriptionPrefix := iibbPrefix;
+                    if descriptionPrefix = '' then
+                        descriptionPrefix := 'Ret. I.B. ';
+                end;
+            parFacturaBufferRT."Tipo retencion"::"Seguridad Social":
+                begin
+                    accountNo := parConfCont."SS withholding account";
+                    descriptionPrefix := ssPrefix;
+                    if descriptionPrefix = '' then
+                        descriptionPrefix := 'Ret. SS. ';
+                end;
+        end;
+
+        if useValidateAccountNo then
+            parLinDiaGen.Validate("Account No.", accountNo)
+        else
+            parLinDiaGen."Account No." := accountNo;
+
+        parLinDiaGen.Description := CopyStr(descriptionPrefix + parCodigosRetencion.Descripcion, 1, 50);
     end;
 
     [Scope('OnPrem')]

@@ -278,7 +278,7 @@ page 50728 "Invoices WT Base Buffer"
                             strSituacionIBRetenido := '1';
                         if rstCli."GI Inscription type" = 'C' then
                             strSituacionIBRetenido := '2';
-                        if rstCli."Tax Area Code" = 'PRV-MONO' then
+                        if rstCli."VAT Bus. Posting Group" = 'MONO' then
                             strSituacionIBRetenido := '5';
 
                     end
@@ -342,7 +342,7 @@ page 50728 "Invoices WT Base Buffer"
                             strSituacionIBRetenido := '1';
                         if rstProv."GI Inscription type" = 'C' then
                             strSituacionIBRetenido := '2';
-                        if rstProv."Tax Area Code" = 'PRV-MONO' then
+                        if rstProv."VAT Bus. Posting Group" = 'MONO' then
                             strSituacionIBRetenido := '5';
 
                     end

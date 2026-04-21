@@ -450,7 +450,7 @@ pageextension 256 "Withholdings in Payments" extends "Payment Journal"
     procedure VerificarFechaReproweb(): Boolean
     var
         rstLinDiaGen: Record "Gen. Journal Line";
-        rstAreaImpuesto: Record "Tax Area";
+        rstAreaImpuesto: Record "VAT Business Posting Group";
         rstCI: Record "Company Information";
         rstGLS: Record "General Ledger Setup";
         l_codMes: Text[2];
@@ -474,7 +474,7 @@ pageextension 256 "Withholdings in Payments" extends "Payment Journal"
                 rstProveedor.SetFilter("No.", rstLinDiaGen."Account No.");
                 if rstProveedor.FindFirst then;
                 Clear(rstAreaImpuesto);
-                if rstAreaImpuesto.Get(rstProveedor."Tax Area Code") then begin
+                if rstAreaImpuesto.Get(rstProveedor."VAT Bus. Posting Group") then begin
 
                     if rstAreaImpuesto."Importar Reproweb" then begin
 
@@ -519,8 +519,8 @@ pageextension 256 "Withholdings in Payments" extends "Payment Journal"
             rstProveedor.SetFilter("No.", rstLinDiaGen."Account No.");
             if rstProveedor.FindFirst then;
             Clear(rstAreaImpuesto);
-            rstAreaImpuesto.Get(rstProveedor."Tax Area Code");
-            if rstAreaImpuesto."Realizar consulta constancia" then begin
+            rstAreaImpuesto.Get(rstProveedor."VAT Bus. Posting Group");
+            if rstAreaImpuesto."Importar Reproweb" then begin
 
                 if (rstProveedor."Fecha Consulta" < rstLinDiaGen."Posting Date") and (not rstProveedor."Omitir validación WS-AFIP") then begin
 
