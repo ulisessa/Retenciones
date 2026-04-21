@@ -103,6 +103,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - NamedType Message1</note>
         </trans-unit>
+        <trans-unit id="Page 4182531079 - Action 83160525 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Procesar</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Action Procesar - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 2696501254 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>SS Withholding Setup</source>
           <note from="Developer" annotates="general" priority="2"></note>

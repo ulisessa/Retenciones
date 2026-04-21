@@ -741,6 +741,12 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Action Get RG830 - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 3141329066 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>AFIP Document Type Dimension</source>
+          <target>Dimensión de Tipo de Documento AFIP</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control AFIP Doc Type Dimension - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 1341528549 - Control 4232383974 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
           <source>Fiscal type</source>
           <target>Tipo fiscal</target>
@@ -896,6 +902,62 @@
           <target>Especifica el grupo de registro IVA equivalente a este impuesto.]</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension ARCAActExt - Control VAT Bus. Posting Group - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2296492898 - Control 1844012642 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1670609200">
+          <source>VAT Bus. Posting Group</source>
+          <target>Grupo registro IVA neg.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">Suggested translation inserted.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ARCAActExt - Control VAT Bus. Posting Group - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2296492898 - Control 1844012642 - Method 2126772001 - NamedType 2026798726" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1670609200">
+          <source>Only activities of type "Tax" can have a VAT Business Posting Group.</source>
+          <target>Solo las actividades del tipo "Impuesto" pueden tener un Grupo de Registro de IVA.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ARCAActExt - Control VAT Bus. Posting Group - Method OnValidate - NamedType lblError</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 3718489353 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Actividad AFIP</source>
+          <target>Actividad AFIP</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">Suggested translation inserted.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control Actividad AFIP - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 3094869170 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Concepto proyecto</source>
+          <target>Concepto proyecto</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control Concepto proyecto - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 1602441803 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Consumir automáticamente</source>
+          <target>Consumir automáticamente</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control Consumir automáticamente - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 3120983554 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Código de retención de Ganancias Brutas</source>
+          <target>Código de retención de Ganancias Brutas</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control Gross winnings with. code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 930950756 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Código de retención de Seguridad Social</source>
+          <target>Código de retención de Seguridad Social</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control SS withholding code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 1970612509 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Código de retención de IVA</source>
+          <target>Código de retención de IVA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control VAT withholding code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3922555324 - Control 2306495863 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
+          <source>Código de retención de Ganancias</source>
+          <target>Código de retención de Ganancias</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control Winnings withholding code - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 396235278 - Control 1551535165 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3469146285">
           <source>Filing</source>
@@ -1191,6 +1253,12 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Action Category_Taxes - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 4148164589 - Control 81782646 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
+          <source>AFIP Facturación</source>
+          <target>AFIP Facturación</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control ARCA_Invoicing - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 4148164589 - Control 3094869170 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
           <source>Concepto Proyecto</source>
           <target>Concepto Proyecto</target>
@@ -1250,6 +1318,12 @@
           <target>Fecha consulta constancia</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Taxes Vendor Card - Control Fecha Consulta - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1199507388 - Control 3626579016 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2797067059">
+          <source>Importar Reproweb</source>
+          <target>Importar Reproweb</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension VATBusGroup - Control Importar Reproweb - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 1199507388 - Control 4137661924 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2797067059">
           <source>Tipo cálculo acumulado</source>
@@ -1381,7 +1455,7 @@
         </trans-unit>
         <trans-unit id="Enum 4137661924 - EnumValue 1371923692 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source> </source>
-          <target></target>
+          <target> </target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">Source contains only white-space, consider using 'Locked = true' to avoid translation of unnecessary texts. This note can be toggled with the setting 'NAB.PreferLockedTranslations'.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Enum Tipo cálculo acumulado - EnumValue   - Property Caption</note>
@@ -1397,13 +1471,6 @@
           <target>Mensual</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Enum Tipo cálculo acumulado - EnumValue Mensual - Property Caption</note>
-        </trans-unit>
-        <trans-unit id="PageExtension 2296492898 - Control 1844012642 - Method 2126772001 - NamedType 2026798726" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1670609200">
-          <source>Only activities of type "Tax" can have a VAT Business Posting Group.</source>
-          <target>Solo las actividades del tipo "Impuesto" pueden tener un Grupo de Registro de IVA.</target>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ARCAActExt - Control VAT Bus. Posting Group - Method OnValidate - NamedType lblError</note>
         </trans-unit>
       </group>
     </body>
