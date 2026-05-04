@@ -146,6 +146,18 @@ pageextension 50119 "Add functions to GLS" extends "General Ledger Setup"
                 field("RG830 ext"; "RG830 ext")
                 {
                 }
+                field("ARCA Tax Responsible Type Path"; Rec."ARCA Tax Responsible Type Path")
+                {
+                    ApplicationArea = All;
+                    Caption = 'ARCA Tax Responsible Type Path';
+                    ToolTip = 'URL del archivo de tipos de responsables de ARCA/AFIP.';
+                }
+                field("ARCA Document Types Path"; Rec."ARCA Document Types Path")
+                {
+                    ApplicationArea = All;
+                    Caption = 'ARCA Document Types Path';
+                    ToolTip = 'URL del archivo de tipos de documentos de ARCA/AFIP.';
+                }
             }
             group("Recupero IVA")
             {
@@ -241,13 +253,16 @@ pageextension 50119 "Add functions to GLS" extends "General Ledger Setup"
     }
     actions
     {
-        addlast(Category_Process)
+        addfirst(Category_Process)
         {
             group(Category_Recurrent_Activities)
             {
                 //ShowAs = SplitButton;
                 Caption = 'Recurrent Activities';
                 actionref("Get apochryphals_Promoted"; "Get apochryphals")
+                {
+                }
+                actionref("Get Reproweb_Promoted"; "Get Reproweb")
                 {
                 }
                 actionref("Get RG17_Promoted"; "Get RG17")
@@ -259,9 +274,15 @@ pageextension 50119 "Add functions to GLS" extends "General Ledger Setup"
                 actionref("Get RG830_Promoted"; "Get RG830")
                 {
                 }
+                actionref("Get Tax Responsible Types_Promoted"; "Get Tax Responsible Types")
+                {
+                }
+                actionref("Get Document Types_Promoted"; "Get Document Types")
+                {
+                }
             }
         }
-        addlast(processing)
+        addfirst(processing)
         {
             group(Recurrent_Activities)
             {
@@ -275,6 +296,34 @@ pageextension 50119 "Add functions to GLS" extends "General Ledger Setup"
                         rstRetenciones: Page Retenciones;
                     begin
                         rstRetenciones.fntImportarApocs;
+                    end;
+                }
+                action("Get Reproweb")
+                {
+                    Caption = 'Consulta Reproweb';
+
+                    trigger OnAction()
+                    var
+                        l_cduWS: Codeunit "WS - AFIP";
+                        l_rstGLS: Record "General Ledger Setup";
+                        l_codMes: Code[10];
+                        l_codYear: Code[10];
+                        l_rstCI: Record "Company Information";
+                    begin
+                        Clear(l_rstCI);
+                        Clear(l_rstGLS);
+                        l_rstCI.Get();
+                        l_rstGLS.Get();
+
+                        if l_rstGLS."WS - Reproweb Dimension" <> '' then begin
+
+                            l_codMes := Format(Date2DMY(Today, 2));
+                            l_codYear := Format(Date2DMY(Today, 3));
+                            if StrLen(l_codMes) = 1 then
+                                l_codMes := '0' + l_codMes;
+                            l_cduWS.fntReprowebGrupal('wsagr', DelChr(l_rstCI."VAT Registration No.", '=', '-'), '', l_codMes + '/' + l_codYear);
+
+                        end;
                     end;
                 }
                 action("Get RG17")
@@ -313,10 +362,30 @@ pageextension 50119 "Add functions to GLS" extends "General Ledger Setup"
                         rstRetenciones.fntImportarGan;
                     end;
                 }
+                action("Get Tax Responsible Types")
+                {
+                    Caption = 'Actualizar Tipos de Responsables';
+                    trigger OnAction()
+                    var
+                        cduRetenciones: Codeunit Retenciones;
+                    begin
+                        cduRetenciones.fntConsultaTipoResponsableARCA();
+                    end;
+                }
+                action("Get Document Types")
+                {
+                    Caption = 'Actualizar Tipos de Documentos';
+                    trigger OnAction()
+                    var
+                        cduRetenciones: Codeunit Retenciones;
+                    begin
+                        cduRetenciones.fntConsultaTiposDocARCA();
+                    end;
+                }
             }
+
         }
 
     }
-
 
 }

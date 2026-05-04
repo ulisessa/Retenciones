@@ -11,8 +11,10 @@ page 50669 Retenciones
         {
             group(Operación)
             {
+                Caption = 'Operation';
                 field("Modo operación"; optModoOperacion)
                 {
+                    Caption = 'Operation mode';
                     trigger OnValidate()
                     begin
                         ApplyOperationMode();
@@ -22,6 +24,7 @@ page 50669 Retenciones
             }
             group("Importar archivo")
             {
+                Caption = 'Import file';
                 Visible = blnMostrarImportar;
 
                 field("Tipo archivo"; optRet)
@@ -36,6 +39,7 @@ page 50669 Retenciones
                 }
                 field("Archivo a importar"; strRetCualquiera1)
                 {
+                    Caption = 'File to import';
 
                     trigger OnAssistEdit()
                     var
@@ -63,7 +67,7 @@ page 50669 Retenciones
 
                         case optRet of
                             optRet::" ":
-                                Error(Error1);
+                                Error(lblError1);
                             optRet::"Exclusiones de IVA":
                                 strRetenidoIVA := strRetCualquiera1;
                             optRet::"Exclusiones de Ganancias":
@@ -85,10 +89,13 @@ page 50669 Retenciones
             }
             group("Exportar ")
             {
+                Caption = 'Export';
+
                 Visible = blnMostrarExportar;
 
                 field("Tipo archivo Expo"; optRetExpo)
                 {
+                    Caption = 'Export file type';
 
                     trigger OnValidate()
                     begin
@@ -99,12 +106,15 @@ page 50669 Retenciones
                 }
                 field("Fecha inicial"; datInicio)
                 {
+                    Caption = 'Start date';
                 }
                 field("Fecha final"; datFinal)
                 {
+                    Caption = 'End date';
                 }
                 field("Archivo a exportar"; strRetCualquiera2)
                 {
+                    Caption = 'File to export';
                     Editable = false;
                     Visible = false;
 
@@ -114,7 +124,7 @@ page 50669 Retenciones
                         optFiletype: Option " ",Text,Excel,Word,Custom;
                     begin
                         if (datInicio = 0D) or (datFinal = 0D) then
-                            Error(Error2);
+                            Error(lblError2);
                         optRet := 0;
                         strRetCualquiera1 := '';
                         strRetenidoGan := '';
@@ -141,9 +151,11 @@ page 50669 Retenciones
             action(Procesar)
             {
                 Image = Import;
-                Caption = 'Procesar';
+                Caption = 'Process';
 
                 trigger OnAction()
+                var
+                    lblError: Label 'Seleccione el tipo de operación.';
                 begin
                     case optModoOperacion of
                         optModoOperacion::Importar:
@@ -151,7 +163,7 @@ page 50669 Retenciones
                         optModoOperacion::Exportar:
                             RunExportAction();
                         else
-                            Error('Seleccione el tipo de operación.');
+                            Error(lblError);
                     end;
                 end;
             }
@@ -199,7 +211,7 @@ page 50669 Retenciones
         end;
 
         if optRet = optRet::" " then
-            Error(Error1);
+            Error(lblError1);
 
         j := 0;
         Clear(cdu419);
@@ -229,7 +241,7 @@ page 50669 Retenciones
                 fntImportarARBA;
         end;
 
-        Message(Message1, Format(j));
+        Message(lblMessage1, Format(j));
         CurrPage.Close;
     end;
 
@@ -239,6 +251,7 @@ page 50669 Retenciones
         ExportExtension: Text[8];
         ExportFile: File;
         ExportInStream: InStream;
+        lblError1: Label 'Please, choose the file type before exporting.';
     begin
         if optModoOperacion <> optModoOperacion::Exportar then begin
             optModoOperacion := optModoOperacion::Exportar;
@@ -246,10 +259,10 @@ page 50669 Retenciones
         end;
 
         if optRetExpo = optRetExpo::" " then
-            Error('Por favor, seleccione primero el tipo de archivo a exportar');
+            Error(lblError1);
 
         if (datInicio = 0D) or (datFinal = 0D) then
-            Error(Error2);
+            Error(lblError2);
 
         j := 0;
         strRetCualquiera2 := FileMgt.ServerTempFileName(strRetCualquiera2);
@@ -330,7 +343,7 @@ page 50669 Retenciones
         DownloadFromStream(ExportInStream, 'Exportar archivo', '', '', SuggestedFileName);
         ExportFile.Close();
 
-        Message(Message1, Format(j));
+        Message(lblMessage1, Format(j));
         CurrPage.Close;
     end;
 
@@ -342,7 +355,12 @@ page 50669 Retenciones
         intLinea: Integer;
         l_rstCI: Record "Company Information";
         cduFM: Codeunit "File Management";
+        FileExtension: Text[10];
+        OriginalSourcePath: Text[1024];
     begin
+        FileExtension := cduFM.GetExtension(SourceFilePath);
+        OriginalSourcePath := SourceFilePath;
+
         Clear(FileMgt);
         FileMgt.BLOBImportFromServerFile(l_rst99008535, SourceFilePath);
 
@@ -354,8 +372,8 @@ page 50669 Retenciones
 
         Clear(l_rstDocumentosDigitalizados);
         l_rstDocumentosDigitalizados.Linea := intLinea + 1;
-        l_rstDocumentosDigitalizados.Archivo := SourceFilePath;
-        l_rstDocumentosDigitalizados."Nivel 1" := 'txt';
+        l_rstDocumentosDigitalizados.Archivo := CopyStr(Level4Code + '_' + Format(Today, 0, '<Year4><Month,2><Day,2>') + '.' + FileExtension, 1, MaxStrLen(l_rstDocumentosDigitalizados.Archivo));
+        l_rstDocumentosDigitalizados."Nivel 1" := FileExtension;
         l_rstDocumentosDigitalizados."Nivel 4" := Level4Code;
         l_rstDocumentosDigitalizados.Insert;
 
@@ -367,14 +385,17 @@ page 50669 Retenciones
         Clear(l_rstCI);
         l_rstCI.Get();
 
-        SourceFilePath := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + cduFM.GetFileName(l_rstDocumentosDigitalizados.Archivo);
+        SourceFilePath := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + l_rstDocumentosDigitalizados.Archivo;
         if File.Exists(SourceFilePath) then
-            SourceFilePath := CopyStr(SourceFilePath, 1, StrLen(SourceFilePath) - 4) + DelChr(Format(CurrentDateTime, 10, 1), '=', '/ :') + '.txt';
+            SourceFilePath := CopyStr(SourceFilePath, 1, StrLen(SourceFilePath) - StrLen(FileExtension) - 1) + DelChr(Format(CurrentDateTime, 10, 1), '=', '/ :') + '.' + FileExtension;
 
-        cduFM.CopyServerFile(l_rstDocumentosDigitalizados.Archivo, SourceFilePath, true);
+        cduFM.CopyServerFile(OriginalSourcePath, SourceFilePath, true);
 
-        if StrPos(UpperCase(SourceFilePath), UpperCase(l_rstCI."Ruta Intranet")) = 0 then
-            SourceFilePath := l_rstCI."Ruta Intranet" + (ConvertStr(CopyStr(SourceFilePath, StrLen(l_rstCI."Ruta de digitalizacion"), 250), '\\', '/'));
+        if StrPos(UpperCase(SourceFilePath), UpperCase(l_rstCI."Ruta Intranet")) = 0 then begin
+            SourceFilePath := l_rstCI."Ruta Intranet" + CopyStr(SourceFilePath, StrLen(l_rstCI."Ruta de digitalizacion"), 250);
+            while StrPos(SourceFilePath, '//') > 0 do
+                SourceFilePath := CopyStr(CopyStr(SourceFilePath, 1, StrPos(SourceFilePath, '//') - 1) + '\' + CopyStr(SourceFilePath, StrPos(SourceFilePath, '//') + 2, MaxStrLen(SourceFilePath)), 1, MaxStrLen(SourceFilePath));
+        end;
 
         AddRecordLink(SourceFilePath, LinkDescriptionPrefix + Format(Today));
     end;
@@ -386,7 +407,12 @@ page 50669 Retenciones
         intLinea: Integer;
         l_rstCI: Record "Company Information";
         cduFM: Codeunit "File Management";
+        FileExtension: Text[10];
+        OriginalSourcePath: Text[1024];
     begin
+        FileExtension := cduFM.GetExtension(SourceFilePath);
+        OriginalSourcePath := SourceFilePath;
+
         Clear(l_rstDocumentosDigitalizados);
         if l_rstDocumentosDigitalizados.Find('+') then
             intLinea := l_rstDocumentosDigitalizados.Linea
@@ -395,8 +421,8 @@ page 50669 Retenciones
 
         Clear(l_rstDocumentosDigitalizados);
         l_rstDocumentosDigitalizados.Linea := intLinea + 1;
-        l_rstDocumentosDigitalizados.Archivo := SourceFilePath;
-        l_rstDocumentosDigitalizados."Nivel 1" := 'txt';
+        l_rstDocumentosDigitalizados.Archivo := CopyStr(Level4Code + '_' + Format(Today, 0, '<Year4><Month,2><Day,2>') + '.' + FileExtension, 1, MaxStrLen(l_rstDocumentosDigitalizados.Archivo));
+        l_rstDocumentosDigitalizados."Nivel 1" := FileExtension;
         l_rstDocumentosDigitalizados."Nivel 4" := Level4Code;
         l_rstDocumentosDigitalizados.Insert;
 
@@ -408,14 +434,17 @@ page 50669 Retenciones
         Clear(l_rstCI);
         l_rstCI.Get();
 
-        SourceFilePath := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + cduFM.GetFileName(l_rstDocumentosDigitalizados.Archivo);
+        SourceFilePath := l_rstCI."Ruta de digitalizacion" + l_rstCI."Ruta cabecera digitalizacion" + l_rstDocumentosDigitalizados.Archivo;
         if File.Exists(SourceFilePath) then
-            SourceFilePath := CopyStr(SourceFilePath, 1, StrLen(SourceFilePath) - 4) + DelChr(Format(CurrentDateTime, 10, 1), '=', '/ :') + '.txt';
+            SourceFilePath := CopyStr(SourceFilePath, 1, StrLen(SourceFilePath) - StrLen(FileExtension) - 1) + DelChr(Format(CurrentDateTime, 10, 1), '=', '/ :') + '.' + FileExtension;
 
-        cduFM.CopyServerFile(l_rstDocumentosDigitalizados.Archivo, SourceFilePath, true);
+        cduFM.CopyServerFile(OriginalSourcePath, SourceFilePath, true);
 
-        if StrPos(UpperCase(SourceFilePath), UpperCase(l_rstCI."Ruta Intranet")) = 0 then
-            SourceFilePath := l_rstCI."Ruta Intranet" + (ConvertStr(CopyStr(SourceFilePath, StrLen(l_rstCI."Ruta de digitalizacion"), 250), '\\', '/'));
+        if StrPos(UpperCase(SourceFilePath), UpperCase(l_rstCI."Ruta Intranet")) = 0 then begin
+            SourceFilePath := l_rstCI."Ruta Intranet" + CopyStr(SourceFilePath, StrLen(l_rstCI."Ruta de digitalizacion"), 250);
+            while StrPos(SourceFilePath, '//') > 0 do
+                SourceFilePath := CopyStr(CopyStr(SourceFilePath, 1, StrPos(SourceFilePath, '//') - 1) + '\' + CopyStr(SourceFilePath, StrPos(SourceFilePath, '//') + 2, MaxStrLen(SourceFilePath)), 1, MaxStrLen(SourceFilePath));
+        end;
 
         AddRecordLink(SourceFilePath, LinkDescriptionPrefix + Format(Today));
     end;
@@ -456,15 +485,15 @@ page 50669 Retenciones
         optRet: Option " ","Exclusiones de IVA","Exclusiones de Ganancias","Exclusiones de Seguridad Social","Agentes de retención de IVA",Reproweb,"Padrón AGIP","Padrón ARBA";
         optRetExpo: Option " ",SICORE,SIRE,"Comprobar Documentos","CITI Compras",AGIP,"Exportar consulta Reproweb",ARBA,IIBB;
         strRetCualquiera1: Text[1024];
-        Error1: Label 'Por favor, seleccione primero el tipo de archivo a importar';
+        lblError1: Label 'Please, choose the file type before importing.';
         strRetCualquiera2: Text[1024];
         strRetCualquiera3: Text[1024];
         datInicio: Date;
         datFinal: Date;
         FileMgt: Codeunit "File Management";
         DOSFile: File;
-        Error2: Label 'Please, first enter the date filter for the withholdings to export';
-        Message1: Label 'Acción finalizada. Se han procesado %1 registros.';
+        lblError2: Label 'Please, first enter the date filter for the withholdings to export';
+        lblMessage1: Label 'Action finished. %1 records were processed.';
         rstVATEntry: Record "VAT Entry";
         lindecla: Record "VAT Statement Line";
         secci: Code[20];
@@ -566,8 +595,8 @@ page 50669 Retenciones
         cduFM: Codeunit "File Management";
         cduCompress: Codeunit "Data Compression";
         cduGA: Codeunit GestionArchivos;
-        ZipFile: DotNet ZipFile;
-        Zip: DotNet ZipFileExtensions;
+        ZipFiles: DotNet dnZipFile;
+        Zip: DotNet dnZipFileExtensions;
         HttpClient: HttpClient;
         HttpResponse: HttpResponseMessage;
         EntryContentBlob: Codeunit "Temp Blob";
@@ -578,13 +607,14 @@ page 50669 Retenciones
         TempBlob: Codeunit "Temp Blob";
         TextoContenido: Text;
         DestinationFolder: Text;
-        ZipArchiveMode: DotNet ZipArchiveMode;
-        ZipArchive: DotNet ZipArchive;
+        ZipArchiveMode: DotNet dnZipArchiveMode;
+        ZipArchive: DotNet dnZipArchive;
         l_NameValueBuffer: Record "Name/Value Buffer";
         l_Folder: Text;
         rstRL: Record "Record Link";
         LinkID: Integer;
         l_rstCI: Record "Company Information";
+        lblMessageFinished: Label 'Import finished';
     begin
         Clear(rstGLS);
         rstGLS.Get();
@@ -666,11 +696,11 @@ page 50669 Retenciones
 
         dlgDialogo.Close;
 
-        RegisterImportedFile(strRetenidoSRV, 'RG17', 'RG17 importado el ');
-
         FileTest.Close();
 
-        Message('Importación finalizada');
+        RegisterImportedFile(strRetenidoSRV, 'RG17', 'RG17 importado el ');
+
+        Message(lblMessageFinished);
     end;
 
     [Scope('OnPrem')]
@@ -707,6 +737,7 @@ page 50669 Retenciones
         rstRL: Record "Record Link";
         LinkID: Integer;
         l_rstCI: Record "Company Information";
+        lblMessageFinished: Label 'Import finished';
     begin
         Clear(rstGLS);
         rstGLS.Get();
@@ -827,11 +858,11 @@ page 50669 Retenciones
 
         dlgDialogo.Close;
 
-        RegisterImportedFile(strRetenidoSRV, 'RG830', 'RG830 importado el ');
-
         FileTest.Close();
 
-        Message('Importación finalizada');
+        RegisterImportedFile(strRetenidoSRV, 'RG830', 'RG830 importado el ');
+
+        Message(lblMessageFinished);
 
     end;
 
@@ -874,6 +905,7 @@ page 50669 Retenciones
         rstRL: Record "Record Link";
         LinkID: Integer;
         l_rstCI: Record "Company Information";
+        lblMessageFinished: Label 'Import finished';
     begin
         Clear(rstGLS);
         rstGLS.Get();
@@ -1045,9 +1077,9 @@ page 50669 Retenciones
 
         dlgDialogo.Close;
 
-        RegisterImportedFile(strRetenidoSRV, 'RGSS', 'Padrón Seguridad Social importado el ');
-
         FileTest.Close();
+
+        RegisterImportedFile(strRetenidoSRV, 'RGSS', 'Padrón Seguridad Social importado el ');
     end;
 
     [Scope('OnPrem')]
@@ -1078,6 +1110,7 @@ page 50669 Retenciones
         rstRL: Record "Record Link";
         LinkID: Integer;
         l_rstCI: Record "Company Information";
+        lblMessageFinished: Label 'Import finished';
     begin
         Clear(rstGLS);
         rstGLS.Get();
@@ -1169,11 +1202,11 @@ page 50669 Retenciones
 
         dlgDialogo.Close;
 
-        RegisterImportedFile(strRetenidoSRV, 'RG18', 'Padrón RG18 importado el ');
-
         FileTest.Close();
 
-        Message('Importación finalizada');
+        RegisterImportedFile(strRetenidoSRV, 'RG18', 'Padrón RG18 importado el ');
+
+        Message(lblMessageFinished);
     end;
 
     [Scope('OnPrem')]
@@ -1348,9 +1381,9 @@ page 50669 Retenciones
 
         dlgDialogo.Close;
 
-        RegisterImportedFile(strRetenidoSRV, 'Reproweb', 'Padrón Reproweb importado el ');
-
         FileTest.Close();
+
+        RegisterImportedFile(strRetenidoSRV, 'Reproweb', 'Padrón Reproweb importado el ');
 
     end;
 
@@ -3318,9 +3351,9 @@ page 50669 Retenciones
 
         dlgDialogo.Close;
 
-        RegisterImportedFile(strRetenidoSRV, 'AGIP', 'Padrón AGIP importado el ');
-
         FileTest.Close();
+
+        RegisterImportedFile(strRetenidoSRV, 'AGIP', 'Padrón AGIP importado el ');
 
     end;
 
@@ -3517,9 +3550,9 @@ page 50669 Retenciones
         end;
         dlgDialogo.Close;
 
-        RegisterImportedFile(strRetenidoSRV, 'ARBA', 'Padrón ARBA importado el ');
-
         FileTest.Close();
+
+        RegisterImportedFile(strRetenidoSRV, 'ARBA', 'Padrón ARBA importado el ');
     end;
 
     [Scope('OnPrem')]
@@ -4724,16 +4757,11 @@ page 50669 Retenciones
 
         AddRecordLink(strArchivo, 'Informe de facturas apócrifas ejecutado el ' + Format(Today));
 
-
-        //rstRL.Type := rstRL.Type::Note;
-        //rstRL.Note.IMPORT(strRetenidoSRV,false);
-
-        BLOBRef.CreateOutStream(NVOutStream);
-        RegisterImportedFileFromBlob(strRetenidoSRV, 'Apócrifas', 'Padrón facturas apócrifas importado el ', BLOBRef);
-
         FileTest.Close;
 
-        FileMgt.BLOBExport(BLOBRef, strRetenidoSRV, true);
+        Clear(BLOBRef);
+        FileMgt.BLOBImportFromServerFile(BLOBRef, strRetenidoSRV);
+        RegisterImportedFileFromBlob(strRetenidoSRV, 'Apócrifas', 'Padrón facturas apócrifas importado el ', BLOBRef);
 
 
     end;

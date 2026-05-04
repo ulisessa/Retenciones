@@ -5,6 +5,7 @@ page 50598 "Lista Retenciones"
     SourceTable = "Invoice Withholding Buffer";
     SourceTableView = SORTING("No. documento", "Cod. retencion");
     ApplicationArea = All;
+    Editable = false;
     UsageCategory = Administration;
     layout
     {
@@ -95,6 +96,9 @@ page 50598 "Lista Retenciones"
                 {
                 }
                 field("Factura Prov"; "Factura Prov")
+                {
+                }
+                field("Transaction No."; "Transaction No.")
                 {
                 }
             }

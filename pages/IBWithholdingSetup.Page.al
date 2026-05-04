@@ -6,6 +6,7 @@ page 50726 "IB Withholding Setup"
                       WHERE("Tipo retenciones" = FILTER("Seguridad Social"));
     ApplicationArea = All;
     UsageCategory = Administration;
+    Editable = false;
     Caption = 'IB Withholding Setup';
     layout
     {

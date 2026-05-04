@@ -10,11 +10,11 @@ report 50616 "Certificado Retención IIBB"
     {
         dataitem("G/L Register"; "G/L Register")
         {
-            RequestFilterFields = "No. documento";
+            RequestFilterFields = "No.";
             column(Logo; rstCI."Logo path")
             {
             }
-            column(GLRegister_Documento; "G/L Register"."No. documento")
+            column(GLRegister_NoTransaccion; "G/L Register"."No.")
             {
             }
             column(Firma; rstConfCont.Signature)
@@ -22,9 +22,9 @@ report 50616 "Certificado Retención IIBB"
             }
             dataitem("Invoice Withholding Buffer"; "Invoice Withholding Buffer")
             {
-                DataItemLink = "No. documento" = FIELD("No. documento"), "Fecha pago" = FIELD("Posting Date");
+                DataItemLink = "Transaction No." = FIELD("No."), "Fecha pago" = FIELD("Posting Date");
                 DataItemTableView = SORTING("No. documento", "Cod. retencion") WHERE("Tipo retencion" = CONST("Ingresos Brutos"), Retenido = CONST(true));
-                RequestFilterFields = "No. documento", "Serie retención";
+                //RequestFilterFields = "No.", "Serie retención";
                 column(FORMAT__Factura_RT_Base_Buffer___Fecha_pago__; Format("Invoice Withholding Buffer"."Fecha pago"))
                 {
                 }

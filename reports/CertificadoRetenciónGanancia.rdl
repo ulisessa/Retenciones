@@ -48,7 +48,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=First(Fields!Reg__General_Ret__RG__830_.Value, "DataSet_Result")</Value>
+                                      <Value>=First(Fields!Reg__General_Ret__RG__830_.Value, "DataSet_Result")</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -112,7 +112,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=First(Fields!COMPANYNAME.Value, "DataSet_Result")</Value>
+                                      <Value>=First(Fields!COMPANYNAME.Value, "DataSet_Result")</Value>
                                       <Style>
                                         <FontWeight>Bold</FontWeight>
                                       </Style>
@@ -146,7 +146,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">="CUIT"</Value>
+                                      <Value>="CUIT"</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -178,7 +178,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=First(Fields!rstInfoEmpresa__VAT_Registration_No__.Value, "DataSet_Result")</Value>
+                                      <Value>=First(Fields!rstInfoEmpresa__VAT_Registration_No__.Value, "DataSet_Result")</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -210,7 +210,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=First(Fields!rstInfoEmpresa_Address_rstInfoEmpresa__Address_2_____.Value, "DataSet_Result")</Value>
+                                      <Value>=First(Fields!rstInfoEmpresa_Address_rstInfoEmpresa__Address_2_____.Value, "DataSet_Result")</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -242,7 +242,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">="Domicilio fiscal"</Value>
+                                      <Value>="Domicilio fiscal"</Value>
                                       <Style>
                                         <FontWeight>Bold</FontWeight>
                                       </Style>
@@ -276,7 +276,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">="Sujeto retención"</Value>
+                                      <Value>="Sujeto retención"</Value>
                                       <Style>
                                         <FontWeight>Bold</FontWeight>
                                       </Style>
@@ -310,7 +310,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=First(Fields!rstProveedor_Name.Value, "DataSet_Result")</Value>
+                                      <Value>=First(Fields!rstProveedor_Name.Value, "DataSet_Result")</Value>
                                       <Style>
                                         <FontWeight>Bold</FontWeight>
                                       </Style>
@@ -344,7 +344,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">="CUIT"</Value>
+                                      <Value>="CUIT"</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -376,7 +376,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=First(Fields!rstProveedor__VAT_Registration_No__.Value, "DataSet_Result")</Value>
+                                      <Value>=First(Fields!rstProveedor__VAT_Registration_No__.Value, "DataSet_Result")</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -408,7 +408,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">="Domicilio fiscal"</Value>
+                                      <Value>="Domicilio fiscal"</Value>
                                       <Style>
                                         <FontWeight>Bold</FontWeight>
                                       </Style>
@@ -442,7 +442,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=First(Fields!rstProveedor_Address_rstProveedor__Address_2_____.Value, "DataSet_Result")</Value>
+                                      <Value>=First(Fields!rstProveedor_Address_rstProveedor__Address_2_____.Value, "DataSet_Result")</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -474,7 +474,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=First(Fields!Provincia_de___rstInfoEmpresa_County____C_P____rstInfoEmpresa__Post_Code_.Value, "DataSet_Result")</Value>
+                                      <Value>=First(Fields!Provincia_de___rstInfoEmpresa_County____C_P____rstInfoEmpresa__Post_Code_.Value, "DataSet_Result")</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -506,7 +506,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=First(Fields!Provincia_de___rstProveedor_County____C_P____rstProveedor__Post_Code_.Value, "DataSet_Result")</Value>
+                                      <Value>=First(Fields!Provincia_de___rstProveedor_County____C_P____rstProveedor__Post_Code_.Value, "DataSet_Result")</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -538,7 +538,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">="Serie: " &amp;Fields!Factura_RT_Base_Buffer__Factura_RT_Base_Buffer___Serie_retención_.Value</Value>
+                                      <Value>="Serie: " &amp;Fields!Factura_RT_Base_Buffer__Factura_RT_Base_Buffer___Serie_retención_.Value</Value>
                                       <Style>
                                         <FontWeight>Bold</FontWeight>
                                       </Style>
@@ -572,7 +572,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">="Orden: "&amp;Fields!Factura_RT_Base_Buffer__No__documento_.Value</Value>
+                                      <Value>="Orden: "&amp;Fields!Factura_RT_Base_Buffer__No__documento_.Value</Value>
                                       <Style>
                                         <FontWeight>Bold</FontWeight>
                                       </Style>
@@ -606,7 +606,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">Pagos anteriores</Value>
+                                      <Value>Pagos anteriores</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -636,7 +636,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=LAST(Fields!decPagAnt.Value)</Value>
+                                      <Value>=LAST(Fields!decPagAnt.Value)</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -666,7 +666,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">Mínimo no imponible</Value>
+                                      <Value>Mínimo no imponible</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -696,7 +696,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=last(Fields!decMinImpo.Value)</Value>
+                                      <Value>=last(Fields!decMinImpo.Value)</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -726,7 +726,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">Retenciones calculadas</Value>
+                                      <Value>Retenciones calculadas</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -756,7 +756,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=LAST(-Fields!decRetenido.Value)</Value>
+                                      <Value>=LAST(-Fields!decRetenido.Value)</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -786,7 +786,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">Retenciones anteriores</Value>
+                                      <Value>Retenciones anteriores</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -816,7 +816,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=LAST(Fields!decRetenidoAnterior.Value)</Value>
+                                      <Value>=LAST(Fields!decRetenidoAnterior.Value)</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -846,7 +846,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">Total retención</Value>
+                                      <Value>Total retención</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -876,7 +876,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=LAST(Fields!decTotRetenido.Value)</Value>
+                                      <Value>=LAST(Fields!decTotRetenido.Value)</Value>
                                       <Style />
                                     </TextRun>
                                   </TextRuns>
@@ -906,7 +906,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">Firma responsable:</Value>
+                                      <Value>Firma responsable:</Value>
                                       <Style>
                                         <FontWeight>Bold</FontWeight>
                                       </Style>
@@ -963,7 +963,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">=First(Fields!rstConfCont__Persona_habilitada_certificado_______rstConfCont__Carácter_persona_habilitada_.Value, "DataSet_Result")</Value>
+                                      <Value>=First(Fields!rstConfCont__Persona_habilitada_certificado_______rstConfCont__Carácter_persona_habilitada_.Value, "DataSet_Result")</Value>
                                       <Style>
                                         <FontStyle>Italic</FontStyle>
                                         <FontSize>11pt</FontSize>
@@ -999,7 +999,7 @@
                                 <Paragraph>
                                   <TextRuns>
                                     <TextRun>
-                                      <Value EvaluationMode="Auto">Declaro que los datos consignados en este Formulario son correctos y completos y que he confeccionado la presente según normativas establecidas por la AFIP sin omitir ni falsear dato alguno que deba contener, siendo fiel expresión de la verdad.</Value>
+                                      <Value>Declaro que los datos consignados en este Formulario son correctos y completos y que he confeccionado la presente según normativas establecidas por la AFIP sin omitir ni falsear dato alguno que deba contener, siendo fiel expresión de la verdad.</Value>
                                       <Style>
                                         <FontStyle>Italic</FontStyle>
                                         <FontWeight>Bold</FontWeight>
@@ -1109,7 +1109,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">No.</Value>
+                                                    <Value>No.</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -1273,7 +1273,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">="Pago"</Value>
+                                                    <Value>="Pago"</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -1325,7 +1325,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">=Fields!Factura_RT_Base_Buffer__No__documento_.Value</Value>
+                                                    <Value>=Fields!Factura_RT_Base_Buffer__No__documento_.Value</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -1377,7 +1377,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">=Fields!Factura_RT_Base_Buffer__Base_pago_retención_.Value</Value>
+                                                    <Value>=Fields!Factura_RT_Base_Buffer__Base_pago_retención_.Value</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -1428,7 +1428,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">=Fields!Factura_RT_Base_Buffer__Importe_retención_.Value</Value>
+                                                    <Value>=Fields!Factura_RT_Base_Buffer__Importe_retención_.Value</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -1485,7 +1485,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto" />
+                                                    <Value />
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -1537,7 +1537,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto" />
+                                                    <Value />
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -1589,7 +1589,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto" />
+                                                    <Value />
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -1641,7 +1641,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">=sum(Fields!Factura_RT_Base_Buffer__Importe_retención_.Value)</Value>
+                                                    <Value>=sum(Fields!Factura_RT_Base_Buffer__Importe_retención_.Value)</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -1709,7 +1709,7 @@
                                             <Paragraph>
                                               <TextRuns>
                                                 <TextRun>
-                                                  <Value EvaluationMode="Auto">Tipo retención</Value>
+                                                  <Value>Tipo retención</Value>
                                                   <Style>
                                                     <FontFamily>Tahoma</FontFamily>
                                                     <FontSize>9pt</FontSize>
@@ -1779,7 +1779,7 @@
                                             <Paragraph>
                                               <TextRuns>
                                                 <TextRun>
-                                                  <Value EvaluationMode="Auto">=Fields!Código___rstRetDesc__Código_SICORE________rstRetDesc_Descripción.Value</Value>
+                                                  <Value>=Fields!Código___rstRetDesc__Código_SICORE________rstRetDesc_Descripción.Value</Value>
                                                   <Style>
                                                     <FontFamily>Tahoma</FontFamily>
                                                     <FontSize>9pt</FontSize>
@@ -1841,7 +1841,7 @@
                                             <Paragraph>
                                               <TextRuns>
                                                 <TextRun>
-                                                  <Value EvaluationMode="Auto">Total</Value>
+                                                  <Value>Total</Value>
                                                   <Style>
                                                     <FontFamily>Tahoma</FontFamily>
                                                     <FontSize>9pt</FontSize>
@@ -1950,7 +1950,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">Documentos liquidados</Value>
+                                                    <Value>Documentos liquidados</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -2013,7 +2013,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">Tipo documento</Value>
+                                                    <Value>Tipo documento</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -2066,7 +2066,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">No.</Value>
+                                                    <Value>No.</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -2119,7 +2119,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">Importe</Value>
+                                                    <Value>Importe</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -2177,7 +2177,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto" />
+                                                    <Value />
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -2237,7 +2237,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">=Fields!optTD.Value</Value>
+                                                    <Value>=Fields!optTD.Value</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -2289,7 +2289,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">=Fields!strDocumento.Value</Value>
+                                                    <Value>=Fields!strDocumento.Value</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -2341,7 +2341,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">=Fields!decImporte.Value</Value>
+                                                    <Value>=Fields!decImporte.Value</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -2398,7 +2398,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">Total</Value>
+                                                    <Value>Total</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -2451,7 +2451,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto" />
+                                                    <Value />
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -2503,7 +2503,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value EvaluationMode="Auto">=sum(Fields!decImporte.Value)</Value>
+                                                    <Value>=sum(Fields!decImporte.Value)</Value>
                                                     <Style>
                                                       <FontFamily>Tahoma</FontFamily>
                                                       <FontSize>9pt</FontSize>
@@ -2571,7 +2571,7 @@
                                             <Paragraph>
                                               <TextRuns>
                                                 <TextRun>
-                                                  <Value EvaluationMode="Auto" />
+                                                  <Value />
                                                   <Style>
                                                     <FontFamily>Tahoma</FontFamily>
                                                     <FontSize>9pt</FontSize>
@@ -2633,7 +2633,7 @@
                                             <Paragraph>
                                               <TextRuns>
                                                 <TextRun>
-                                                  <Value EvaluationMode="Auto">Pago</Value>
+                                                  <Value>Pago</Value>
                                                   <Style>
                                                     <FontFamily>Tahoma</FontFamily>
                                                     <FontSize>9pt</FontSize>
@@ -2703,7 +2703,7 @@
                                             <Paragraph>
                                               <TextRuns>
                                                 <TextRun>
-                                                  <Value EvaluationMode="Auto">=Fields!Detailed_Vendor_Ledg__Entry_Document_No_.Value</Value>
+                                                  <Value>=Fields!Detailed_Vendor_Ledg__Entry_Document_No_.Value</Value>
                                                   <Style>
                                                     <FontFamily>Tahoma</FontFamily>
                                                     <FontSize>9pt</FontSize>
@@ -2820,6 +2820,7 @@
                             </Border>
                           </Style>
                         </Rectangle>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -2836,12 +2837,12 @@
                 <TablixMember>
                   <Group Name="GLRegister_Documento">
                     <GroupExpressions>
-                      <GroupExpression>=Fields!GLRegister_Documento.Value</GroupExpression>
+                      <GroupExpression>=Fields!GLRegister_NoTransaccion.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                   <SortExpressions>
                     <SortExpression>
-                      <Value>=Fields!GLRegister_Documento.Value</Value>
+                      <Value>=Fields!GLRegister_NoTransaccion.Value</Value>
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
@@ -2854,7 +2855,7 @@
                           <Paragraph>
                             <TextRuns>
                               <TextRun>
-                                <Value EvaluationMode="Auto">=Fields!Detailed_Vendor_Ledg__Entry_Document_No_.Value</Value>
+                                <Value>=Fields!Detailed_Vendor_Ledg__Entry_Document_No_.Value</Value>
                                 <Style />
                               </TextRun>
                             </TextRuns>
@@ -2909,7 +2910,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value EvaluationMode="Auto">Certificado de Retención de  Ganancias</Value>
+                      <Value>Certificado de Retención de  Ganancias</Value>
                       <Style>
                         <FontSize>14pt</FontSize>
                       </Style>
@@ -2942,7 +2943,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value EvaluationMode="Auto">="Fecha de emisión:  " &amp;FormatDateTime(First(Fields!Fecha_pago.Value, "DataSet_Result"),DateFormat.ShortDate)</Value>
+                      <Value>="Fecha de emisión:  " &amp;FormatDateTime(First(Fields!Fecha_pago.Value, "DataSet_Result"),DateFormat.ShortDate)</Value>
                       <Style />
                     </TextRun>
                   </TextRuns>
@@ -2974,7 +2975,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value EvaluationMode="Auto">="Pag. "&amp;Globals!PageNumber &amp;" de "&amp;Globals!TotalPages</Value>
+                      <Value>="Pag. "&amp;Globals!PageNumber &amp;" de "&amp;Globals!TotalPages</Value>
                       <Style />
                     </TextRun>
                   </TextRuns>
@@ -3091,8 +3092,8 @@ DBVhkGqv9jaX/wBAyz/78L/hV6igCj/Y2l/9Ayz/AO/C/wCFH9jaX/0DLP8A78L/AIVeooArW9jaWuTb
         <Field Name="Logo">
           <DataField>Logo</DataField>
         </Field>
-        <Field Name="GLRegister_Documento">
-          <DataField>GLRegister_Documento</DataField>
+        <Field Name="GLRegister_NoTransaccion">
+          <DataField>GLRegister_NoTransaccion</DataField>
         </Field>
         <Field Name="Firma">
           <DataField>Firma</DataField>

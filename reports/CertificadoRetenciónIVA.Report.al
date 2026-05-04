@@ -11,7 +11,7 @@ report 50614 "Certificado Retención IVA"
         dataitem("Invoice Withholding Buffer"; "Invoice Withholding Buffer")
         {
             DataItemTableView = SORTING("Serie retención", "Cod. retencion") WHERE(Retenido = CONST(true), "Tipo retencion" = CONST(IVA));
-            RequestFilterFields = "No. documento", "Serie retención";
+            RequestFilterFields = "Transaction No.", "Serie retención";
             column(Logo; rstCI."Logo path")
             {
             }

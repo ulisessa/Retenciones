@@ -12,12 +12,12 @@
             "breakOnError": "All",
             "enableLongRunningSqlStatements": true,
             "enableSqlInformationDebugger": true,
-            "sessionId": 2595,
+            "sessionId": 6629,
             "tenant": "default",
             "breakOnNext": "WebClient"
         },
         {
-            "name": "Lanzar página de OCR",
+            "name": "Lanzar y adjuntar a tu propio servidor",
             "request": "launch",
             "type": "al",
             "server": "https://mimir2.arbumasa.com/BC252",

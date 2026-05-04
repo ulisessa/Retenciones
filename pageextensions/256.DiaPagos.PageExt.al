@@ -2,6 +2,23 @@ pageextension 256 "Withholdings in Payments" extends "Payment Journal"
 {
     layout
     {
+        addbefore("Bank Payment Type")
+        {
+            field("No. cheque"; "No. cheque")
+            {
+                ApplicationArea = All;
+                Caption = 'Número de cheque';
+            }
+        }
+        addbefore("Currency Code")
+        {
+            field("Additional-Currency Posting"; "Additional-Currency Posting")
+            {
+                ApplicationArea = All;
+                Caption = 'Additional-Currency Posting';
+                Editable = true;
+            }
+        }
         addafter(Control1)
         {
             group(DocLines)
@@ -98,214 +115,9 @@ pageextension 256 "Withholdings in Payments" extends "Payment Journal"
                 ShortCutKey = 'Shift+F9';
                 ToolTip = 'Finalize and prepare to print the document or journal. The values and quantities are posted to the related accounts. A report request window where you can specify what to include on the print-out.';
                 trigger OnAction()
-                var
-                    codDoc: Text;
-                    cduRegistro: Codeunit "Retenciones";
-                    l_rstLinDiaGen: Record "Gen. Journal Line";
-                    l_rstLinDiaGen2: Record "Gen. Journal Line";
-                    codDocActual: Code[20];
-                    l_rstGLRegister: Record "G/L Register";
-                    matDoc: array[1000] of Code[20];
-                    i: Integer;
-                    j: Integer;
-                    GLReg: Record "G/L Register";
-                    rptOP: Report "Orden pago";
-                    rstMovCont: Record "G/L Entry";
-                    intGLReg: Integer;
-                    rstReporteSS: Report "Certificado Retención SS";
-                    rstReporteIVA: Report "Certificado Retención IVA";
-                    rstReporteGAN: Report "Certificado Retención Ganancia";
-                    k: Integer;
-                    rstReporteIIBB: Report "Certificado Retención IIBB";
-                    rstPS: Record "Purchases & Payables Setup";
-                    l: Integer;
                 begin
-                    //++Migración Arbumasa 2009
-                    if not VerificarFechaReproweb then
-                        Error('Se ha detenido el proceso');
 
-
-                    Clear(l_rstLinDiaGen2);
-                    l_rstLinDiaGen2.SetCurrentKey("Journal Template Name", "Journal Batch Name", "Document No.");
-                    l_rstLinDiaGen2.SetRange("Journal Template Name", "Journal Template Name");
-                    l_rstLinDiaGen2.SetRange("Journal Batch Name", "Journal Batch Name");
-                    if l_rstLinDiaGen2.FindSet then
-                        repeat
-
-                            if codDoc = '' then begin
-
-                                i += 1;
-                                codDocActual := l_rstLinDiaGen2."Document No.";
-                                codDoc := l_rstLinDiaGen2."Document No.";
-                                matDoc[i] := codDocActual;
-                                GenerarLinRetencion(l_rstLinDiaGen2, false);
-
-                            end
-                            else begin
-
-                                if codDocActual <> l_rstLinDiaGen2."Document No." then begin
-
-                                    i += 1;
-                                    codDocActual := l_rstLinDiaGen2."Document No.";
-                                    codDoc := codDoc + '|' + codDocActual;
-                                    matDoc[i] := codDocActual;
-                                    GenerarLinRetencion(l_rstLinDiaGen2, false);
-
-                                end;
-
-                            end;
-
-                        until l_rstLinDiaGen2.Next = 0;
-
-                    //--Migración Arbumasa 2009
-
-                    Clear(GLReg);
-                    GLReg.LockTable;
-                    GLReg.FindLast;
-                    intGLReg := 0;
-                    intGLReg := GLReg."No.";
-
-                    Rec.SendToPosting(Codeunit::"Gen. Jnl.-Post+Print");
-                    CurrentJnlBatchName := Rec.GetRangeMax("Journal Batch Name");
-                    CurrPage.Update(false);
-
-                    for j := 1 to i do begin
-
-                        matDoc[j] := '';
-
-                    end;
-
-                    j := 0;
-                    i := 0;
-                    codDoc := '';
-
-                    Clear(GLReg);
-                    GLReg.SetFilter("No.", '>%1', intGLReg);
-                    if GLReg.FindSet then
-                        repeat
-
-                            if codDoc = '' then begin
-
-                                i += 1;
-                                codDocActual := GLReg."No. documento";
-                                codDoc := GLReg."No. documento";
-                                matDoc[i] := codDocActual;
-
-                            end
-                            else begin
-
-                                if codDocActual <> GLReg."No. documento" then begin
-
-                                    i += 1;
-                                    codDocActual := GLReg."No. documento";
-                                    codDoc := codDoc + '|' + codDocActual;
-                                    matDoc[i] := codDocActual;
-
-                                end;
-
-                            end;
-
-                            cduRegistro.fntRenumerarRetenciones(GLReg."No. documento");
-
-                        until GLReg.Next = 0;
-
-                    //++Migración Arbumasa 2009
-
-                    cduRegistro.fntNroSerieRetenciones(codDoc);
-
-                    Commit;
-
-                    for j := 1 to i do begin
-
-                        Clear(l_rstGLRegister);
-                        l_rstGLRegister.SetFilter(l_rstGLRegister."No. documento", matDoc[j]);
-
-                        Clear(rstPS);
-                        rstPS.Get;
-                        if rstPS."Cantidad OP a imprimir" = 0 then begin
-
-                            rstPS."Cantidad OP a imprimir" := 1;
-                            rstPS.Modify;
-
-                        end;
-                        if rstPS."Cantidad impresos retenciones" = 0 then begin
-                            rstPS."Cantidad impresos retenciones" := 1;
-                            rstPS.Modify;
-                        end;
-
-                        for l := 1 to rstPS."Cantidad OP a imprimir" do begin
-
-                            Clear(rptOP);
-                            rptOP.SetTableView(l_rstGLRegister);
-                            rptOP.fntDoc(matDoc[j]);
-
-                            rptOP.UseRequestPage(false);
-                            rptOP.Run();
-
-                        end;
-
-                        for k := 1 to rstPS."Cantidad impresos retenciones" do begin
-
-                            Clear(rstFacturaRTBaseBuffer);
-                            rstFacturaRTBaseBuffer.SetFilter(rstFacturaRTBaseBuffer."No. documento", matDoc[j]);
-                            rstFacturaRTBaseBuffer.SetRange("Tipo retencion", rstFacturaRTBaseBuffer."Tipo retencion"::"Seguridad Social");
-                            rstFacturaRTBaseBuffer.SetRange(Retenido, true);
-                            if rstFacturaRTBaseBuffer.FindSet then begin
-
-                                Clear(rstReporteSS);
-                                rstReporteSS.UseRequestPage(false);
-                                rstReporteSS.SetTableView(rstFacturaRTBaseBuffer);
-                                rstReporteSS.Run;
-
-                            end;
-
-                            Clear(rstFacturaRTBaseBuffer);
-                            rstFacturaRTBaseBuffer.SetFilter(rstFacturaRTBaseBuffer."No. documento", matDoc[j]);
-                            rstFacturaRTBaseBuffer.SetRange("Tipo retencion", rstFacturaRTBaseBuffer."Tipo retencion"::IVA);
-                            rstFacturaRTBaseBuffer.SetRange(Retenido, true);
-                            if rstFacturaRTBaseBuffer.FindSet then begin
-
-                                Clear(rstReporteIVA);
-                                rstReporteIVA.UseRequestPage(false);
-                                rstReporteIVA.SetTableView(rstFacturaRTBaseBuffer);
-                                rstReporteIVA.Run;
-
-                            end;
-
-                            Clear(rstFacturaRTBaseBuffer);
-                            rstFacturaRTBaseBuffer.SetFilter(rstFacturaRTBaseBuffer."No. documento", matDoc[j]);
-                            rstFacturaRTBaseBuffer.SetRange("Tipo retencion", rstFacturaRTBaseBuffer."Tipo retencion"::Ganancias);
-                            rstFacturaRTBaseBuffer.SetRange(Retenido, true);
-                            if rstFacturaRTBaseBuffer.FindSet then begin
-
-                                Clear(rstReporteGAN);
-                                rstReporteGAN.UseRequestPage(false);
-                                rstReporteGAN.SetTableView(l_rstGLRegister);
-                                rstReporteGAN.Run;
-
-                            end;
-
-                            Clear(rstFacturaRTBaseBuffer);
-                            rstFacturaRTBaseBuffer.SetFilter(rstFacturaRTBaseBuffer."No. documento", matDoc[j]);
-                            rstFacturaRTBaseBuffer.SetRange("Tipo retencion", rstFacturaRTBaseBuffer."Tipo retencion"::"Ingresos Brutos");
-                            rstFacturaRTBaseBuffer.SetRange(Retenido, true);
-                            if rstFacturaRTBaseBuffer.FindSet then begin
-
-                                Clear(rstReporteIIBB);
-                                rstReporteIIBB.UseRequestPage(false);
-                                rstReporteIIBB.SetTableView(l_rstGLRegister);
-                                rstReporteIIBB.Run;
-
-                            end;
-
-                        end;
-
-                    end;
-
-                    //--Migración Arbumasa 2009
-
-                    CurrentJnlBatchName := GetRangeMax("Journal Batch Name");
-                    CurrPage.Update(false);
+                    fntPostAndPrint;
                 end;
             }
         }
@@ -673,6 +485,217 @@ pageextension 256 "Withholdings in Payments" extends "Payment Journal"
         JobQueuesUsed := GeneralLedgerSetup.JobQueueActive();
     end;
 
+    local procedure fntPostAndPrint()
+    var
+        codDoc: Text;
+        cduRegistro: Codeunit "Retenciones";
+        l_rstLinDiaGen: Record "Gen. Journal Line";
+        l_rstLinDiaGen2: Record "Gen. Journal Line";
+        codDocActual: Code[20];
+        l_rstGLRegister: Record "G/L Register";
+        matDoc: array[1000] of Code[20];
+        i: Integer;
+        j: Integer;
+        GLReg: Record "G/L Register";
+        rptOP: Report "Orden pago";
+        rstMovCont: Record "G/L Entry";
+        intGLReg: Integer;
+        rstReporteSS: Report "Certificado Retención SS";
+        rstReporteIVA: Report "Certificado Retención IVA";
+        rstReporteGAN: Report "Certificado Retención Ganancia";
+        rstReporteIIBB: Report "Certificado Retención IIBB";
+        k: Integer;
+        rstPS: Record "Purchases & Payables Setup";
+        l: Integer;
+    begin
+        //++Migración Arbumasa 2009
+        if not VerificarFechaReproweb then
+            Error('Se ha detenido el proceso');
+
+
+        Clear(l_rstLinDiaGen2);
+        l_rstLinDiaGen2.SetCurrentKey("Journal Template Name", "Journal Batch Name", "Document No.");
+        l_rstLinDiaGen2.SetRange("Journal Template Name", "Journal Template Name");
+        l_rstLinDiaGen2.SetRange("Journal Batch Name", "Journal Batch Name");
+        if l_rstLinDiaGen2.FindSet then
+            repeat
+
+                if codDoc = '' then begin
+
+                    i += 1;
+                    codDocActual := l_rstLinDiaGen2."Document No.";
+                    codDoc := l_rstLinDiaGen2."Document No.";
+                    matDoc[i] := codDocActual;
+                    GenerarLinRetencion(l_rstLinDiaGen2, false);
+
+                end
+                else begin
+
+                    if codDocActual <> l_rstLinDiaGen2."Document No." then begin
+
+                        i += 1;
+                        codDocActual := l_rstLinDiaGen2."Document No.";
+                        codDoc := codDoc + '|' + codDocActual;
+                        matDoc[i] := codDocActual;
+                        GenerarLinRetencion(l_rstLinDiaGen2, false);
+
+                    end;
+
+                end;
+
+            until l_rstLinDiaGen2.Next = 0;
+
+        //--Migración Arbumasa 2009
+
+        Clear(GLReg);
+        GLReg.LockTable;
+        GLReg.FindLast;
+        intGLReg := 0;
+        intGLReg := GLReg."No.";
+
+        Rec.SendToPosting(Codeunit::"Gen. Jnl.-Post+Print");
+        CurrentJnlBatchName := Rec.GetRangeMax("Journal Batch Name");
+        CurrPage.Update(false);
+
+        for j := 1 to i do begin
+
+            matDoc[j] := '';
+
+        end;
+
+        j := 0;
+        i := 0;
+        codDoc := '';
+
+        Clear(GLReg);
+        GLReg.SetFilter("No.", '>%1', intGLReg);
+        if GLReg.FindSet then
+            repeat
+
+                if codDoc = '' then begin
+
+                    i += 1;
+                    codDocActual := format(GLReg."No.");
+                    codDoc := format(GLReg."No.");
+                    matDoc[i] := codDocActual;
+
+                end
+                else begin
+
+                    if codDocActual <> format(GLReg."No.") then begin
+
+                        i += 1;
+                        codDocActual := format(GLReg."No.");
+                        codDoc := codDoc + '|' + codDocActual;
+                        matDoc[i] := codDocActual;
+
+                    end;
+
+                end;
+
+                cduRegistro.fntRenumerarRetenciones(format(GLReg."No."));
+
+            until GLReg.Next = 0;
+
+        //++Migración Arbumasa 2009
+
+        cduRegistro.fntNroSerieRetenciones(codDoc);
+
+        Commit;
+
+        for j := 1 to i do begin
+
+            Clear(l_rstGLRegister);
+            l_rstGLRegister.SetFilter(l_rstGLRegister."No. documento", matDoc[j]);
+
+            Clear(rstPS);
+            rstPS.Get;
+            if rstPS."Cantidad OP a imprimir" = 0 then begin
+
+                rstPS."Cantidad OP a imprimir" := 1;
+                rstPS.Modify;
+
+            end;
+            if rstPS."Cantidad impresos retenciones" = 0 then begin
+                rstPS."Cantidad impresos retenciones" := 1;
+                rstPS.Modify;
+            end;
+
+            for l := 1 to rstPS."Cantidad OP a imprimir" do begin
+
+                Clear(rptOP);
+                rptOP.SetTableView(l_rstGLRegister);
+                rptOP.fntDoc(matDoc[j]);
+
+                rptOP.UseRequestPage(false);
+                rptOP.Run();
+
+            end;
+
+            for k := 1 to rstPS."Cantidad impresos retenciones" do begin
+
+                Clear(rstFacturaRTBaseBuffer);
+                rstFacturaRTBaseBuffer.SetFilter(rstFacturaRTBaseBuffer."No. documento", matDoc[j]);
+                rstFacturaRTBaseBuffer.SetRange("Tipo retencion", rstFacturaRTBaseBuffer."Tipo retencion"::"Seguridad Social");
+                rstFacturaRTBaseBuffer.SetRange(Retenido, true);
+                if rstFacturaRTBaseBuffer.FindSet then begin
+
+                    Clear(rstReporteSS);
+                    rstReporteSS.UseRequestPage(false);
+                    rstReporteSS.SetTableView(rstFacturaRTBaseBuffer);
+                    rstReporteSS.Run;
+
+                end;
+
+                Clear(rstFacturaRTBaseBuffer);
+                rstFacturaRTBaseBuffer.SetFilter(rstFacturaRTBaseBuffer."No. documento", matDoc[j]);
+                rstFacturaRTBaseBuffer.SetRange("Tipo retencion", rstFacturaRTBaseBuffer."Tipo retencion"::IVA);
+                rstFacturaRTBaseBuffer.SetRange(Retenido, true);
+                if rstFacturaRTBaseBuffer.FindSet then begin
+
+                    Clear(rstReporteIVA);
+                    rstReporteIVA.UseRequestPage(false);
+                    rstReporteIVA.SetTableView(rstFacturaRTBaseBuffer);
+                    rstReporteIVA.Run;
+
+                end;
+
+                Clear(rstFacturaRTBaseBuffer);
+                rstFacturaRTBaseBuffer.SetFilter(rstFacturaRTBaseBuffer."No. documento", matDoc[j]);
+                rstFacturaRTBaseBuffer.SetRange("Tipo retencion", rstFacturaRTBaseBuffer."Tipo retencion"::Ganancias);
+                rstFacturaRTBaseBuffer.SetRange(Retenido, true);
+                if rstFacturaRTBaseBuffer.FindSet then begin
+
+                    Clear(rstReporteGAN);
+                    rstReporteGAN.UseRequestPage(false);
+                    rstReporteGAN.SetTableView(l_rstGLRegister);
+                    rstReporteGAN.Run;
+
+                end;
+
+                Clear(rstFacturaRTBaseBuffer);
+                rstFacturaRTBaseBuffer.SetFilter(rstFacturaRTBaseBuffer."No. documento", matDoc[j]);
+                rstFacturaRTBaseBuffer.SetRange("Tipo retencion", rstFacturaRTBaseBuffer."Tipo retencion"::"Ingresos Brutos");
+                rstFacturaRTBaseBuffer.SetRange(Retenido, true);
+                if rstFacturaRTBaseBuffer.FindSet then begin
+
+                    Clear(rstReporteIIBB);
+                    rstReporteIIBB.UseRequestPage(false);
+                    rstReporteIIBB.SetTableView(l_rstGLRegister);
+                    rstReporteIIBB.Run;
+
+                end;
+
+            end;
+
+        end;
+
+        //--Migración Arbumasa 2009
+
+        CurrentJnlBatchName := GetRangeMax("Journal Batch Name");
+        CurrPage.Update(false);
+
+    end;
 
     var
         blnFac: Boolean;

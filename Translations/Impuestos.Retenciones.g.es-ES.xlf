@@ -3,6 +3,24 @@
   <file datatype="xml" source-language="en-US" target-language="es-ES" original="Impuestos.Retenciones.g.xlf">
     <body>
       <group id="body">
+        <trans-unit id="Table 3922485959 - Field 3004954119 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Code</source>
+          <target>Código</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table ARCA Document Types - Field Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3922485959 - Field 3461834954 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Description</source>
+          <target>Descripción</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table ARCA Document Types - Field Description - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3922485959 - Field 300341417 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Last updated</source>
+          <target>Última actualización</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table ARCA Document Types - Field Last updated - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2726172154 - NamedType 2943140252" size-unit="char" translate="yes" xml:space="preserve">
           <source>The file %1 does not exist.</source>
           <target>No existe el archivo %1.</target>
@@ -15,9 +33,51 @@
           <note from="Developer" annotates="general" priority="2">%1=the full path to a file. ex: C:\Windows\TextFile.txt </note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit GestionArchivos - NamedType NotAllowedPathErr</note>
         </trans-unit>
+        <trans-unit id="Page 3922485959 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>ARCA Document Types</source>
+          <target>Tipos de Documentos ARCA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page ARCA Document Types - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3922485959 - Control 3004954119 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Code field.</source>
+          <target>Especifica el valor del campo Código.</target>
+          <note from="Developer" annotates="general" priority="2">%</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page ARCA Document Types - Control Code - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3922485959 - Control 3004954119 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Code</source>
+          <target>Código</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page ARCA Document Types - Control Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3922485959 - Control 3461834954 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Description field.</source>
+          <target>Especifica el valor del campo Descripción.</target>
+          <note from="Developer" annotates="general" priority="2">%</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page ARCA Document Types - Control Description - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3922485959 - Control 3461834954 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Description</source>
+          <target>Descripción</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page ARCA Document Types - Control Description - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3922485959 - Control 300341417 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Last updated field.</source>
+          <target>Especifica el valor del campo Última actualización.</target>
+          <note from="Developer" annotates="general" priority="2">%</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page ARCA Document Types - Control Last updated - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3922485959 - Control 300341417 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Last updated</source>
+          <target>Última actualización</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page ARCA Document Types - Control Last updated - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 1871871322 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Calculated Withholdings</source>
-          <target>Retenciones Calculadas</target>
+          <source>Withholding Exclusions</source>
+          <target>Exclusiones de Retenciones</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Calculated Withholdings - Property Caption</note>
         </trans-unit>
@@ -44,18 +104,6 @@
           <target>Tipos de Retención de Ingresos Brutos</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Ingreso Brutos Withh. Types - Property Caption</note>
-        </trans-unit>
-        <trans-unit id="Page 541200512 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Invoices WT Base Buffer</source>
-          <target>Buffer Base de Retenciones</target>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page Invoices WT Base Buffer - Property Caption</note>
-        </trans-unit>
-        <trans-unit id="Page 541200512 - Control 1938113485 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Withholding amount per document.</source>
-          <target>Importe de retención por documento.</target>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page Invoices WT Base Buffer - Control Importe retencion - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 449173208 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>IVA Withholding Setup</source>
@@ -122,6 +170,13 @@
           <target>Acción finalizada. Se han procesado %1 registros.</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - NamedType Message1</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Action 83160525 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Process</source>
+          <target>Procesar</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">Source has been modified.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Action Procesar - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 2696501254 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>SS Withholding Setup</source>
@@ -705,6 +760,18 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Report Orden pago test - NamedType V__B_CaptionLbl</note>
         </trans-unit>
+        <trans-unit id="PageExtension 3135045912 - Control 248708765 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2583272393">
+          <source>Additional-Currency Posting</source>
+          <target>Registro en divisa adicional</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add Fields to General Journal - Control Additional-Currency Posting - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 377080723 - Control 486908828 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1739090986">
+          <source>Document No.</source>
+          <target>Número de documento</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add Fields to GL Register - Control Document No. - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 1341528549 - Action 1439459919 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
           <source>Recurrent Activities</source>
           <target>Actividades Recurrentes</target>
@@ -723,6 +790,19 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Action Get apochryphals - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Action 746921326 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Actualizar Tipos de Documentos</source>
+          <target>Actualizar Tipos de Documentos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Action Get Document Types - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Action 1574931232 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Consulta Reproweb</source>
+          <target>Consulta Reproweb</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Action Get Reproweb - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 1341528549 - Action 2757764263 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
           <source>Certificados de Exclusión Ret/Percep del IVA</source>
           <target>Certificados de Exclusión Ret/Percep del IVA</target>
@@ -740,6 +820,12 @@
           <target>Certificados exlusión Ganancias - RG830</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Action Get RG830 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Action 3597835928 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>Actualizar Tipos de Responsables</source>
+          <target>Actualizar Tipos de Responsables</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Action Get Tax Responsible Types - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 1341528549 - Control 3141329066 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
           <source>AFIP Document Type Dimension</source>
@@ -788,6 +874,30 @@
           <target>Números de serie de retención</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control Serie de retenciones - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 1353623708 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>URL del archivo de tipos de documentos de ARCA/AFIP.</source>
+          <target>URL del archivo de tipos de documentos de ARCA/AFIP.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control ARCA Document Types Path - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 1353623708 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>ARCA Document Types Path</source>
+          <target>Ruta de Tipos de Documentos ARCA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control ARCA Document Types Path - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 1116564391 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>URL del archivo de tipos de responsables de ARCA/AFIP.</source>
+          <target>URL del archivo de tipos de responsables de ARCA/AFIP.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control ARCA Tax Responsible Type Path - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1341528549 - Control 1116564391 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
+          <source>ARCA Tax Responsible Type Path</source>
+          <target>Ruta a Tipos de Responsables de ARCA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Add functions to GLS - Control ARCA Tax Responsible Type Path - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 1341528549 - Control 3762906545 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4050813720">
           <source>AFIP - WS</source>
@@ -897,30 +1007,10 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Apply Entries In Journal - Control codSeccion - Property Caption</note>
         </trans-unit>
-        <trans-unit id="PageExtension 2296492898 - Control 1844012642 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1670609200">
-          <source>Specifies the VAT Business Posting Group for the activity.</source>
-          <target>Especifica el grupo de registro IVA equivalente a este impuesto.]</target>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ARCAActExt - Control VAT Bus. Posting Group - Property ToolTip</note>
-        </trans-unit>
-        <trans-unit id="PageExtension 2296492898 - Control 1844012642 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1670609200">
-          <source>VAT Bus. Posting Group</source>
-          <target>Grupo registro IVA neg.</target>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">Suggested translation inserted.</note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ARCAActExt - Control VAT Bus. Posting Group - Property Caption</note>
-        </trans-unit>
-        <trans-unit id="PageExtension 2296492898 - Control 1844012642 - Method 2126772001 - NamedType 2026798726" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1670609200">
-          <source>Only activities of type "Tax" can have a VAT Business Posting Group.</source>
-          <target>Solo las actividades del tipo "Impuesto" pueden tener un Grupo de Registro de IVA.</target>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension ARCAActExt - Control VAT Bus. Posting Group - Method OnValidate - NamedType lblError</note>
-        </trans-unit>
         <trans-unit id="PageExtension 3922555324 - Control 3718489353 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
           <source>Actividad AFIP</source>
           <target>Actividad AFIP</target>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">Suggested translation inserted.</note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension CM. Subpage Ext. - Control Actividad AFIP - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 3922555324 - Control 3094869170 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1521900543">
@@ -1409,9 +1499,21 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Action Imprimir Transacción - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Control 2280543612 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Número de cheque</source>
+          <target>Número de cheque</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Control No. cheque - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3467584252 - Control 248708765 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
+          <source>Additional-Currency Posting</source>
+          <target>Registro en divisa adicional</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Control Additional-Currency Posting - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 3467584252 - Control 4085196015 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
           <source></source>
-          <target></target>
+          <target>[NAB: REVIEW]</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">Source contains only white-space, consider using 'Locked = true' to avoid translation of unnecessary texts. This note can be toggled with the setting 'NAB.PreferLockedTranslations'.</note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Control DocLines - Property Caption</note>
@@ -1430,10 +1532,28 @@
         </trans-unit>
         <trans-unit id="PageExtension 3467584252 - Control 3646847905 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3196174509">
           <source></source>
-          <target></target>
+          <target>[NAB: REVIEW]</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">Source contains only white-space, consider using 'Locked = true' to avoid translation of unnecessary texts. This note can be toggled with the setting 'NAB.PreferLockedTranslations'.</note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Withholdings in Payments - Control WithLines - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 609967446 - Field 1353623708 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 4050813720">
+          <source>ARCA Document Types Path</source>
+          <target>Ruta a Tipos de Documentos ARCA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension Extend GL Setup - Field ARCA Document Types Path - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 609967446 - Field 1116564391 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 4050813720">
+          <source>ARCA Tax Responsible Type Path</source>
+          <target>Ruta a Tipos de Responsables de ARCA</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension Extend GL Setup - Field ARCA Tax Responsible Type Path - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 198305791 - Field 3319631365 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2918155120">
+          <source>Transaction No.</source>
+          <target>Número de asiento</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension Transaction in Withholdings - Field Transaction No. - Property Caption</note>
         </trans-unit>
         <trans-unit id="TableExtension 935717825 - Field 4137661924 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2430374758">
           <source>Tipo cálculo acumulado</source>
@@ -1455,7 +1575,7 @@
         </trans-unit>
         <trans-unit id="Enum 4137661924 - EnumValue 1371923692 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source> </source>
-          <target> </target>
+          <target>[NAB: REVIEW]</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">Source contains only white-space, consider using 'Locked = true' to avoid translation of unnecessary texts. This note can be toggled with the setting 'NAB.PreferLockedTranslations'.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Enum Tipo cálculo acumulado - EnumValue   - Property Caption</note>
@@ -1471,6 +1591,132 @@
           <target>Mensual</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Enum Tipo cálculo acumulado - EnumValue Mensual - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Control 4264851666 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Operation</source>
+          <target>Operación</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Control Operación - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Control 50136881 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Operation mode</source>
+          <target>Modo de operación</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Control Modo operación - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Control 3616780962 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import file</source>
+          <target>Importar archivo</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Control Importar archivo - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Control 1756590801 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>File to import</source>
+          <target>Archivo a importar</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Control Archivo a importar - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Control 1758640537 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Export</source>
+          <target>Exportar</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Control Exportar  - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Control 4231241116 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Export file type</source>
+          <target>Tipo de archivo a exportar</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Control Tipo archivo Expo - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Control 1260610708 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Start date</source>
+          <target>Fecha inicial</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Control Fecha inicial - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Control 3133050311 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>End date</source>
+          <target>Fecha final</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Control Fecha final - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Control 1509383922 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>File to export</source>
+          <target>Archivo a exportar</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Control Archivo a exportar - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Action 83160525 - Method 1377591017 - NamedType 2026798726" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Seleccione el tipo de operación.</source>
+          <target>[NAB: NOT TRANSLATED]</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Action Procesar - Method OnAction - NamedType lblError</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Method 3690551541 - NamedType 4135629989" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Please, choose the file type before exporting.</source>
+          <target>Por favor, elija el tipo de archivo antes de exportar.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Method RunExportAction - NamedType lblError1</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - NamedType 4135629989" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Please, choose the file type before importing.</source>
+          <target>Por favor, elija el tipo de archivo antes de importar.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - NamedType lblError1</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - NamedType 3497933372" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Please, first enter the date filter for the withholdings to export</source>
+          <target>Por favor, ingrese primero el filtro de fechas para las retenciones a exportar</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">Suggested translation inserted.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - NamedType lblError2</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - NamedType 3414706468" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Action finished. %1 records were processed.</source>
+          <target>Acción finalizada. Se procesaron %1 registros.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - NamedType lblMessage1</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Method 3248070200 - NamedType 1588376093" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import finished</source>
+          <target>[NAB: NOT TRANSLATED]</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Method fntImportarIVA - NamedType lblMessageFinished</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Method 841984870 - NamedType 1588376093" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import finished</source>
+          <target>Importación finalizada</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Method fntImportarGan - NamedType lblMessageFinished</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Method 3743970966 - NamedType 1588376093" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import finished</source>
+          <target>Importación finalizada</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Method fntImportarSS - NamedType lblMessageFinished</note>
+        </trans-unit>
+        <trans-unit id="Page 4182531079 - Method 2992158992 - NamedType 1588376093" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import finished</source>
+          <target>Importación finalizada</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="NAB AL Tool Refresh Xlf" annotates="general" priority="3">New translation.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Retenciones - Method fntImportarAg - NamedType lblMessageFinished</note>
         </trans-unit>
       </group>
     </body>

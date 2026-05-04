@@ -5,8 +5,9 @@ report 50564 "Orden pago"
     //  b) Se cambia el DataItemLink del buf. retenciones de Nº Documento=FIELD(Nº documento) a Nº Factura=FIELD(Liq. por nº documento)
     DefaultLayout = RDLC;
     RDLCLayout = 'reports/Ordenpago.rdl';
-
     EnableExternalImages = true;
+    UsageCategory = ReportsAndAnalysis;
+    ApplicationArea = Basic, Suite;
 
     dataset
     {
@@ -19,14 +20,12 @@ report 50564 "Orden pago"
             column(No_GLRegister; "G/L Register"."No.")
             {
             }
-            column(Ndocumento_GLRegister; "G/L Register"."No. documento")
-            {
-            }
             dataitem("G/L Entry"; "G/L Entry")
             {
-                DataItemLink = "Document No." = FIELD("No. documento"), "Transaction No." = FIELD("No."), "Posting Date" = FIELD("Posting Date");
+                //DataItemLink = "Document No." = FIELD("No. documento"), "Transaction No." = FIELD("No."), "Posting Date" = FIELD("Posting Date");
+                DataItemLink = "Transaction No." = FIELD("No."), "Posting Date" = FIELD("Posting Date");
                 DataItemTableView = SORTING("Transaction No.", "Document No.");
-                RequestFilterFields = "Transaction No.", "Document No.";
+                RequestFilterFields = "Transaction No.";
                 column(NombreProveedor; NombreProveedor)
                 {
                 }
@@ -135,7 +134,7 @@ report 50564 "Orden pago"
                 }
                 dataitem(Movimientos; "G/L Entry")
                 {
-                    DataItemLink = "Transaction No." = FIELD("Transaction No."), "Document No." = FIELD("Document No."), "Posting Date" = FIELD("Posting Date");
+                    DataItemLink = "Transaction No." = FIELD("Transaction No.")/*, "Document No." = FIELD("Document No.")*/, "Posting Date" = FIELD("Posting Date");
                     DataItemTableView = SORTING("Transaction No.", "Document No.");
                     column(Movimientos_Amount; Amount)
                     {
@@ -250,7 +249,7 @@ report 50564 "Orden pago"
                 }
                 dataitem("Cust. Ledger Entry"; "Cust. Ledger Entry")
                 {
-                    DataItemLink = "Document No." = FIELD("Document No."), "Posting Date" = FIELD("Posting Date"), "Transaction No." = FIELD("Transaction No.");
+                    DataItemLink =/* "Document No." = FIELD("Document No."), */"Posting Date" = FIELD("Posting Date"), "Transaction No." = FIELD("Transaction No.");
                     column(CLE_Name; rstCliente.Name)
                     {
                     }
@@ -295,7 +294,7 @@ report 50564 "Orden pago"
                 }
                 dataitem("Mov. contabilidad2"; "G/L Entry")
                 {
-                    DataItemLink = "Document No." = FIELD("Document No."), "Posting Date" = FIELD("Posting Date"), "Transaction No." = FIELD("Transaction No.");
+                    DataItemLink = /*"Document No." = FIELD("Document No."), */"Posting Date" = FIELD("Posting Date"), "Transaction No." = FIELD("Transaction No.");
                     DataItemLinkReference = "G/L Entry";
                     DataItemTableView = SORTING("Transaction No.", "Document No.") ORDER(Ascending) WHERE("Source Type" = FILTER("Bank Account"), Amount = FILTER(< 0));
                     RequestFilterFields = "Document No.";
@@ -330,7 +329,7 @@ report 50564 "Orden pago"
                 }
                 dataitem("Bank Account Ledger Entry"; "Bank Account Ledger Entry")
                 {
-                    DataItemLink = "Document No." = FIELD("Document No."), "Posting Date" = FIELD("Posting Date"), "Transaction No." = FIELD("Transaction No.");
+                    DataItemLink = /*"Document No." = FIELD("Document No."), */"Posting Date" = FIELD("Posting Date"), "Transaction No." = FIELD("Transaction No.");
                     column(BLE_Nombre; PunBanco.Name)
                     {
                     }

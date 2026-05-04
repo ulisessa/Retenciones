@@ -5,6 +5,7 @@
   "version": "25.2.31024.0",
   "brief": "",
   "description": "",
+  "runtime": "14.0",
   "privacyStatement": "",
   "EULA": "",
   "help": "",
@@ -54,12 +55,6 @@
       "version": "25.0.23364.25445"      
     },
     {
-      "id": "6ef06169-dc16-4efd-a51c-c45e26bb1031",
-      "name": "WebServicesAFIP",
-      "publisher": "Grupo Arbumasa",
-      "version": "25.0.23364.25445"      
-    },
-    {
       "id": "b533ff64-12ed-45ee-bd0c-651686a91028",
       "name": "Generalistas.Escaneado",
       "publisher": "Grupo Arbumasa",
@@ -76,8 +71,25 @@
       "name": "Impuestos.IVA",
       "publisher": "Grupo Arbumasa",
       "version": "25.0.23364.25445"  
-    }    
-
+    },
+    {
+      "id": "6ef06169-dc16-4efd-a51c-c45e26bb1031",
+      "name": "WebServicesAFIP",
+      "publisher": "Grupo Arbumasa",
+      "version": "25.2.31024.0"
+    },
+    {
+      "id": "54cb0758-c6e7-4cc1-9bfd-e6cef75a3f76",
+      "name": "Generalistas.OCR",
+      "publisher": "Grupo Arbumasa",
+      "version": "25.2.31024.0"      
+    },
+    {
+      "id": "54cb0758-c6e7-4cc1-9bfd-e6cef75a3f72",
+      "name": "Generalistas.OCR.SoloTablas",
+      "publisher": "Grupo Arbumasa",
+      "version": "25.0.23364.25446"      
+    }
   ],
   "screenshots": [],
   "platform": "1.0.0.0",
@@ -90,8 +102,8 @@
   ],
   "resourceExposurePolicy": {
     "allowDebugging": true,
-    "allowDownloadingSource": false,
-    "includeSourceInSymbolFile": false
+    "allowDownloadingSource": true,
+    "includeSourceInSymbolFile": true
   },
   "target": "OnPrem",
   "features": [

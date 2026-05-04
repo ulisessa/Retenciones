@@ -10,8 +10,8 @@ codeunit 50043 GestionArchivos
         ServerDirectoryHelper: DotNet Directory;
         ServerFileHelper: DotNet File;
         FileDoesNotExistErr: Label 'The file %1 does not exist.', Comment = '%1 File Path';
-        ZipArchive: DotNet ZipArchive;
-        ZipArchiveMode: DotNet ZipArchiveMode;
+        ZipArchive: DotNet dnZipArchive;
+        ZipArchiveMode: DotNet dnZipArchiveMode;
         optEncoding: Option " ",UTF8,UTF16,Windows;
         NotAllowedPathErr: Label 'Files outside of the current user''s folder cannot be accessed. Access is denied to file %1.', Comment = '%1=the full path to a file. ex: C:\Windows\TextFile.txt ';
 
@@ -22,8 +22,8 @@ codeunit 50043 GestionArchivos
 
     procedure ExtractZipFile(ZipFilePath: Text; DestinationFolder: Text)
     var
-        Zip: DotNet ZipFileExtensions;
-        ZipFile: DotNet ZipFile;
+        Zip: DotNet dnZipFileExtensions;
+        ZipFile: DotNet dnZipFile;
     begin
         IsAllowedPath(ZipFilePath, false);
 

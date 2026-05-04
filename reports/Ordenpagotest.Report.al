@@ -5,8 +5,9 @@ report 50094 "Orden pago test"
     //  b) Se cambia el DataItemLink del buf. retenciones de Nº Documento=FIELD(Nº documento) a Nº Factura=FIELD(Liq. por nº documento)
     DefaultLayout = RDLC;
     RDLCLayout = 'reports/Ordenpagotest.rdl';
-
     EnableExternalImages = true;
+    UsageCategory = ReportsAndAnalysis;
+    ApplicationArea = Basic, Suite;
 
     dataset
     {

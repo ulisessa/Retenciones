@@ -11,11 +11,11 @@ report 50615 "Certificado Retención Ganancia"
         dataitem("G/L Register"; "G/L Register")
         {
             DataItemTableView = WHERE(Anulado = CONST(false));
-            RequestFilterFields = "No. documento";
+            RequestFilterFields = "No.";
             column(Logo; rstCI."Logo path")
             {
             }
-            column(GLRegister_Documento; "G/L Register"."No. documento")
+            column(GLRegister_NoTransaccion; "G/L Register"."No.")
             {
             }
             column(Firma; rstConfCont.Signature)
@@ -23,9 +23,9 @@ report 50615 "Certificado Retención Ganancia"
             }
             dataitem("Invoice Withholding Buffer"; "Invoice Withholding Buffer")
             {
-                DataItemLink = "No. documento" = FIELD("No. documento"), "Fecha pago" = FIELD("Posting Date");
+                DataItemLink = "Transaction No." = FIELD("No."), "Fecha Pago" = FIELD("Posting Date");
                 DataItemTableView = SORTING("No. documento", "Cod. retencion") WHERE("Tipo retencion" = CONST(Ganancias), Retenido = CONST(true));
-                RequestFilterFields = "No. documento", "Serie retención";
+                //RequestFilterFields = "TransaNo.", "Serie retención";
                 column(FORMAT__Factura_RT_Base_Buffer___Fecha_pago__; Format("Invoice Withholding Buffer"."Fecha pago"))
                 {
                 }

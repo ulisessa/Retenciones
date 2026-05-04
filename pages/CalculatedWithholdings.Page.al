@@ -4,7 +4,7 @@ page 50721 "Calculated Withholdings"
     SourceTable = "Withholding details";
     ApplicationArea = All;
     UsageCategory = Administration;
-    Caption = 'Calculated Withholdings';
+    Caption = 'Withholding Exclusions';
     layout
     {
         area(content)
